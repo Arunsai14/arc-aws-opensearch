@@ -27,7 +27,7 @@ resource "aws_security_group" "opensearch_sg" {
 
 # Create CloudWatch Log Group
 resource "aws_cloudwatch_log_group" "this" {
-  name              = "example-log-group" 
+  name              = "arc-example-log-group" 
   retention_in_days = 7                    
 }
 
