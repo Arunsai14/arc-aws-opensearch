@@ -61,15 +61,15 @@ resource "aws_opensearch_domain" "this" {
   cluster_config {
     instance_type               = var.instance_type
     zone_awareness_enabled       = var.zone_awareness_enabled
-    dedicated_master_enabled      = var.dedicated_master_enabled ? true : false  # Enable if set
-    dedicated_master_type        = var.dedicated_master_enabled ? var.dedicated_master_type : null  # Conditional
-    dedicated_master_count       = var.dedicated_master_enabled ? var.dedicated_master_count : 0  # Conditional
+    dedicated_master_enabled      = var.dedicated_master_enabled
+    dedicated_master_type        = var.dedicated_master_enabled ? var.dedicated_master_type : null
+    dedicated_master_count       = var.dedicated_master_enabled ? var.dedicated_master_count : 0
     instance_count               = var.instance_count
-    
-    # UltraWarm data nodes configuration
-    warm_enabled                 = var.use_ultrawarm ? true : false  # Enable if set
-    warm_count                   = var.use_ultrawarm ? var.warm_count : 0  # Conditional
-    warm_type                    = var.use_ultrawarm ? var.warm_type : null  # Conditional
+
+    # Only include warm configuration if UltraWarm is enabled
+    warm_enabled                 = var.use_ultrawarm ? true : false
+    warm_count                   = var.use_ultrawarm ? var.warm_count : null  # Use null instead of 0
+    warm_type                    = var.use_ultrawarm ? var.warm_type : null
   }
 
   ebs_options {
