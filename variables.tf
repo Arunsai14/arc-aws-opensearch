@@ -167,3 +167,21 @@ variable "warm_type" {
   type        = string
   default     = "ultrawarm1.medium.search"
 }
+
+variable "enable_custom_endpoint" {
+  description = "Enable a custom endpoint for the OpenSearch domain"
+  type        = bool
+  default     = false  # Change to true to enable a custom endpoint
+}
+
+variable "custom_hostname" {
+  description = "The custom hostname for the OpenSearch domain"
+  type        = string
+  default     = "search.example.com"  # Change this to your desired custom hostname
+}
+
+variable "custom_certificate_arn" {
+  description = "The ARN of the AWS ACM certificate for the custom endpoint"
+  type        = string
+  default     = ""  # Provide the certificate ARN here
+}

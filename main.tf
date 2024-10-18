@@ -104,6 +104,8 @@ resource "aws_opensearch_domain" "this" {
   domain_endpoint_options {
     enforce_https       = var.enforce_https
     tls_security_policy = var.tls_security_policy
+    custom_endpoint     = var.enable_custom_endpoint ? var.custom_hostname : null
+    custom_endpoint_certificate_arn = var.enable_custom_endpoint ? var.custom_certificate_arn : null
   }
 
   # Enable logging
