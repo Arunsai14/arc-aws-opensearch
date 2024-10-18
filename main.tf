@@ -108,12 +108,15 @@ resource "aws_opensearch_domain" "this" {
     custom_endpoint_certificate_arn = var.enable_custom_endpoint ? var.custom_certificate_arn : null
   }
 
-   # Off-peak window settings
-  off_peak_window {
-    start_time = "01:00"  # Start time in UTC
-    end_time   = "10:00"  # End time in UTC
-  }
+  # Auto-Tune settings
+  auto_tune {
+    desired_state = var.auto_tune_enabled ? "ENABLED" : "DISABLED"
 
+    maintenance_window {
+      start_time = "01:00"  # Set your desired maintenance start time in UTC
+      end_time   = "10:00"  # Set your desired maintenance end time in UTC
+    }
+  }
   # Enable logging
   log_publishing_options {
     log_type                 = var.log_type
