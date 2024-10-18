@@ -138,17 +138,17 @@ variable "use_ultrawarm" {
   default     = false  # Change this to true to enable UltraWarm data nodes
 }
 
-variable "dedicated_master_enabled" {
-  description = "Enable dedicated master nodes"
-  type        = bool
-  default     = false  # Change this to true if you want to enable dedicated master nodes
-}
+# variable "dedicated_master_enabled" {
+#   description = "Enable dedicated master nodes"
+#   type        = bool
+#   default     = false  # Change this to true if you want to enable dedicated master nodes
+# }
 
-variable "dedicated_master_type" {
-  description = "Instance type for dedicated master nodes"
-  type        = string
-  default     = "r5.large.search"  # Example instance type
-}
+# variable "dedicated_master_type" {
+#   description = "Instance type for dedicated master nodes"
+#   type        = string
+#   default     = "r5.large.search"  # Example instance type
+# }
 
 variable "dedicated_master_count" {
   description = "Number of dedicated master nodes"
