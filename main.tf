@@ -59,21 +59,23 @@ resource "aws_opensearch_domain" "this" {
   engine_version = var.engine_version
 
   cluster_config {
-    instance_type          = var.instance_type
-    zone_awareness_enabled  = var.zone_awareness_enabled
-    dedicated_master_enabled = var.dedicated_master_enabled
-    dedicated_master_type    = var.dedicated_master_type
-    instance_count         = var.instance_count
-
-     warm_enabled               = var.warm_enabled     # Enable UltraWarm
-    warm_count                 = var.warm_count       # Number of UltraWarm data nodes
-    warm_type                  = var.warm_type        # UltraWarm instance type 
+    instance_type               = var.instance_type
+    zone_awareness_enabled       = var.zone_awareness_enabled
+    dedicated_master_enabled      = var.dedicated_master_enabled ? true : false  # Enable if set
+    dedicated_master_type        = var.dedicated_master_enabled ? var.dedicated_master_type : null  # Conditional
+    dedicated_master_count       = var.dedicated_master_enabled ? var.dedicated_master_count : 0  # Conditional
+    instance_count               = var.instance_count
+    
+    # UltraWarm data nodes configuration
+    warm_enabled                 = var.use_ultrawarm ? true : false  # Enable if set
+    warm_count                   = var.use_ultrawarm ? var.warm_count : 0  # Conditional
+    warm_type                    = var.use_ultrawarm ? var.warm_type : null  # Conditional
   }
 
   ebs_options {
-    ebs_enabled = true
-    volume_type = "gp2"  
-    volume_size = 20      
+    ebs_enabled  = true
+    volume_type  = "gp2"
+    volume_size  = 20
   }
 
   vpc_options {
@@ -106,7 +108,7 @@ resource "aws_opensearch_domain" "this" {
 
   # Enable logging
   log_publishing_options {
-    log_type                 = var.log_type  # e.g., "INDEX_SLOW_LOGS"
+    log_type                 = var.log_type
     cloudwatch_log_group_arn = aws_cloudwatch_log_group.this.arn
   }
 
@@ -125,3 +127,4 @@ resource "aws_opensearch_domain" "this" {
   # Tags for the domain
   tags = var.tags
 }
+
