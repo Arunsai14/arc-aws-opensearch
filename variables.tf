@@ -131,3 +131,21 @@ variable "tags" {
   description = "Tags to apply to the OpenSearch domain"
   type        = map(string)
 }
+
+variable "warm_enabled" {
+  description = "Enable UltraWarm data nodes"
+  type        = bool
+  default     = true  # Set to true to enable UltraWarm
+}
+
+variable "warm_count" {
+  description = "Number of UltraWarm data nodes"
+  type        = number
+  default     = 2  # Adjust based on your needs
+}
+
+variable "warm_type" {
+  description = "Instance type for UltraWarm data nodes (e.g., ultrawarm1.medium.search)"
+  type        = string
+  default     = "ultrawarm1.medium.search"
+}

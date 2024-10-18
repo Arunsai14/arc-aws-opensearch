@@ -64,6 +64,12 @@ resource "aws_opensearch_domain" "this" {
     dedicated_master_enabled = var.dedicated_master_enabled
     dedicated_master_type    = var.dedicated_master_type
     instance_count         = var.instance_count
+
+    # UltraWarm data nodes configuration
+    warm_enabled               = var.warm_enabled     # Enable UltraWarm
+    warm_count                 = var.warm_count       # Number of UltraWarm data nodes
+    warm_type                  = var.warm_type        # UltraWarm instance type (e.g., ultrawarm1.medium.search)
+  }
   }
 
   ebs_options {
