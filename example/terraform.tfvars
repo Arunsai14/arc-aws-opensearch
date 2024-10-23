@@ -26,7 +26,7 @@ access_policy = <<POLICY
         "AWS" : "*"
       },
       "Action" : "es:*",
-      "Resource" : "arn:aws:es:us-east-2:804295906245:domain/my-opensearch-domain/*"
+      "Resource" : "arn:aws:es:us-east-2:804295906245:domain/arc-opensearch-domain/*"
     }
   ]
 }

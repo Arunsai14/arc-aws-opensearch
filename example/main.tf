@@ -32,7 +32,7 @@ module "terraform-aws-arc-tags" {
 
 
 module "opensearch" {
-  source            = "../"  # Path to your child module
+  source            = "../" 
   region            = var.region
   domain_name       = var.domain_name
   engine_version    = var.engine_version
