@@ -15,3 +15,19 @@ volume_type     = "gp2"
 volume_size     = 20
 iops            = null
 throughput      = null
+
+access_policy = <<POLICY
+{
+  "Version" : "2012-10-17",
+  "Statement" : [
+    {
+      "Effect" : "Allow",
+      "Principal" : {
+        "AWS" : "*"
+      },
+      "Action" : "es:*",
+      "Resource" : "arn:aws:es:us-east-2:804295906245:domain/my-opensearch-domain/*"
+    }
+  ]
+}
+POLICY

@@ -38,7 +38,9 @@ module "opensearch" {
   engine_version    = var.engine_version
   instance_type     = var.instance_type
   instance_count    = var.instance_count
-  vpc_id            = var.vpc_id                
+  vpc_id            = var.vpc_id
+  subnet_ids        = var.subnet_ids
+  access_policy     = var.access_policy             
   allowed_cidr_blocks = var.allowed_cidr_blocks 
 
   enable_zone_awareness = true
@@ -48,5 +50,9 @@ module "opensearch" {
     volume_size  = var.volume_size
     iops         = var.iops
     throughput   = var.throughput
+
+tags = merge(
+    module.terraform-aws-arc-tags.tags
+  )
 
 }

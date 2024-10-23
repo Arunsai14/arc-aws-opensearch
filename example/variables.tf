@@ -78,3 +78,8 @@ variable "throughput" {
   type        = number
   default     = null
 }
+
+variable "subnet_ids" {
+  description = "List of subnet IDs for the OpenSearch domain"
+  type        = list(string)
+}
