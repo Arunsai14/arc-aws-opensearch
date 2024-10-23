@@ -84,7 +84,7 @@ variable "subnet_ids" {
   type        = list(string)
 }
 
-variable "access_policy" {
-  description = "Access policy for the OpenSearch domain"
-  type        = string
-}
+# variable "access_policy" {
+#   description = "Access policy for the OpenSearch domain"
+#   type        = string
+# }

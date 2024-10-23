@@ -5,6 +5,7 @@ provider "aws" {
 data "aws_caller_identity" "current" {}
 
 resource "aws_security_group" "opensearch_sg" {
+  count = var.enable_vpc_options ? 1 : 0
   description = "Security group for OpenSearch Domain"
   vpc_id      = var.vpc_id
 
@@ -31,7 +32,6 @@ resource "aws_cloudwatch_log_group" "this" {
 }
 
 resource "aws_cloudwatch_log_resource_policy" "this" {
-  count = var.enable_vpc_options ? 1 : 0
   policy_name = "opensearch-log-group-policy"
 
   policy_document = jsonencode({
@@ -108,7 +108,7 @@ resource "aws_opensearch_domain" "this" {
   }
 
   # Access policies
-  access_policies = var.access_policy
+  access_policies = aws_cloudwatch_log_resource_policy.this.policy_document
 
   ######## Encryption options #######
    dynamic "encrypt_at_rest" {
