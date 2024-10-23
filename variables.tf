@@ -230,7 +230,7 @@ variable "auto_tune_desired_state" {
 variable "auto_tune_cron_expression" {
   description = "Cron expression for Auto-Tune maintenance schedule"
   type        = string
-  default     = "0 0 12 * * ?"
+  default     = "0 1 * * ?"
 }
 
 variable "auto_tune_duration_value" {
@@ -248,7 +248,7 @@ variable "auto_tune_duration_unit" {
 variable "auto_tune_start_at" {
   description = "Start time for Auto-Tune maintenance"
   type        = string
-  default     = ""
+  default     = "2024-10-23T01:00:00Z"
 }
 
 variable "enable_cognito_options" {
