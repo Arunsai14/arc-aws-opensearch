@@ -16,6 +16,7 @@ volume_size     = 20
 iops            = null
 throughput      = null
 
+
 access_policy = <<POLICY
 {
   "Version": "2012-10-17",
