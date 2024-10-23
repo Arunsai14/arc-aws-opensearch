@@ -18,15 +18,15 @@ throughput      = null
 
 access_policy = <<POLICY
 {
-  "Version" : "2012-10-17",
-  "Statement" : [
+  "Version": "2012-10-17",
+  "Statement": [
     {
-      "Effect" : "Allow",
-      "Principal" : {
-        "AWS" : "*"
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "*"
       },
-      "Action" : "es:*",
-      "Resource" : "arn:aws:es:us-east-2:804295906245:domain/arc-opensearch-domain/*"
+      "Action": "es:*",
+      "Resource": "arn:aws:es:us-east-2:804295906245:domain/arc-opensearch-domain/*"
     }
   ]
 }
