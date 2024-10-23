@@ -190,27 +190,34 @@ resource "aws_opensearch_domain" "this" {
   }
 
   ######## Off-peak window options #######
-  dynamic "off_peak_window_options" {
-    for_each = var.enable_off_peak_window_options ? [1] : []
-    content {
-      enabled   = true
-      off_peak_window {
-        window_start_time {
-          hours   = var.off_peak_hours
-          minutes = var.off_peak_minutes
-        }
-      }
-    }
-  }
+  # dynamic "off_peak_window_options" {
+  #   for_each = var.enable_off_peak_window_options ? [1] : []
+  #   content {
+  #     enabled   = true
+  #     off_peak_window {
+  #       window_start_time {
+  #         hours   = var.off_peak_hours
+  #         minutes = var.off_peak_minutes
+  #       }
+  #     }
+  #   }
+  # }
 
 ######## Software update options #######
-dynamic "software_update_options" {
-  for_each = var.auto_software_update_enabled ? [1] : []
-  content {
-    auto_software_update_enabled = true 
-  }
-}
+# dynamic "software_update_options" {
+#   for_each = var.auto_software_update_enabled ? [1] : []
+#   content {
+#     auto_software_update_enabled = true 
+#   }
+# }
 
+  software_update_options {
+    auto_software_update_enabled = var.auto_software_update_enabled
+  }
+
+  # off_peak_window_options {
+  #   enabled = var.off_peak_window_enabled
+  # }
   ######## Cold storage options #######
   dynamic "cold_storage_options" {
     for_each = var.cold_storage_enabled ? [1] : []
