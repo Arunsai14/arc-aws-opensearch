@@ -44,7 +44,7 @@ master_user_name                    = "admin"
 master_user_password                = "Password123!"
 
 # Auto-Tune settings (optional)
-enable_auto_tune            = false
+enable_auto_tune            = true
 auto_tune_desired_state     = "ENABLED"
 auto_tune_cron_expression   = "0 0 12 * * ?"
 auto_tune_duration_value    = 1
