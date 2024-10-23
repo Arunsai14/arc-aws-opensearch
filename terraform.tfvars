@@ -46,7 +46,7 @@ master_user_password                = "Password123!"
 # Auto-Tune settings (optional)
 enable_auto_tune            = true
 auto_tune_desired_state     = "ENABLED"
-auto_tune_cron_expression   = "0 1 * * ?"
+auto_tune_cron_expression   = "cron(0 1 * * ? *)"
 auto_tune_duration_value    = 1
 auto_tune_duration_unit     = "HOURS"
 auto_tune_start_at          = "2024-10-24T01:00:00Z"
