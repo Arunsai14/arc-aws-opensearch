@@ -211,9 +211,8 @@ resource "aws_opensearch_domain" "this" {
 #   }
 # }
 
-  software_update_options {
-    auto_software_update_enabled = var.auto_software_update_enabled
-  }
+  software_update_options = true
+ 
 
   # off_peak_window_options {
   #   enabled = var.off_peak_window_enabled

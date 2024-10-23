@@ -346,11 +346,11 @@ variable "enable_vpc_options" {
   default     = false  # Set a default value or leave it out if it's required
 }
 
-variable "auto_software_update_enabled" {
-  description = "Enable automatic software updates for OpenSearch"
-  type        = bool
-  default     = true
-}
+# variable "auto_software_update_enabled" {
+#   description = "Enable automatic software updates for OpenSearch"
+#   type        = bool
+#   default     = true
+# }
 
 # variable "off_peak_window_enabled" {
 #   description = "Enable Off Peak window options for OpenSearch"
