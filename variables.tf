@@ -21,6 +21,12 @@ variable "instance_type" {
   default     = "m4.large.search"
 }
 
+variable "instance_count" {
+  description = "Number of instances in the cluster"
+  type        = number
+  default     = 2
+}
+
 variable "zone_awareness_enabled" {
   description = "Whether zone awareness is enabled"
   type        = bool
@@ -39,10 +45,58 @@ variable "dedicated_master_type" {
   default     = "m4.large.search"
 }
 
-variable "instance_count" {
-  description = "Number of instances in the cluster"
+variable "dedicated_master_count" {
+  description = "Number of dedicated master instances"
+  type        = number
+  default     = 3
+}
+
+variable "use_ultrawarm" {
+  description = "Whether to enable UltraWarm nodes"
+  type        = bool
+  default     = false
+}
+
+variable "warm_type" {
+  description = "UltraWarm node instance type"
+  type        = string
+  default     = "ultrawarm1.medium.search"
+}
+
+variable "warm_count" {
+  description = "Number of UltraWarm instances"
   type        = number
   default     = 2
+}
+
+variable "ebs_enabled" {
+  description = "Whether EBS is enabled for the domain"
+  type        = bool
+  default     = true
+}
+
+variable "volume_type" {
+  description = "EBS volume type"
+  type        = string
+  default     = "gp2"
+}
+
+variable "volume_size" {
+  description = "EBS volume size in GB"
+  type        = number
+  default     = 20
+}
+
+variable "iops" {
+  description = "Provisioned IOPS for the volume"
+  type        = number
+  default     = null
+}
+
+variable "throughput" {
+  description = "Provisioned throughput for the volume"
+  type        = number
+  default     = null
 }
 
 variable "vpc_id" {
@@ -66,6 +120,12 @@ variable "encrypt_at_rest_enabled" {
   default     = true
 }
 
+variable "kms_key_id" {
+  description = "KMS key ID for encryption at rest"
+  type        = string
+  default     = ""
+}
+
 variable "node_to_node_encryption_enabled" {
   description = "Enable node-to-node encryption"
   type        = bool
@@ -73,29 +133,60 @@ variable "node_to_node_encryption_enabled" {
 }
 
 variable "enforce_https" {
-  description = "Enforce HTTPS for the domain endpoint"
+  description = "Force HTTPS on the OpenSearch endpoint"
   type        = bool
   default     = true
 }
 
 variable "tls_security_policy" {
-  description = "TLS security policy"
+  description = "TLS security policy for HTTPS endpoints"
   type        = string
   default     = "Policy-Min-TLS-1-2-2019-07"
 }
 
-# variable "cloudwatch_log_group_arn" {
-#   description = "ARN of the CloudWatch log group for publishing logs"
-#   type        = string
-# }
+variable "enable_custom_endpoint" {
+  description = "Enable custom domain endpoint"
+  type        = bool
+  default     = false
+}
+
+variable "custom_hostname" {
+  description = "Custom domain name for the OpenSearch endpoint"
+  type        = string
+  default     = ""
+}
+
+variable "custom_certificate_arn" {
+  description = "ARN of the ACM certificate for the custom endpoint"
+  type        = string
+  default     = ""
+}
+
+variable "enable_snapshot_options" {
+  description = "Enable snapshot options for the domain"
+  type        = bool
+  default     = false
+}
+
+variable "snapshot_start_hour" {
+  description = "Start hour for the automated snapshot"
+  type        = number
+  default     = 0
+}
 
 variable "log_type" {
-  description = "Type of log to publish (e.g., INDEX_SLOW_LOGS, SEARCH_SLOW_LOGS)"
+  description = "Type of log to publish to CloudWatch"
+  type        = string
+  default     = "INDEX_SLOW_LOGS"
+}
+
+variable "access_policy" {
+  description = "Access policy for the OpenSearch domain"
   type        = string
 }
 
 variable "advanced_security_enabled" {
-  description = "Enable fine-grained access control"
+  description = "Enable advanced security options (fine-grained access control)"
   type        = bool
   default     = false
 }
@@ -107,81 +198,102 @@ variable "anonymous_auth_enabled" {
 }
 
 variable "internal_user_database_enabled" {
-  description = "Enable internal user database"
+  description = "Enable internal user database for fine-grained access control"
   type        = bool
   default     = true
 }
 
 variable "master_user_name" {
-  description = "Master user name for the OpenSearch domain"
+  description = "Master user name for OpenSearch"
   type        = string
+  default     = ""
 }
 
 variable "master_user_password" {
-  description = "Master user password for the OpenSearch domain"
+  description = "Master user password for OpenSearch"
   type        = string
+  default     = ""
 }
 
-variable "access_policy" {
-  description = "IAM access policy for the OpenSearch domain"
+variable "enable_auto_tune" {
+  description = "Enable Auto-Tune for the domain"
+  type        = bool
+  default     = false
+}
+
+variable "auto_tune_desired_state" {
+  description = "Desired state of Auto-Tune"
   type        = string
+  default     = "ENABLED"
+}
+
+variable "auto_tune_cron_expression" {
+  description = "Cron expression for Auto-Tune maintenance schedule"
+  type        = string
+  default     = "0 0 12 * * ?"
+}
+
+variable "auto_tune_duration_value" {
+  description = "Duration value for Auto-Tune maintenance"
+  type        = number
+  default     = 1
+}
+
+variable "auto_tune_duration_unit" {
+  description = "Duration unit for Auto-Tune maintenance"
+  type        = string
+  default     = "HOURS"
+}
+
+variable "auto_tune_start_at" {
+  description = "Start time for Auto-Tune maintenance"
+  type        = string
+  default     = ""
+}
+
+variable "enable_cognito_options" {
+  description = "Enable Cognito authentication for the OpenSearch domain"
+  type        = bool
+  default     = false
+}
+
+variable "cognito_identity_pool_id" {
+  description = "Cognito Identity Pool ID"
+  type        = string
+  default     = ""
+}
+
+variable "cognito_role_arn" {
+  description = "Cognito Role ARN"
+  type        = string
+  default     = ""
+}
+
+variable "cognito_user_pool_id" {
+  description = "Cognito User Pool ID"
+  type        = string
+  default     = ""
+}
+
+variable "enable_off_peak_window_options" {
+  description = "Enable off-peak window options for the domain"
+  type        = bool
+  default     = false
+}
+
+variable "off_peak_hours" {
+  description = "Off-peak window start time (hours)"
+  type        = number
+  default     = 0
+}
+
+variable "off_peak_minutes" {
+  description = "Off-peak window start time (minutes)"
+  type        = number
+  default     = 0
 }
 
 variable "tags" {
-  description = "Tags to apply to the OpenSearch domain"
+  description = "Tags to apply to resources"
   type        = map(string)
-}
-
-variable "use_ultrawarm" {
-  description = "Enable UltraWarm data nodes"
-  type        = bool
-  default     = false  # Change this to true to enable UltraWarm data nodes
-}
-
-# variable "dedicated_master_enabled" {
-#   description = "Enable dedicated master nodes"
-#   type        = bool
-#   default     = false  # Change this to true if you want to enable dedicated master nodes
-# }
-
-# variable "dedicated_master_type" {
-#   description = "Instance type for dedicated master nodes"
-#   type        = string
-#   default     = "r5.large.search"  # Example instance type
-# }
-
-variable "dedicated_master_count" {
-  description = "Number of dedicated master nodes"
-  type        = number
-  default     = 3  # Adjust based on your needs
-}
-
-variable "warm_count" {
-  description = "Number of UltraWarm data nodes"
-  type        = number
-  default     = 2  # Adjust based on your needs
-}
-
-variable "warm_type" {
-  description = "Instance type for UltraWarm data nodes"
-  type        = string
-  default     = "ultrawarm1.medium.search"
-}
-
-variable "enable_custom_endpoint" {
-  description = "Enable a custom endpoint for the OpenSearch domain"
-  type        = bool
-  default     = false  # Change to true to enable a custom endpoint
-}
-
-variable "custom_hostname" {
-  description = "The custom hostname for the OpenSearch domain"
-  type        = string
-  default     = "search.example.com"  # Change this to your desired custom hostname
-}
-
-variable "custom_certificate_arn" {
-  description = "The ARN of the AWS ACM certificate for the custom endpoint"
-  type        = string
-  default     = ""  # Provide the certificate ARN here
 }

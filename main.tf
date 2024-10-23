@@ -25,13 +25,11 @@ resource "aws_security_group" "opensearch_sg" {
   tags = var.tags
 }
 
-# Create CloudWatch Log Group
 resource "aws_cloudwatch_log_group" "this" {
-  name              = "arc-example-log-group" 
-  retention_in_days = 7                    
+  name              = "arc-example-log-group"
+  retention_in_days = 7
 }
 
-# Create CloudWatch Log Resource Policy
 resource "aws_cloudwatch_log_resource_policy" "this" {
   policy_name = "opensearch-log-group-policy"
 
@@ -53,46 +51,58 @@ resource "aws_cloudwatch_log_resource_policy" "this" {
   })
 }
 
-# Create OpenSearch Domain
 resource "aws_opensearch_domain" "this" {
   domain_name    = var.domain_name
   engine_version = var.engine_version
 
+  # Cluster configuration
   cluster_config {
-    instance_type               = var.instance_type
-    zone_awareness_enabled       = var.zone_awareness_enabled
-    dedicated_master_enabled      = var.dedicated_master_enabled
-    dedicated_master_type        = var.dedicated_master_enabled ? var.dedicated_master_type : null
-    dedicated_master_count       = var.dedicated_master_enabled ? var.dedicated_master_count : 0
-    instance_count               = var.instance_count
-
-    # Only include warm configuration if UltraWarm is enabled
-    warm_enabled                 = var.use_ultrawarm ? true : false
-    warm_count                   = var.use_ultrawarm ? var.warm_count : null  # Use null instead of 0
-    warm_type                    = var.use_ultrawarm ? var.warm_type : null
+    instance_type              = var.instance_type
+    instance_count             = var.instance_count
+    zone_awareness_enabled     = var.zone_awareness_enabled
+    dedicated_master_enabled   = var.dedicated_master_enabled
+    dedicated_master_type      = var.dedicated_master_enabled ? var.dedicated_master_type : null
+    dedicated_master_count     = var.dedicated_master_enabled ? var.dedicated_master_count : 0
+    warm_enabled               = var.use_ultrawarm ? true : false
+    warm_type                  = var.use_ultrawarm ? var.warm_type : null
+    warm_count                 = var.use_ultrawarm ? var.warm_count : null
   }
 
+  # Optional ebs options
   ebs_options {
-    ebs_enabled  = true
-    volume_type  = "gp2"
-    volume_size  = 20
+    ebs_enabled  = var.ebs_enabled
+    volume_type  = var.volume_type
+    volume_size  = var.volume_size
+    iops         = var.iops
+    throughput   = var.throughput
   }
 
+  # VPC Options
   vpc_options {
     subnet_ids         = var.subnet_ids
     security_group_ids = [aws_security_group.opensearch_sg.id]
   }
 
+  # Advanced options
   advanced_options = {
     "rest.action.multi.allow_explicit_index" = "true"
   }
 
-  # Access policies for the domain
+  # Snapshot options (conditionally added)
+  dynamic "snapshot_options" {
+    for_each = var.enable_snapshot_options ? [1] : []
+    content {
+      automated_snapshot_start_hour = var.snapshot_start_hour
+    }
+  }
+
+  # Access policies
   access_policies = var.access_policy
 
-  # Encryption settings
+  # Encryption options
   encrypt_at_rest {
-    enabled = var.encrypt_at_rest_enabled
+    enabled  = var.encrypt_at_rest_enabled
+    kms_key_id = var.kms_key_id != "" ? var.kms_key_id : null
   }
 
   # Node-to-node encryption
@@ -102,19 +112,19 @@ resource "aws_opensearch_domain" "this" {
 
   # Domain endpoint options
   domain_endpoint_options {
-    enforce_https       = var.enforce_https
-    tls_security_policy = var.tls_security_policy
-    custom_endpoint     = var.enable_custom_endpoint ? var.custom_hostname : null
+    enforce_https                = var.enforce_https
+    tls_security_policy          = var.tls_security_policy
+    custom_endpoint              = var.enable_custom_endpoint ? var.custom_hostname : null
     custom_endpoint_certificate_arn = var.enable_custom_endpoint ? var.custom_certificate_arn : null
   }
 
-  # Enable logging
+  # Log publishing options
   log_publishing_options {
     log_type                 = var.log_type
     cloudwatch_log_group_arn = aws_cloudwatch_log_group.this.arn
   }
 
-  # Advanced security options (fine-grained access control)
+  # Advanced security options
   advanced_security_options {
     enabled                        = var.advanced_security_enabled
     anonymous_auth_enabled         = var.anonymous_auth_enabled
@@ -126,7 +136,48 @@ resource "aws_opensearch_domain" "this" {
     }
   }
 
-  # Tags for the domain
+  # Auto-Tune options (conditionally added)
+  dynamic "auto_tune_options" {
+    for_each = var.enable_auto_tune ? [1] : []
+    content {
+      desired_state = var.auto_tune_desired_state
+
+      maintenance_schedule {
+        cron_expression_for_recurrence = var.auto_tune_cron_expression
+        duration {
+          value = var.auto_tune_duration_value
+          unit  = var.auto_tune_duration_unit
+        }
+        start_at = var.auto_tune_start_at
+      }
+    }
+  }
+
+  # Cognito options (conditionally added)
+  dynamic "cognito_options" {
+    for_each = var.enable_cognito_options ? [1] : []
+    content {
+      enabled           = true
+      identity_pool_id  = var.cognito_identity_pool_id
+      role_arn          = var.cognito_role_arn
+      user_pool_id      = var.cognito_user_pool_id
+    }
+  }
+
+  # Off-peak window options (conditionally added)
+  dynamic "off_peak_window_options" {
+    for_each = var.enable_off_peak_window_options ? [1] : []
+    content {
+      enabled   = true
+      off_peak_window {
+        window_start_time {
+          hours   = var.off_peak_hours
+          minutes = var.off_peak_minutes
+        }
+      }
+    }
+  }
+
+  # Tags
   tags = var.tags
 }
-
