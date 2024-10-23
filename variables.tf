@@ -339,3 +339,9 @@ variable "log_publishing_enabled" {
   type        = bool
   default     = true
 }
+
+variable "enable_vpc_options" {
+  description = "Enable VPC options for the OpenSearch domain."
+  type        = bool
+  default     = false  # Set a default value or leave it out if it's required
+}
