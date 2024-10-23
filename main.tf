@@ -210,7 +210,8 @@ resource "aws_opensearch_domain" "this" {
 
   ######## Cold storage options #######
   cold_storage_options {
-    retention_period = var.cold_storage_retention_period
+    enabled = true 
+    # retention_period = var.cold_storage_retention_period
   }
 
   ######## Tags #######
