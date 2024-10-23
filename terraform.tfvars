@@ -49,7 +49,7 @@ auto_tune_desired_state     = "ENABLED"
 auto_tune_cron_expression   = "0 1 * * ?"
 auto_tune_duration_value    = 1
 auto_tune_duration_unit     = "HOURS"
-auto_tune_start_at          = "2024-10-23T01:00:00Z"
+auto_tune_start_at          = "2024-10-24T01:00:00Z"
 
 # Cognito options (optional)
 enable_cognito_options      = false
