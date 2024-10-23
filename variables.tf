@@ -175,7 +175,7 @@ variable "snapshot_start_hour" {
 }
 
 variable "log_type" {
-  description = "Type of log to publish to CloudWatch"
+  description = "Type of log to publish to CloudWatch (Type of OpenSearch log. Valid values: INDEX_SLOW_LOGS, SEARCH_SLOW_LOGS, ES_APPLICATION_LOGS, AUDIT_LOGS.)"
   type        = string
   default     = "INDEX_SLOW_LOGS"
 }
@@ -296,4 +296,58 @@ variable "off_peak_minutes" {
 variable "tags" {
   description = "Tags to apply to resources"
   type        = map(string)
+}
+
+variable "advanced_security_enabled" {
+  description = "Enable advanced security options"
+  type        = bool
+  default     = false  # Set to true to enable advanced security
+}
+
+variable "enable_auto_tune" {
+  description = "Flag to enable or disable auto-tuning"
+  type        = bool
+  default     = false
+}
+
+variable "cold_storage_enabled" {
+  description = "Flag to enable or disable cold storage options"
+  type        = bool
+  default     = false
+}
+
+variable "cold_storage_retention_period" {
+  description = "Retention period for cold storage in days"
+  type        = number
+  default     = 30  # Example default value
+}
+
+variable "enable_zone_awareness" {
+  description = "Enable zone awareness for the OpenSearch domain."
+  type        = bool
+  default     = false
+}
+
+variable "availability_zone_count" {
+  description = "The number of availability zones to use for zone awareness."
+  type        = number
+  default     = 2
+}
+
+variable "enable_domain_endpoint_options" {
+  description = "Enable custom domain endpoint options for the OpenSearch domain."
+  type        = bool
+  default     = false
+}
+
+variable "enable_encrypt_at_rest" {
+  description = "Enable encryption at rest for the OpenSearch domain."
+  type        = bool
+  default     = false
+}
+
+variable "log_publishing_enabled" {
+  description = "Whether to enable the log publishing option."
+  type        = bool
+  default     = true
 }

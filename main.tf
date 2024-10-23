@@ -31,6 +31,7 @@ resource "aws_cloudwatch_log_group" "this" {
 }
 
 resource "aws_cloudwatch_log_resource_policy" "this" {
+  count = var.enable_vpc_options ? 1 : 0
   policy_name = "opensearch-log-group-policy"
 
   policy_document = jsonencode({
@@ -55,7 +56,7 @@ resource "aws_opensearch_domain" "this" {
   domain_name    = var.domain_name
   engine_version = var.engine_version
 
-  # Cluster configuration
+  ######## Cluster configuration #######
   cluster_config {
     instance_type              = var.instance_type
     instance_count             = var.instance_count
@@ -66,9 +67,16 @@ resource "aws_opensearch_domain" "this" {
     warm_enabled               = var.use_ultrawarm ? true : false
     warm_type                  = var.use_ultrawarm ? var.warm_type : null
     warm_count                 = var.use_ultrawarm ? var.warm_count : null
+
+      dynamic "zone_awareness_config" {
+      for_each = var.enable_zone_awareness ? [1] : []
+      content {
+        availability_zone_count = var.availability_zone_count
+      }
+    }
   }
 
-  # Optional ebs options
+  ######## EBS options #######
   ebs_options {
     ebs_enabled  = var.ebs_enabled
     volume_type  = var.volume_type
@@ -77,18 +85,21 @@ resource "aws_opensearch_domain" "this" {
     throughput   = var.throughput
   }
 
-  # VPC Options
-  vpc_options {
+  ######## VPC Options #######
+ dynamic "vpc_options" {
+  for_each = var.enable_vpc_options ? [1] : []
+  content {
     subnet_ids         = var.subnet_ids
     security_group_ids = [aws_security_group.opensearch_sg.id]
   }
+}
 
-  # Advanced options
+  ######## Advanced options #######
   advanced_options = {
     "rest.action.multi.allow_explicit_index" = "true"
   }
 
-  # Snapshot options (conditionally added)
+  ######## Snapshot options #######
   dynamic "snapshot_options" {
     for_each = var.enable_snapshot_options ? [1] : []
     content {
@@ -99,61 +110,75 @@ resource "aws_opensearch_domain" "this" {
   # Access policies
   access_policies = var.access_policy
 
-  # Encryption options
-  encrypt_at_rest {
-    enabled  = var.encrypt_at_rest_enabled
-    kms_key_id = var.kms_key_id != "" ? var.kms_key_id : null
+  ######## Encryption options #######
+   dynamic "encrypt_at_rest" {
+    for_each = var.enable_encrypt_at_rest ? [1] : []
+    content {
+      enabled    = var.encrypt_at_rest_enabled
+      kms_key_id = var.kms_key_id != "" ? var.kms_key_id : null
+    }
   }
-
-  # Node-to-node encryption
+  ######## Node-to-node encryption options #######
   node_to_node_encryption {
     enabled = var.node_to_node_encryption_enabled
   }
 
-  # Domain endpoint options
-  domain_endpoint_options {
-    enforce_https                = var.enforce_https
-    tls_security_policy          = var.tls_security_policy
-    custom_endpoint              = var.enable_custom_endpoint ? var.custom_hostname : null
-    custom_endpoint_certificate_arn = var.enable_custom_endpoint ? var.custom_certificate_arn : null
-  }
-
-  # Log publishing options
-  log_publishing_options {
-    log_type                 = var.log_type
-    cloudwatch_log_group_arn = aws_cloudwatch_log_group.this.arn
-  }
-
-  # Advanced security options
-  advanced_security_options {
-    enabled                        = var.advanced_security_enabled
-    anonymous_auth_enabled         = var.anonymous_auth_enabled
-    internal_user_database_enabled = var.internal_user_database_enabled
-
-    master_user_options {
-      master_user_name     = var.master_user_name
-      master_user_password = var.master_user_password
+  ######## Domain endpoint #######
+  dynamic "domain_endpoint_options" {
+    for_each = var.enable_domain_endpoint_options ? [1] : []
+    content {
+      enforce_https                = var.enforce_https
+      tls_security_policy          = var.tls_security_policy
+      custom_endpoint              = var.enable_custom_endpoint ? var.custom_hostname : null
+      custom_endpoint_certificate_arn = var.enable_custom_endpoint ? var.custom_certificate_arn : null
     }
   }
 
-  # Auto-Tune options (conditionally added)
+  ######## Log publishing options #######
+  log_publishing_options {
+    log_type                 = var.log_type
+    enabled                  = var.log_publishing_enabled
+    cloudwatch_log_group_arn = aws_cloudwatch_log_group.this.arn
+  }
+
+  ######## Advanced security options #######
+  dynamic "advanced_security_options" {
+    for_each = var.advanced_security_enabled ? [1] : []
+
+    content {
+      enabled                        = true
+      anonymous_auth_enabled         = var.anonymous_auth_enabled
+      internal_user_database_enabled = var.internal_user_database_enabled
+
+      master_user_options {
+        master_user_name     = var.master_user_name
+        master_user_password = var.master_user_password
+      }
+    }
+  }
+
+  ######## Auto-Tune options #######
   dynamic "auto_tune_options" {
     for_each = var.enable_auto_tune ? [1] : []
     content {
       desired_state = var.auto_tune_desired_state
 
-      maintenance_schedule {
-        cron_expression_for_recurrence = var.auto_tune_cron_expression
-        duration {
-          value = var.auto_tune_duration_value
-          unit  = var.auto_tune_duration_unit
+      dynamic "maintenance_schedule" {
+        for_each = var.enable_auto_tune ? [1] : [] 
+
+        content {
+          cron_expression_for_recurrence = var.auto_tune_cron_expression
+          duration {
+            value = var.auto_tune_duration_value
+            unit  = var.auto_tune_duration_unit
+          }
+          start_at = var.auto_tune_start_at
         }
-        start_at = var.auto_tune_start_at
       }
     }
   }
 
-  # Cognito options (conditionally added)
+  ######## Cognito options #######
   dynamic "cognito_options" {
     for_each = var.enable_cognito_options ? [1] : []
     content {
@@ -164,7 +189,7 @@ resource "aws_opensearch_domain" "this" {
     }
   }
 
-  # Off-peak window options (conditionally added)
+  ######## Off-peak window options #######
   dynamic "off_peak_window_options" {
     for_each = var.enable_off_peak_window_options ? [1] : []
     content {
@@ -178,6 +203,22 @@ resource "aws_opensearch_domain" "this" {
     }
   }
 
-  # Tags
+######## Software update options #######
+dynamic "software_update_options" {
+  for_each = var.auto_software_update_enabled ? [1] : []
+  content {
+    auto_software_update_enabled = true 
+  }
+}
+
+  ######## Cold storage options #######
+  dynamic "cold_storage_options" {
+    for_each = var.cold_storage_enabled ? [1] : []
+    content {
+      retention_period = var.cold_storage_retention_period
+    }
+  }
+
+  ######## Tags #######
   tags = var.tags
 }
