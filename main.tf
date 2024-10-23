@@ -148,7 +148,7 @@ resource "aws_opensearch_domain" "this" {
           value = var.auto_tune_duration_value
           unit  = var.auto_tune_duration_unit
         }
-        auto_tune_start_at = var.auto_tune_start_at
+        start_at = var.auto_tune_start_at
       }
     }
   }
