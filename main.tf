@@ -208,11 +208,11 @@ resource "aws_opensearch_domain" "this" {
     auto_software_update_enabled = var.auto_software_update_enabled
   }
 
-  ######## Cold storage options #######
-  cold_storage_options {
-    enabled = true 
-    # retention_period = var.cold_storage_retention_period
-  }
+  # ######## Cold storage options #######
+  # cold_storage_options {
+  #   enabled = true 
+  #   # retention_period = var.cold_storage_retention_period
+  # }
 
   ######## Tags #######
   tags = var.tags
