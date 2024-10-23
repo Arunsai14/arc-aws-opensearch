@@ -83,3 +83,8 @@ variable "subnet_ids" {
   description = "List of subnet IDs for the OpenSearch domain"
   type        = list(string)
 }
+
+variable "access_policy" {
+  description = "Access policy for the OpenSearch domain"
+  type        = string
+}
