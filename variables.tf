@@ -298,18 +298,6 @@ variable "tags" {
   type        = map(string)
 }
 
-variable "advanced_security_enabled" {
-  description = "Enable advanced security options"
-  type        = bool
-  default     = false  # Set to true to enable advanced security
-}
-
-variable "enable_auto_tune" {
-  description = "Flag to enable or disable auto-tuning"
-  type        = bool
-  default     = false
-}
-
 variable "cold_storage_enabled" {
   description = "Flag to enable or disable cold storage options"
   type        = bool
