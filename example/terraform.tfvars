@@ -1,7 +1,7 @@
 region               = "us-east-2"
 domain_name          = "arc-opensearch-domain"
-engine_version       = "OpenSearch 2.15" 
-instance_type        = "m4.large.search" 
+engine_version       = "OpenSearch_2.15" 
+instance_type        = "m5.large.search" 
 instance_count       = 2                   
 vpc_id               = "vpc-024aff0fdd1a1d6fe"
 subnet_ids           = ["subnet-0559fb2ec2711b6ae", "subnet-0ecaddef65763a35f"]
