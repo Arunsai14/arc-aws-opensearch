@@ -153,10 +153,11 @@ resource "aws_opensearch_domain" "this" {
         content {
           master_user_name     = var.master_user_name
           master_user_password = var.master_user_password
+          master_user_arn = var.use_iam_arn_as_master_user ? var.master_user_arn : null
         }
       }
 
-      master_user_arn = var.use_iam_arn_as_master_user ? var.master_user_arn : null
+      
     }
   }
 
