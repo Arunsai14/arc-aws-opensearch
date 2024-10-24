@@ -357,3 +357,24 @@ variable "auto_software_update_enabled" {
 #   type        = bool
 #   default     = false
 # }
+
+# SAML Options
+variable "saml_options" {
+  description = "Configuration block for SAML options in the OpenSearch domain."
+  type = object({
+    enabled                 = bool
+    idp_entity_id           = optional(string)
+    idp_metadata_content    = optional(string)
+    roles_key               = optional(string)
+    session_timeout_minutes = optional(number)
+    subject_key             = optional(string)
+  })
+  default = {
+    enabled                 = false
+    idp_entity_id           = null
+    idp_metadata_content    = null
+    roles_key               = null
+    session_timeout_minutes = null
+    subject_key             = null
+  }
+}
