@@ -156,10 +156,6 @@ resource "aws_opensearch_domain" "this" {
           master_user_arn = var.use_iam_arn_as_master_user ? var.master_user_arn : null
         }
       }
-     fine_grained_access_control {
-      enabled = true
-      master_user_arn = var.use_iam_arn_as_master_user ? var.master_user_arn : null
-    }
       
     }
   }
