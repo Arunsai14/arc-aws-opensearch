@@ -42,7 +42,7 @@ module "opensearch" {
   subnet_ids        = var.subnet_ids
   enable_vpc_options = true
   enable_encrypt_at_rest = true
-  uto_software_update_enabled = true
+  auto_software_update_enabled = true
 
   advanced_security_enabled = true
   # access_policies     = var.access_policy             
