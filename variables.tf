@@ -378,3 +378,15 @@ variable "saml_options" {
     subject_key             = null
   }
 }
+
+variable "use_iam_arn_as_master_user" {
+  description = "Set to true to use IAM ARN as the master user, false to create a master user."
+  type        = bool
+  default     = false
+}
+
+variable "master_user_arn" {
+  description = "The ARN of the IAM role for fine-grained access control. Required if use_iam_arn_as_master_user is true."
+  type        = string
+  default     = ""  # Optional: default empty
+}

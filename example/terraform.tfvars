@@ -7,11 +7,14 @@ vpc_id               = "vpc-024aff0fdd1a1d6fe"
 subnet_ids           = ["subnet-0559fb2ec2711b6ae", "subnet-0ecaddef65763a35f"]
 allowed_cidr_blocks  = ["172.29.107.0/24"]
 
-
+anonymous_auth_enabled = true
 # EBS settings (optional)
 ebs_enabled     = true
 volume_type     = "gp2"
 volume_size     = 20
+
+master_user_name                    = "admin"
+master_user_password                = "Password123!"
 
 # Access policy as a Heredoc block
 # access_policy = <<POLICY

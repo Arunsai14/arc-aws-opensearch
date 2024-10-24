@@ -139,7 +139,55 @@ resource "aws_opensearch_domain" "this" {
     cloudwatch_log_group_arn = aws_cloudwatch_log_group.this.arn
   }
 
-  ######## Advanced security options #######
+
+To add Fine-Grained Access Control (FGAC) to your existing Terraform configuration for an OpenSearch domain, you need to ensure that:
+
+Encryption at rest is enabled.
+Advanced Security options are set up correctly, which includes the internal user database, Cognito, or SAML integration for access management.
+Master User options are configured, and the configuration should allow either creating a new master user or using an IAM ARN for access control.
+Here’s an updated configuration that integrates Fine-Grained Access Control into your existing setup:
+
+hcl
+Copy code
+provider "aws" {
+  region = var.region
+}
+
+data "aws_caller_identity" "current" {}
+
+resource "aws_security_group" "opensearch_sg" {
+  count       = var.enable_vpc_options ? 1 : 0
+  description = "Security group for OpenSearch Domain"
+  vpc_id      = var.vpc_id
+
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = var.allowed_cidr_blocks
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = var.tags
+}
+
+resource "aws_opensearch_domain" "this" {
+  domain_name    = var.domain_name
+  engine_version = var.engine_version
+
+  ######## Encryption at Rest #######
+  encrypt_at_rest {
+    enabled    = true  # Encryption required for Fine-Grained Access Control
+    kms_key_id = var.kms_key_id != "" ? var.kms_key_id : null
+  }
+
+  ######## Advanced Security Options (FGAC) #######
   dynamic "advanced_security_options" {
     for_each = var.advanced_security_enabled ? [1] : []
     content {
@@ -147,10 +195,16 @@ resource "aws_opensearch_domain" "this" {
       anonymous_auth_enabled         = var.anonymous_auth_enabled
       internal_user_database_enabled = var.internal_user_database_enabled
 
-      master_user_options {
-        master_user_name     = var.master_user_name
-        master_user_password = var.master_user_password
+      # Conditionally set master user options or IAM ARN
+      dynamic "master_user_options" {
+        for_each = var.use_iam_arn_as_master_user ? [] : [1]
+        content {
+          master_user_name     = var.master_user_name
+          master_user_password = var.master_user_password
+        }
       }
+
+      master_user_arn = var.use_iam_arn_as_master_user ? var.master_user_arn : null
     }
   }
 
