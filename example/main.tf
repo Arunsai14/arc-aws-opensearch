@@ -50,8 +50,8 @@ module "opensearch" {
   auto_tune_cron_expression   = "cron(0 1 * * ? *)"
   auto_tune_duration_value    = 1
   auto_tune_duration_unit     = "HOURS"
-  auto_tune_start_at          = "2024-10-24T01:00:00Z"
-  
+  auto_tune_start_at          = "2024-10-27T01:00:00Z"
+
   dedicated_master_enabled = true
   dedicated_master_type  = "m5.large.search"
   dedicated_master_count = 3
