@@ -41,7 +41,7 @@ module "opensearch" {
   vpc_id            = var.vpc_id
   subnet_ids        = var.subnet_ids
   enable_vpc_options = true
-#   access_policy     = var.access_policy             
+  access_policies     = var.access_policy             
   allowed_cidr_blocks = var.allowed_cidr_blocks 
 
   enable_zone_awareness = true

@@ -108,7 +108,8 @@ resource "aws_opensearch_domain" "this" {
   }
 
   # Access policies
-  access_policies = aws_cloudwatch_log_resource_policy.this.policy_document
+  access_policies = var.access_policies
+  # access_policies = aws_cloudwatch_log_resource_policy.this.policy_document
 
   ######## Encryption options #######
    dynamic "encrypt_at_rest" {
