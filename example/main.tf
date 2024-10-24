@@ -41,6 +41,8 @@ module "opensearch" {
   vpc_id            = var.vpc_id
   subnet_ids        = var.subnet_ids
   enable_vpc_options = true
+  enable_encrypt_at_rest = true
+
   advanced_security_enabled = true
   # access_policies     = var.access_policy             
   allowed_cidr_blocks = var.allowed_cidr_blocks 
