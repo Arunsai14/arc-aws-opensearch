@@ -1,6 +1,6 @@
 region               = "us-east-2"
 domain_name          = "arc-opensearch-domain"
-engine_version       = "OpenSearch_1.0" 
+engine_version       = "OpenSearch 2.15" 
 instance_type        = "m4.large.search" 
 instance_count       = 2                   
 vpc_id               = "vpc-024aff0fdd1a1d6fe"
