@@ -5,7 +5,7 @@ provider "aws" {
 data "aws_caller_identity" "current" {}
 
 resource "aws_security_group" "opensearch_sg" {
-  count = var.enable_vpc_options ? 1 : 0
+  count       = var.enable_vpc_options ? 1 : 0
   description = "Security group for OpenSearch Domain"
   vpc_id      = var.vpc_id
 
@@ -68,7 +68,7 @@ resource "aws_opensearch_domain" "this" {
     warm_type                  = var.use_ultrawarm ? var.warm_type : null
     warm_count                 = var.use_ultrawarm ? var.warm_count : null
 
-      dynamic "zone_awareness_config" {
+    dynamic "zone_awareness_config" {
       for_each = var.enable_zone_awareness ? [1] : []
       content {
         availability_zone_count = var.availability_zone_count
@@ -86,13 +86,13 @@ resource "aws_opensearch_domain" "this" {
   }
 
   ######## VPC Options #######
- dynamic "vpc_options" {
-  for_each = var.enable_vpc_options ? [1] : []
-  content {
-    subnet_ids         = var.subnet_ids
-    security_group_ids = [aws_security_group.opensearch_sg[0].id]
+  dynamic "vpc_options" {
+    for_each = var.enable_vpc_options ? [1] : []
+    content {
+      subnet_ids         = var.subnet_ids
+      security_group_ids = [aws_security_group.opensearch_sg[0].id]
+    }
   }
-}
 
   ######## Advanced options #######
   advanced_options = {
@@ -107,18 +107,15 @@ resource "aws_opensearch_domain" "this" {
     }
   }
 
-  # Access policies
-  # access_policies = var.access_policies
-  # access_policies = aws_cloudwatch_log_resource_policy.this.policy_document
-
   ######## Encryption options #######
-   dynamic "encrypt_at_rest" {
+  dynamic "encrypt_at_rest" {
     for_each = var.enable_encrypt_at_rest ? [1] : []
     content {
       enabled    = var.encrypt_at_rest_enabled
       kms_key_id = var.kms_key_id != "" ? var.kms_key_id : null
     }
   }
+
   ######## Node-to-node encryption options #######
   node_to_node_encryption {
     enabled = var.node_to_node_encryption_enabled
@@ -145,7 +142,6 @@ resource "aws_opensearch_domain" "this" {
   ######## Advanced security options #######
   dynamic "advanced_security_options" {
     for_each = var.advanced_security_enabled ? [1] : []
-
     content {
       enabled                        = true
       anonymous_auth_enabled         = var.anonymous_auth_enabled
@@ -158,24 +154,6 @@ resource "aws_opensearch_domain" "this" {
     }
   }
 
-    ######## SAML Options #######
-resource "aws_opensearch_domain_saml_options" "this" {
-  domain_name = aws_opensearch_domain.this.domain_name
-
-  dynamic "saml_options" {
-    for_each = var.saml_options.enabled ? [1] : []
-
-    content {
-      idp {
-        entity_id        = var.saml_options.idp_entity_id
-        metadata_content = var.saml_options.idp_metadata_content
-      }
-      roles_key               = var.saml_options.roles_key
-      session_timeout_minutes = var.saml_options.session_timeout_minutes
-      subject_key             = var.saml_options.subject_key
-    }
-  }
-
   ######## Auto-Tune options #######
   dynamic "auto_tune_options" {
     for_each = var.enable_auto_tune ? [1] : []
@@ -184,7 +162,6 @@ resource "aws_opensearch_domain_saml_options" "this" {
 
       dynamic "maintenance_schedule" {
         for_each = var.enable_auto_tune ? [1] : [] 
-
         content {
           cron_expression_for_recurrence = var.auto_tune_cron_expression
           duration {
@@ -222,17 +199,29 @@ resource "aws_opensearch_domain_saml_options" "this" {
     }
   }
 
-######## Software update options #######
+  ######## Software update options #######
   software_update_options {
     auto_software_update_enabled = var.auto_software_update_enabled
   }
 
-  # ######## Cold storage options #######
-  # cold_storage_options {
-  #   enabled = true 
-  #   # retention_period = var.cold_storage_retention_period
-  # }
-
   ######## Tags #######
   tags = var.tags
+}
+
+######## SAML Options #######
+resource "aws_opensearch_domain_saml_options" "this" {
+  domain_name = aws_opensearch_domain.this.domain_name
+
+  dynamic "saml_options" {
+    for_each = var.saml_options.enabled ? [1] : []
+    content {
+      idp {
+        entity_id        = var.saml_options.idp_entity_id
+        metadata_content = var.saml_options.idp_metadata_content
+      }
+      roles_key               = var.saml_options.roles_key
+      session_timeout_minutes = var.saml_options.session_timeout_minutes
+      subject_key             = var.saml_options.subject_key
+    }
+  }
 }
