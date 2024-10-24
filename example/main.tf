@@ -45,7 +45,7 @@ module "opensearch" {
   auto_software_update_enabled = true
   enable_domain_endpoint_options = true
   dedicated_master_enabled = true
-  dedicated_master_type  = "m4.large.search"
+  dedicated_master_type  = "m5.large.search"
   dedicated_master_count = 3
   # use_iam_arn_as_master_user =
   master_user_name                    = "admin"
