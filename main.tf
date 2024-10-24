@@ -132,6 +132,9 @@ resource "aws_opensearch_domain" "this" {
     }
   }
 
+  ###### access_policies #######
+  access_policies = var.access_policies
+
   ######## Log publishing options #######
   log_publishing_options {
     log_type                 = var.log_type

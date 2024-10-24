@@ -16,21 +16,21 @@ volume_size     = 20
 master_user_name                    = "admin"
 master_user_password                = "Password123!"
 
-# Access policy as a Heredoc block
-# access_policy = <<POLICY
-# {
-#   "Version": "2012-10-17",
-#   "Statement": [
-#     {
-#       "Effect": "Allow",
-#       "Principal": {
-#         "AWS": "*"
-#       },
-#       "Action": "es:*",
-#       "Resource": "arn:aws:es:us-east-2:804295906245:domain/arc-opensearch-domain/*"
-#     }
-#   ]
-# }
-# POLICY
+Access policy as a Heredoc block
+access_policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": "es:*",
+      "Resource": "arn:aws:es:us-east-2:804295906245:domain/arc-opensearch-domain/*"
+    }
+  ]
+}
+POLICY
 
 access_policy = null

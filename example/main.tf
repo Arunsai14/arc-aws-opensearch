@@ -49,7 +49,7 @@ module "opensearch" {
 master_user_password                = "Password123!"
 
   advanced_security_enabled = true
-  # access_policies     = var.access_policy             
+  access_policies     = var.access_policy             
   allowed_cidr_blocks = var.allowed_cidr_blocks 
 
   enable_zone_awareness = true

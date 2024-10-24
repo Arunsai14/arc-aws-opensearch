@@ -180,10 +180,10 @@ variable "log_type" {
   default     = "INDEX_SLOW_LOGS"
 }
 
-# variable "access_policies" {
-#   description = "Access policy for the OpenSearch domain"
-#   type        = string
-# }
+variable "access_policies" {
+  description = "Access policy for the OpenSearch domain"
+  type        = string
+}
 
 variable "advanced_security_enabled" {
   description = "Enable advanced security options (fine-grained access control)"
