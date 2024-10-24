@@ -17,7 +17,7 @@ iops            = null
 throughput      = null
 
 
-access_policy = <<POLICY
+access_policy = [ <<POLICY
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -32,3 +32,4 @@ access_policy = <<POLICY
   ]
 }
 POLICY
+]
