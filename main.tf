@@ -233,6 +233,4 @@ resource "aws_opensearch_domain_saml_options" "this" {
       subject_key             = var.saml_options.subject_key
     }
   }
-  ######## Tags #######
-  tags = var.tags
 }
