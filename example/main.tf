@@ -44,6 +44,14 @@ module "opensearch" {
   enable_encrypt_at_rest = true
   auto_software_update_enabled = true
   enable_domain_endpoint_options = true
+
+  enable_auto_tune = true
+  auto_tune_desired_state     = "ENABLED"
+  auto_tune_cron_expression   = "cron(0 1 * * ? *)"
+  auto_tune_duration_value    = 1
+  auto_tune_duration_unit     = "HOURS"
+  auto_tune_start_at          = "2024-10-24T01:00:00Z"
+  
   dedicated_master_enabled = true
   dedicated_master_type  = "m5.large.search"
   dedicated_master_count = 3
