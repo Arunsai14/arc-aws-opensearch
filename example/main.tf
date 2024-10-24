@@ -43,7 +43,7 @@ module "opensearch" {
   enable_vpc_options = true
   enable_encrypt_at_rest = true
   auto_software_update_enabled = true
-  domain_endpoint_options = true
+  enable_domain_endpoint_options = true
   # use_iam_arn_as_master_user =
   master_user_name                    = "admin"
 master_user_password                = "Password123!"
