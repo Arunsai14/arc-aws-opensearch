@@ -44,7 +44,7 @@ module "opensearch" {
   enable_encrypt_at_rest = true
   auto_software_update_enabled = true
   enable_domain_endpoint_options = true
-  dedicated master nodes = true
+  dedicated_master_enabled = true
   dedicated_master_type  = "m4.large.search"
   dedicated_master_count = 1
   # use_iam_arn_as_master_user =
