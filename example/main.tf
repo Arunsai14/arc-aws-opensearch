@@ -46,7 +46,7 @@ module "opensearch" {
   enable_domain_endpoint_options = true
   dedicated_master_enabled = true
   dedicated_master_type  = "m4.large.search"
-  dedicated_master_count = 1
+  dedicated_master_count = 3
   # use_iam_arn_as_master_user =
   master_user_name                    = "admin"
 master_user_password                = "Password123!"
