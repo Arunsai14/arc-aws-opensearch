@@ -90,7 +90,7 @@ resource "aws_opensearch_domain" "this" {
   for_each = var.enable_vpc_options ? [1] : []
   content {
     subnet_ids         = var.subnet_ids
-    security_group_ids = [aws_security_group.opensearch_sg[count.index].id]
+    security_group_ids = [aws_security_group.opensearch_sg[0].id]
   }
 }
 
