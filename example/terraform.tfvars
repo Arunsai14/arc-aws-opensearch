@@ -7,7 +7,6 @@ vpc_id               = "vpc-024aff0fdd1a1d6fe"
 subnet_ids           = ["subnet-0559fb2ec2711b6ae", "subnet-0ecaddef65763a35f"]
 allowed_cidr_blocks  = ["172.29.107.0/24"]
 
-enable_zone_awareness = true
 
 # EBS settings (optional)
 ebs_enabled     = true
