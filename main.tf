@@ -27,8 +27,8 @@ resource "aws_security_group" "opensearch_sg" {
 }
 
 resource "aws_cloudwatch_log_group" "this" {
-  name              = "arc-example-log-group"
-  retention_in_days = 7
+  name              = var.log_group_name
+  retention_in_days = var.retention_in_days
 }
 
 resource "aws_cloudwatch_log_resource_policy" "this" {
@@ -150,7 +150,7 @@ resource "aws_opensearch_domain" "this" {
       anonymous_auth_enabled         = var.anonymous_auth_enabled
       internal_user_database_enabled = var.internal_user_database_enabled
 
-      # Conditionally set master user options or IAM ARN
+      ######### master user options or IAM ARN ########
       dynamic "master_user_options" {
         for_each = var.use_iam_arn_as_master_user ? [] : [1]
         content {
@@ -233,4 +233,6 @@ resource "aws_opensearch_domain_saml_options" "this" {
       subject_key             = var.saml_options.subject_key
     }
   }
+  ######## Tags #######
+  tags = var.tags
 }

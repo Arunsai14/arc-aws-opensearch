@@ -63,6 +63,18 @@ variable "warm_type" {
   default     = "ultrawarm1.medium.search"
 }
 
+variable "log_group_name" {
+  description = "The name of the CloudWatch Log Group"
+  type        = string
+  default     = "arc-example-log-group"
+}
+
+variable "retention_in_days" {
+  description = "The number of days to retain log events in the log group"
+  type        = number
+  default     = 7
+}
+
 variable "warm_count" {
   description = "Number of UltraWarm instances"
   type        = number
