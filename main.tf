@@ -140,15 +140,6 @@ resource "aws_opensearch_domain" "this" {
   }
 
 
-To add Fine-Grained Access Control (FGAC) to your existing Terraform configuration for an OpenSearch domain, you need to ensure that:
-
-Encryption at rest is enabled.
-Advanced Security options are set up correctly, which includes the internal user database, Cognito, or SAML integration for access management.
-Master User options are configured, and the configuration should allow either creating a new master user or using an IAM ARN for access control.
-Here’s an updated configuration that integrates Fine-Grained Access Control into your existing setup:
-
-hcl
-Copy code
 provider "aws" {
   region = var.region
 }
