@@ -139,45 +139,6 @@ resource "aws_opensearch_domain" "this" {
     cloudwatch_log_group_arn = aws_cloudwatch_log_group.this.arn
   }
 
-
-provider "aws" {
-  region = var.region
-}
-
-data "aws_caller_identity" "current" {}
-
-resource "aws_security_group" "opensearch_sg" {
-  count       = var.enable_vpc_options ? 1 : 0
-  description = "Security group for OpenSearch Domain"
-  vpc_id      = var.vpc_id
-
-  ingress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = var.allowed_cidr_blocks
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = var.tags
-}
-
-resource "aws_opensearch_domain" "this" {
-  domain_name    = var.domain_name
-  engine_version = var.engine_version
-
-  ######## Encryption at Rest #######
-  encrypt_at_rest {
-    enabled    = true  # Encryption required for Fine-Grained Access Control
-    kms_key_id = var.kms_key_id != "" ? var.kms_key_id : null
-  }
-
   ######## Advanced Security Options (FGAC) #######
   dynamic "advanced_security_options" {
     for_each = var.advanced_security_enabled ? [1] : []
