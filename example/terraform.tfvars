@@ -16,7 +16,7 @@ volume_size     = 20
 master_user_name                    = "admin"
 master_user_password                = "Password123!"
 
-Access policy as a Heredoc block
+# Access policy as a Heredoc block
 access_policy = <<POLICY
 {
   "Version": "2012-10-17",
