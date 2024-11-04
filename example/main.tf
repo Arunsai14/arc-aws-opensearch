@@ -64,7 +64,7 @@ module "opensearch" {
   master_user_name                    = "admin"
   # master_user_password                = "Password123!"
 
-  # advanced_security_enabled = false
+  advanced_security_enabled = true
   access_policies     = var.access_policy             
   # allowed_cidr_blocks = var.allowed_cidr_blocks 
 
