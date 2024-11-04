@@ -121,11 +121,6 @@ resource "aws_opensearch_domain" "this" {
     }
   }
 
-  # ######## Advanced options #######
-  # advanced_options = {
-  #    "rest.action.multi.allow_explicit_index" = false
-  # }
-
   ######## Snapshot options #######
   dynamic "snapshot_options" {
     for_each = var.enable_snapshot_options ? [1] : []
