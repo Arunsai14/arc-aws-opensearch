@@ -46,7 +46,7 @@ module "opensearch" {
   # egress_rules  = var.egress_rules
 
 
-  enable_encrypt_at_rest = false
+  enable_encrypt_at_rest = true
   auto_software_update_enabled = false
   enable_domain_endpoint_options = false
 
