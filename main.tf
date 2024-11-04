@@ -2,8 +2,7 @@ provider "aws" {
   region = var.region
 }
 
-data "aws_caller_identity" "current" {}
-
+######## OpenSearch Security Group Options #######
 resource "aws_security_group" "opensearch_sg" {
   count       = var.enable_vpc_options ? 1 : 0
   name        = var.security_group_name
@@ -32,11 +31,13 @@ resource "aws_security_group" "opensearch_sg" {
   tags = var.tags
 }
 
+######## CloudWatch Log Group Options #######
 resource "aws_cloudwatch_log_group" "this" {
   name              = var.log_group_name
   retention_in_days = var.retention_in_days
 }
 
+######## CloudWatch Log Resource Policy Options #######
 resource "aws_cloudwatch_log_resource_policy" "this" {
   policy_name = "opensearch-log-group-policy"
 
@@ -58,6 +59,9 @@ resource "aws_cloudwatch_log_resource_policy" "this" {
   })
 }
 
+##############################################
+######## OpenSearch Domain Options ###########
+##############################################
 resource "aws_opensearch_domain" "this" {
   domain_name    = var.domain_name
   engine_version = var.engine_version
@@ -142,12 +146,6 @@ resource "aws_opensearch_domain" "this" {
   access_policies = var.access_policies
 
   ######## Log publishing options #######
-  # log_publishing_options {
-  #   log_type                 = var.log_type
-  #   enabled                  = var.log_publishing_enabled
-  #   cloudwatch_log_group_arn = aws_cloudwatch_log_group.this.arn
-  # }
-
     dynamic "log_publishing_options" {
     for_each = var.log_types
     content {
@@ -156,6 +154,21 @@ resource "aws_opensearch_domain" "this" {
       cloudwatch_log_group_arn = aws_cloudwatch_log_group.this.arn
     }
   }
+
+ ######### Generate a random password #########
+resource "random_password" "master_user_password" {
+  length           = 32
+  special          = true
+  override_special = "_%@"
+}
+
+######### Store the generated password in ssm #########
+resource "aws_ssm_parameter" "master_user_password" {
+  name      = "/opensearch/${var.domain_name}/master_user_password"
+  type      = "SecureString"
+  value     = random_password.master_user_password.result
+  overwrite = true
+}
 
   ######## Advanced Security Options #######
   dynamic "advanced_security_options" {
@@ -170,14 +183,13 @@ resource "aws_opensearch_domain" "this" {
         for_each = var.use_iam_arn_as_master_user ? [] : [1]
         content {
           master_user_name     = var.master_user_name
-          master_user_password = var.master_user_password
+          master_user_password = aws_ssm_parameter.master_user_password.value
           master_user_arn = var.use_iam_arn_as_master_user ? var.master_user_arn : null
         }
       }
       
     }
   }
-
   ######## Auto-Tune options #######
   dynamic "auto_tune_options" {
     for_each = var.enable_auto_tune ? [1] : []

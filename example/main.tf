@@ -38,30 +38,33 @@ module "opensearch" {
   engine_version    = var.engine_version
   instance_type     = var.instance_type
   instance_count    = var.instance_count
-  vpc_id            = var.vpc_id
-  subnet_ids        = var.subnet_ids
+  enable_vpc_options = false
+
+  # vpc_id            = var.vpc_id
+  # subnet_ids        = var.subnet_ids
+  # ingress_rules = var.ingress_rules
+  # egress_rules  = var.egress_rules
+
   enable_vpc_options = true
   enable_encrypt_at_rest = true
   auto_software_update_enabled = true
   enable_domain_endpoint_options = true
 
-  enable_auto_tune = false
-  auto_tune_desired_state     = "ENABLED"
-  auto_tune_cron_expression   = "cron(0 1 * * ? *)"
-  auto_tune_duration_value    = 1
-  auto_tune_duration_unit     = "HOURS"
-  auto_tune_start_at          = "2024-11-04T01:00:00Z"
+  # enable_auto_tune = false
+  # auto_tune_desired_state     = "ENABLED"
+  # auto_tune_cron_expression   = "cron(0 1 * * ? *)"
+  # auto_tune_duration_value    = 1
+  # auto_tune_duration_unit     = "HOURS"
+  # auto_tune_start_at          = "2024-11-04T01:00:00Z"
 
-  ingress_rules = var.ingress_rules
-  egress_rules  = var.egress_rules
 
   dedicated_master_enabled = true
   dedicated_master_type  = "m5.large.search"
   dedicated_master_count = 3
   master_user_name                    = "admin"
-  master_user_password                = "Password123!"
+  # master_user_password                = "Password123!"
 
-  advanced_security_enabled = true
+  advanced_security_enabled = false
   access_policies     = var.access_policy             
   allowed_cidr_blocks = var.allowed_cidr_blocks 
 
