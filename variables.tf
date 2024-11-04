@@ -114,11 +114,13 @@ variable "throughput" {
 variable "vpc_id" {
   description = "ID of the VPC for OpenSearch domain"
   type        = string
+  default     = null
 }
 
 variable "subnet_ids" {
   description = "List of subnet IDs for the OpenSearch domain"
   type        = list(string)
+  default     = []
 }
 
 variable "allowed_cidr_blocks" {
@@ -405,6 +407,7 @@ variable "ingress_rules" {
     protocol    = string
     cidr_blocks = list(string)
   }))
+  default     = []
 }
 
 variable "egress_rules" {
@@ -415,6 +418,7 @@ variable "egress_rules" {
     protocol    = string
     cidr_blocks = list(string)
   }))
+  default     = []
 }
 
 variable "security_group_name" {
