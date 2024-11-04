@@ -48,7 +48,7 @@ module "opensearch" {
 
   enable_encrypt_at_rest = true
   auto_software_update_enabled = false
-  enable_domain_endpoint_options = false
+  enable_domain_endpoint_options = true
 
   # enable_auto_tune = false
   # auto_tune_desired_state     = "ENABLED"
