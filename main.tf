@@ -6,23 +6,29 @@ data "aws_caller_identity" "current" {}
 
 resource "aws_security_group" "opensearch_sg" {
   count       = var.enable_vpc_options ? 1 : 0
-  description = "Security group for OpenSearch Domain"
+  name        = var.security_group_name
+  description = "Security group for the OpenSearch Domain"
   vpc_id      = var.vpc_id
 
-  ingress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = var.allowed_cidr_blocks
+  dynamic "ingress" {
+    for_each = var.ingress_rules
+    content {
+      from_port   = ingress.value.from_port
+      to_port     = ingress.value.to_port
+      protocol    = ingress.value.protocol
+      cidr_blocks = ingress.value.cidr_blocks
+    }
   }
 
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+  dynamic "egress" {
+    for_each = var.egress_rules
+    content {
+      from_port   = egress.value.from_port
+      to_port     = egress.value.to_port
+      protocol    = egress.value.protocol
+      cidr_blocks = egress.value.cidr_blocks
+    }
   }
-
   tags = var.tags
 }
 
@@ -96,7 +102,7 @@ resource "aws_opensearch_domain" "this" {
 
   ######## Advanced options #######
   advanced_options = {
-    "rest.action.multi.allow_explicit_index" = "false"
+     "rest.action.multi.allow_explicit_index" = var.rest_action_multi_allow_explicit_index
   }
 
   ######## Snapshot options #######

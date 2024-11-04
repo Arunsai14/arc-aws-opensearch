@@ -364,12 +364,6 @@ variable "auto_software_update_enabled" {
   default     = false
 }
 
-# variable "off_peak_window_enabled" {
-#   description = "Enable Off Peak window options for OpenSearch"
-#   type        = bool
-#   default     = false
-# }
-
 # SAML Options
 variable "saml_options" {
   description = "Configuration block for SAML options in the OpenSearch domain."
@@ -400,5 +394,37 @@ variable "use_iam_arn_as_master_user" {
 variable "master_user_arn" {
   description = "The ARN of the IAM role for fine-grained access control. Required if use_iam_arn_as_master_user is true."
   type        = string
-  default     = ""  # Optional: default empty
+  default     = "" 
+}
+
+variable "ingress_rules" {
+  description = "A list of ingress rules for the security group."
+  type = list(object({
+    from_port   = number
+    to_port     = number
+    protocol    = string
+    cidr_blocks = list(string)
+  }))
+}
+
+variable "egress_rules" {
+  description = "A list of egress rules for the security group."
+  type = list(object({
+    from_port   = number
+    to_port     = number
+    protocol    = string
+    cidr_blocks = list(string)
+  }))
+}
+
+variable "security_group_name" {
+  description = "Name for the security group"
+  type        = string
+  default     = ""
+}
+
+variable "rest_action_multi_allow_explicit_index" {
+  description = "Setting to control whether to allow explicit index usage in multi-document actions"
+  type        = string
+  default     = "false"
 }

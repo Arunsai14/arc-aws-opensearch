@@ -24,19 +24,19 @@ variable "domain_name" {
 variable "engine_version" {
   description = "OpenSearch or Elasticsearch engine version"
   type        = string
-  default     = "OpenSearch_1.0"  # Change as needed
+  default     = "OpenSearch_1.0" 
 }
 
 variable "instance_type" {
   description = "Instance type for the OpenSearch domain"
   type        = string
-  default     = "m4.large.search"  # Change as needed
+  default     = "m4.large.search" 
 }
 
 variable "instance_count" {
   description = "Number of instances in the cluster"
   type        = number
-  default     = 2  # Change as needed
+  default     = 2 
 }
 
 variable "vpc_id" {

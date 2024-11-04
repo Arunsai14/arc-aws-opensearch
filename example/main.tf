@@ -55,9 +55,8 @@ module "opensearch" {
   dedicated_master_enabled = true
   dedicated_master_type  = "m5.large.search"
   dedicated_master_count = 3
-  # use_iam_arn_as_master_user =
   master_user_name                    = "admin"
-master_user_password                = "Password123!"
+  master_user_password                = "Password123!"
 
   advanced_security_enabled = true
   access_policies     = var.access_policy             
