@@ -45,7 +45,7 @@ module "opensearch" {
   # ingress_rules = var.ingress_rules
   # egress_rules  = var.egress_rules
 
-  enable_vpc_options = true
+
   enable_encrypt_at_rest = true
   auto_software_update_enabled = true
   enable_domain_endpoint_options = true
