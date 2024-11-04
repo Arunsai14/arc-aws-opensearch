@@ -59,6 +59,21 @@ resource "aws_cloudwatch_log_resource_policy" "this" {
   })
 }
 
+ ######### Generate a random password #########
+resource "random_password" "master_user_password" {
+  length           = 32
+  special          = true
+  override_special = "_%@"
+}
+
+######### Store the generated password in ssm #########
+resource "aws_ssm_parameter" "master_user_password" {
+  name      = "/opensearch/${var.domain_name}/master_user_password"
+  type      = "SecureString"
+  value     = random_password.master_user_password.result
+  overwrite = true
+}
+
 ##############################################
 ######## OpenSearch Domain Options ###########
 ##############################################
@@ -154,21 +169,6 @@ resource "aws_opensearch_domain" "this" {
       cloudwatch_log_group_arn = aws_cloudwatch_log_group.this.arn
     }
   }
-
- ######### Generate a random password #########
-resource "random_password" "master_user_password" {
-  length           = 32
-  special          = true
-  override_special = "_%@"
-}
-
-######### Store the generated password in ssm #########
-resource "aws_ssm_parameter" "master_user_password" {
-  name      = "/opensearch/${var.domain_name}/master_user_password"
-  type      = "SecureString"
-  value     = random_password.master_user_password.result
-  overwrite = true
-}
 
   ######## Advanced Security Options #######
   dynamic "advanced_security_options" {
