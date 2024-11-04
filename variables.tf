@@ -123,11 +123,6 @@ variable "subnet_ids" {
   default     = []
 }
 
-variable "allowed_cidr_blocks" {
-  description = "List of allowed CIDR blocks for ingress"
-  type        = list(string)
-}
-
 variable "encrypt_at_rest_enabled" {
   description = "Enable encryption at rest"
   type        = bool

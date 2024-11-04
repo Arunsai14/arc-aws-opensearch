@@ -44,7 +44,7 @@ module "opensearch" {
   # subnet_ids        = var.subnet_ids
   # ingress_rules = var.ingress_rules
   # egress_rules  = var.egress_rules
-encrypt_at_rest_enabled = false
+
 
   enable_encrypt_at_rest = false
   auto_software_update_enabled = false
@@ -58,23 +58,23 @@ encrypt_at_rest_enabled = false
   # auto_tune_start_at          = "2024-11-04T01:00:00Z"
 
 
-  dedicated_master_enabled = true
+  dedicated_master_enabled = false
   dedicated_master_type  = "m5.large.search"
   dedicated_master_count = 3
   master_user_name                    = "admin"
   # master_user_password                = "Password123!"
 
-  advanced_security_enabled = true
+  # advanced_security_enabled = false
   access_policies     = var.access_policy             
-  allowed_cidr_blocks = var.allowed_cidr_blocks 
+  # allowed_cidr_blocks = var.allowed_cidr_blocks 
 
-  enable_zone_awareness = true
-  availability_zone_count = 2
-   ebs_enabled  = var.ebs_enabled
-    volume_type  = var.volume_type
-    volume_size  = var.volume_size
-    iops         = var.iops
-    throughput   = var.throughput
+  enable_zone_awareness = false
+  # availability_zone_count = 2
+  #  ebs_enabled  = var.ebs_enabled
+  #   volume_type  = var.volume_type
+  #   volume_size  = var.volume_size
+  #   iops         = var.iops
+  #   throughput   = var.throughput
 
 tags = merge(
     module.terraform-aws-arc-tags.tags
