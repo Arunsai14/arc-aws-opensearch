@@ -45,7 +45,7 @@ module "opensearch" {
   auto_software_update_enabled = true
   enable_domain_endpoint_options = true
 
-  enable_auto_tune = true
+  enable_auto_tune = false
   auto_tune_desired_state     = "ENABLED"
   auto_tune_cron_expression   = "cron(0 1 * * ? *)"
   auto_tune_duration_value    = 1
