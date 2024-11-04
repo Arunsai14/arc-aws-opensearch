@@ -63,7 +63,10 @@ resource "aws_cloudwatch_log_resource_policy" "this" {
 resource "random_password" "master_user_password" {
   length           = 32
   special          = true
-  override_special = "_%@"
+  upper            = true
+  lower            = true
+  number           = true
+  override_special = "!@#$%^&*()-_=+[]{}"
 }
 
 ######### Store the generated password in ssm #########
