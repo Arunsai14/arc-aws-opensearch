@@ -37,26 +37,26 @@ resource "aws_cloudwatch_log_group" "this" {
   retention_in_days = var.retention_in_days
 }
 
-# resource "aws_cloudwatch_log_resource_policy" "this" {
-#   policy_name = "opensearch-log-group-policy"
+resource "aws_cloudwatch_log_resource_policy" "this" {
+  policy_name = "opensearch-log-group-policy"
 
-#   policy_document = jsonencode({
-#     Version = "2012-10-17",
-#     Statement = [
-#       {
-#         Effect = "Allow",
-#         Principal = {
-#           Service = "opensearchservice.amazonaws.com"
-#         },
-#         Action = [
-#           "logs:CreateLogStream",
-#           "logs:PutLogEvents"
-#         ],
-#         Resource = "arn:aws:logs:${var.region}:${data.aws_caller_identity.current.account_id}:log-group:${aws_cloudwatch_log_group.this.name}:*"
-#       }
-#     ]
-#   })
-# }
+  policy_document = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Principal = {
+          Service = "opensearchservice.amazonaws.com"
+        },
+        Action = [
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ],
+        Resource = "arn:aws:logs:${var.region}:${data.aws_caller_identity.current.account_id}:log-group:${aws_cloudwatch_log_group.this.name}:*"
+      }
+    ]
+  })
+}
 
 resource "aws_opensearch_domain" "this" {
   domain_name    = var.domain_name
