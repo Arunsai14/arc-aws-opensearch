@@ -52,6 +52,9 @@ module "opensearch" {
   auto_tune_duration_unit     = "HOURS"
   auto_tune_start_at          = "2024-10-27T01:00:00Z"
 
+  ingress_rules = var.ingress_rules
+  egress_rules  = var.egress_rules
+
   dedicated_master_enabled = true
   dedicated_master_type  = "m5.large.search"
   dedicated_master_count = 3
