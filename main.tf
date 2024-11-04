@@ -65,7 +65,7 @@ resource "random_password" "master_user_password" {
   special          = true
   upper            = true
   lower            = true
-  number           = true
+  numeric           = true
   override_special = "!@#$%^&*()-_=+[]{}"
 }
 
