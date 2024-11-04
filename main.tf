@@ -123,7 +123,7 @@ resource "aws_opensearch_domain" "this" {
 
   ######## Advanced options #######
   advanced_options = {
-     "rest.action.multi.allow_explicit_index" = var.rest_action_multi_allow_explicit_index
+     "rest.action.multi.allow_explicit_index" = false
   }
 
   ######## Snapshot options #######
