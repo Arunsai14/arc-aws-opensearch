@@ -44,7 +44,7 @@ module "opensearch" {
   # subnet_ids        = var.subnet_ids
   # ingress_rules = var.ingress_rules
   # egress_rules  = var.egress_rules
-
+encrypt_at_rest_enabled = false
 
   enable_encrypt_at_rest = false
   auto_software_update_enabled = false
