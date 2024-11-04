@@ -50,7 +50,7 @@ module "opensearch" {
   auto_tune_cron_expression   = "cron(0 1 * * ? *)"
   auto_tune_duration_value    = 1
   auto_tune_duration_unit     = "HOURS"
-  auto_tune_start_at          = "2024-10-27T01:00:00Z"
+  auto_tune_start_at          = "2024-11-04T01:00:00Z"
 
   ingress_rules = var.ingress_rules
   egress_rules  = var.egress_rules
