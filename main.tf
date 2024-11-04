@@ -71,7 +71,6 @@ resource "aws_ssm_parameter" "master_user_password" {
   name      = "/opensearch/${var.domain_name}/master_user_password"
   type      = "SecureString"
   value     = random_password.master_user_password.result
-  overwrite = true
 }
 
 ##############################################
