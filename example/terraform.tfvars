@@ -9,7 +9,7 @@ allowed_cidr_blocks  = ["172.29.107.0/24"]
 
 anonymous_auth_enabled = true
 # EBS settings (optional)
-ebs_enabled     = true
+ebs_enabled     = false
 volume_type     = "gp2"
 volume_size     = 20
 

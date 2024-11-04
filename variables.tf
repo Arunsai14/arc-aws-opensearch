@@ -186,10 +186,16 @@ variable "snapshot_start_hour" {
   default     = 0
 }
 
-variable "log_type" {
-  description = "Type of log to publish to CloudWatch (Type of OpenSearch log. Valid values: INDEX_SLOW_LOGS, SEARCH_SLOW_LOGS, ES_APPLICATION_LOGS, AUDIT_LOGS.)"
-  type        = string
-  default     = "INDEX_SLOW_LOGS"
+# variable "log_type" {
+#   description = "Type of log to publish to CloudWatch (Type of OpenSearch log. Valid values: INDEX_SLOW_LOGS, SEARCH_SLOW_LOGS, ES_APPLICATION_LOGS, AUDIT_LOGS.)"
+#   type        = string
+#   default     = "INDEX_SLOW_LOGS"
+# }
+
+variable "log_types" {
+  description = "List of log types to publish to CloudWatch (Valid values: INDEX_SLOW_LOGS, SEARCH_SLOW_LOGS, ES_APPLICATION_LOGS, AUDIT_LOGS)"
+  type        = list(string)
+  default     = ["INDEX_SLOW_LOGS", "SEARCH_SLOW_LOGS", "ES_APPLICATION_LOGS", "AUDIT_LOGS"]
 }
 
 variable "access_policies" {
