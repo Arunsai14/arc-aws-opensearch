@@ -48,7 +48,10 @@ module "opensearch" {
 
   enable_encrypt_at_rest = true
   auto_software_update_enabled = false
-  enable_domain_endpoint_options = true
+  enable_domain_endpoint_options = false
+
+    advanced_security_enabled = false
+  access_policies     = var.access_policy  
 
   # enable_auto_tune = false
   # auto_tune_desired_state     = "ENABLED"
@@ -64,8 +67,7 @@ module "opensearch" {
   # master_user_name                    = "admin"
   # master_user_password                = "Password123!"
 
-  advanced_security_enabled = false
-  access_policies     = var.access_policy             
+           
   # allowed_cidr_blocks = var.allowed_cidr_blocks 
 
   # enable_zone_awareness = false
