@@ -134,6 +134,7 @@ resource "aws_ssm_parameter" "master_user_password" {
 ######### IAM role for OpenSearch Service Cognito Access ########
 resource "aws_iam_role" "opensearch_cognito_role" {
   name = "opensearch-cognito-role"
+
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
@@ -151,6 +152,45 @@ resource "aws_iam_role" "opensearch_cognito_role" {
       }
     ]
   })
+
+  inline_policy {
+    name = "OpenSearchCognitoPolicy"
+    policy = jsonencode({
+      Version = "2012-10-17",
+      Statement = [
+        {
+          Effect = "Allow",
+          Action = [
+            "cognito-idp:DescribeUserPool",
+            "cognito-idp:CreateUserPoolClient",
+            "cognito-idp:DeleteUserPoolClient",
+            "cognito-idp:DescribeUserPoolClient",
+            "cognito-idp:AdminInitiateAuth",
+            "cognito-idp:AdminUserGlobalSignOut",
+            "cognito-idp:ListUserPoolClients",
+            "cognito-identity:DescribeIdentityPool",
+            "cognito-identity:UpdateIdentityPool",
+            "cognito-identity:SetIdentityPoolRoles",
+            "cognito-identity:GetIdentityPoolRoles"
+          ],
+          Resource = [
+            "arn:aws:cognito-identity:${var.region}:${data.aws_caller_identity.current.account_id}:identitypool/${var.cognito_identity_pool_id}",
+            "arn:aws:cognito-idp:${var.region}:${data.aws_caller_identity.current.account_id}:userpool/${var.cognito_user_pool_id}"
+          ]
+        },
+        {
+          Effect = "Allow",
+          Action = "iam:PassRole",
+          Resource = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${aws_iam_role.opensearch_cognito_role.name}",
+          Condition = {
+            StringLike = {
+              "iam:PassedToService" = "cognito-identity.amazonaws.com"
+            }
+          }
+        }
+      ]
+    })
+  }
 }
 
 ######## Attach policy to the role ########
