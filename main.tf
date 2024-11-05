@@ -31,10 +31,63 @@ resource "aws_security_group" "opensearch_sg" {
   tags = var.tags
 }
 
+resource "aws_kms_key" "op_log_group_key" {
+  description             = "KMS key for CloudWatch log group encryption"
+  deletion_window_in_days = 30
+  enable_key_rotation     = true
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Sid       = "EnableRootPermissions",
+        Effect    = "Allow",
+        Principal = { AWS = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root" },
+        Action    = [
+          "kms:Create*",
+          "kms:Describe*",
+          "kms:Enable*",
+          "kms:List*",
+          "kms:Put*",
+          "kms:Update*",
+          "kms:Revoke*",
+          "kms:Disable*",
+          "kms:Get*",
+          "kms:Delete*",
+          "kms:ScheduleKeyDeletion",
+          "kms:CancelKeyDeletion"
+        ],
+        Resource  = "*"
+      },
+      {
+        Sid       = "AllowCloudWatchLogs",
+        Effect    = "Allow",
+        Principal = { Service = "logs.${var.region}.amazonaws.com" },
+        Action    = [
+          "kms:Encrypt",
+          "kms:Decrypt",
+          "kms:ReEncrypt*",
+          "kms:GenerateDataKey*",
+          "kms:DescribeKey"
+        ],
+        Resource  = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_kms_alias" "op_log_group_key_alias" {
+  name          = "alias/cloudwatch-os-log-group-key"
+  target_key_id = aws_kms_key.op_log_group_key.id
+}
+
 ######## CloudWatch Log Group Options #######
 resource "aws_cloudwatch_log_group" "this" {
   name              = var.log_group_name
   retention_in_days = var.retention_in_days
+  kms_key_id        = aws_kms_key.op_log_group_key.arn
+
+  depends_on = [aws_kms_key.op_log_group_key]
 }
 
 ######## CloudWatch Log Resource Policy Options #######

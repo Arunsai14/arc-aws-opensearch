@@ -35,24 +35,36 @@ module "opensearch" {
   source            = "../" 
   region            = var.region
   domain_name       = var.domain_name
-  engine_version    = var.engine_version
-  instance_type     = var.instance_type
-  instance_count    = var.instance_count
-  enable_vpc_options = true
+  # engine_version    = var.engine_version
+  # instance_type     = var.instance_type
+  # instance_count    = var.instance_count
+  # enable_vpc_options = true
 
-  vpc_id            = var.vpc_id
-  subnet_ids        = var.subnet_ids
-  ingress_rules = var.ingress_rules
-  egress_rules  = var.egress_rules
+  engine_version                 = var.engine_version
+  instance_type                  = var.instance_type
+  instance_count                 = var.instance_count
+  enable_vpc_options             = false
+  enable_encrypt_at_rest         = true
+  auto_software_update_enabled   = false
+  enable_domain_endpoint_options = true
+  advanced_security_enabled      = true
+  # access_policies                = local.access_policy
+  enable_zone_awareness          = false
+  # tags                           = module.tags.tags
+
+  # vpc_id            = var.vpc_id
+  # subnet_ids        = var.subnet_ids
+  # ingress_rules = var.ingress_rules
+  # egress_rules  = var.egress_rules
 
 
-  enable_encrypt_at_rest = false
+  # enable_encrypt_at_rest = false
 
-  enable_domain_endpoint_options = false
+  # enable_domain_endpoint_options = false
 
-  enable_off_peak_window_options = true
-  auto_software_update_enabled   = true
-    advanced_security_enabled = false
+  # enable_off_peak_window_options = true
+  # auto_software_update_enabled   = true
+  #   advanced_security_enabled = false
   access_policies     = var.access_policy  
 
   # enable_auto_tune = false
