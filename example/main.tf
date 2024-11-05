@@ -58,7 +58,7 @@ module "opensearch" {
   # enable_off_peak_window_options = true
   # auto_software_update_enabled   = true
   #   advanced_security_enabled = false
-  access_policies     = var.access_policy  
+  # access_policies     = var.access_policy  
 
   # enable_auto_tune = false
   # auto_tune_desired_state     = "ENABLED"

@@ -204,6 +204,7 @@ variable "log_types" {
 variable "access_policies" {
   description = "Access policy for the OpenSearch domain"
   type        = string
+  default     = null
 }
 
 variable "advanced_security_enabled" {
