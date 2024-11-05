@@ -43,6 +43,9 @@ module "opensearch" {
   subnet_ids         = var.subnet_ids
   ingress_rules      = var.ingress_rules
   egress_rules       = var.egress_rules
+  enable_cognito_options = true
+  cognito_identity_pool_id = "us-east-2:e4d2566f-6f93-4a2d-885a-5963d8730f58"
+  cognito_user_pool_id = "us-east-2_PWWrC23P1"
 
   # access_policies                = local.access_policy
   # enable_zone_awareness          = false

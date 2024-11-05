@@ -131,6 +131,35 @@ resource "aws_ssm_parameter" "master_user_password" {
   value     = random_password.master_user_password[0].result
 }
 
+######### IAM role for OpenSearch Service Cognito Access ########
+resource "aws_iam_role" "opensearch_cognito_role" {
+  name = "opensearch-cognito-role"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Action    = "sts:AssumeRoleWithWebIdentity",
+        Effect    = "Allow",
+        Principal = {
+          Federated = "cognito-identity.amazonaws.com"
+        },
+        Condition = {
+          StringEquals = {
+            "cognito-identity.amazonaws.com:aud" = var.cognito_identity_pool_id
+          }
+        }
+      }
+    ]
+  })
+}
+
+######## Attach policy to the role ########
+resource "aws_iam_policy_attachment" "opensearch_cognito_policy_attachment" {
+  name       = "opensearch-cognito-policy-attachment"
+  roles      = [aws_iam_role.opensearch_cognito_role.name]
+  policy_arn = "arn:aws:iam::aws:policy/AmazonOpenSearchServiceCognitoAccess"
+}
+
 ##############################################
 ######## OpenSearch Domain Options ###########
 ##############################################
