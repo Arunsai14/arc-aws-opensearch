@@ -132,73 +132,28 @@ resource "aws_ssm_parameter" "master_user_password" {
 }
 
 ######### IAM role for OpenSearch Service Cognito Access ########
-# resource "aws_iam_role" "opensearch_cognito_role" {
-#   name = var.cognito_role_name
+resource "aws_iam_role" "opensearch_cognito_role" {
+  name = "opensearch-cognito-role"
 
-#   assume_role_policy = jsonencode({
-#     Version = "2012-10-17",
-#     Statement = [
-#       {
-#         Action    = "sts:AssumeRoleWithWebIdentity",
-#         Effect    = "Allow",
-#         Principal = {
-#           Federated = "cognito-identity.amazonaws.com"
-#         },
-#         Condition = {
-#           StringEquals = {
-#             "cognito-identity.amazonaws.com:aud" = var.cognito_identity_pool_id
-#           }
-#         }
-#       }
-#     ]
-#   })
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect    = "Allow",
+        Principal = {
+          Service = "es.amazonaws.com"  # This is OpenSearch Service
+        },
+        Action    = "sts:AssumeRole"
+      }
+    ]
+  })
+}
 
-#   inline_policy {
-#     name = "OpenSearchCognitoPolicy"
-#     policy = jsonencode({
-#       Version = "2012-10-17",
-#       Statement = [
-#         {
-#           Effect = "Allow",
-#           Action = [
-#             "cognito-idp:DescribeUserPool",
-#             "cognito-idp:CreateUserPoolClient",
-#             "cognito-idp:DeleteUserPoolClient",
-#             "cognito-idp:DescribeUserPoolClient",
-#             "cognito-idp:AdminInitiateAuth",
-#             "cognito-idp:AdminUserGlobalSignOut",
-#             "cognito-idp:ListUserPoolClients",
-#             "cognito-identity:DescribeIdentityPool",
-#             "cognito-identity:UpdateIdentityPool",
-#             "cognito-identity:SetIdentityPoolRoles",
-#             "cognito-identity:GetIdentityPoolRoles"
-#           ],
-#           Resource = [
-#             "arn:aws:cognito-identity:${var.region}:${data.aws_caller_identity.current.account_id}:identitypool/${var.cognito_identity_pool_id}",
-#             "arn:aws:cognito-idp:${var.region}:${data.aws_caller_identity.current.account_id}:userpool/${var.cognito_user_pool_id}"
-#           ]
-#         },
-#         {
-#           Effect = "Allow",
-#           Action = "iam:PassRole",
-#           Resource = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.cognito_role_name}",
-#           Condition = {
-#             StringLike = {
-#               "iam:PassedToService" = "cognito-identity.amazonaws.com"
-#             }
-#           }
-#         }
-#       ]
-#     })
-#   }
-# }
-
-# ######## Attach policy to the role ########
-# resource "aws_iam_policy_attachment" "opensearch_cognito_policy_attachment" {
-#   name       = "opensearch-cognito-policy-attachment"
-#   roles      = [aws_iam_role.opensearch_cognito_role.name]
-#   policy_arn = "arn:aws:iam::aws:policy/AmazonOpenSearchServiceCognitoAccess"
-# }
+# Attach the AmazonOpenSearchServiceCognitoAccess managed policy to the role
+resource "aws_iam_role_policy_attachment" "opensearch_cognito_policy_attachment" {
+  role       = aws_iam_role.opensearch_cognito_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonOpenSearchServiceCognitoAccess"
+}
 
 ##############################################
 ######## OpenSearch Domain Options ###########
@@ -337,7 +292,7 @@ resource "aws_opensearch_domain" "this" {
     content {
       enabled           = true
       identity_pool_id  = var.cognito_identity_pool_id
-      role_arn          = var.cognito_role_arn
+      role_arn          = aws_iam_role.opensearch_cognito_role.arn
       user_pool_id      = var.cognito_user_pool_id
     }
   }
