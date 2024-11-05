@@ -50,6 +50,8 @@ module "opensearch" {
   auto_software_update_enabled = false
   enable_domain_endpoint_options = false
 
+  enable_off_peak_window_options = true
+  auto_software_update_enabled   = true
     advanced_security_enabled = false
   access_policies     = var.access_policy  
 

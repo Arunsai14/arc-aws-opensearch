@@ -4,6 +4,18 @@ variable "region" {
   default     = "us-east-1"
 }
 
+variable "project_name" {
+  type        = string
+  default     = "sourcefuse"
+  description = "Project name"
+}
+
+variable "environment" {
+  type        = string
+  default     = "dev"
+  description = "ID element. Usually used for region e.g. 'uw2', 'us-west-2', OR role 'prod', 'staging', 'dev', 'UAT'"
+}
+
 variable "domain_name" {
   description = "Name of the OpenSearch domain"
   type        = string
@@ -215,14 +227,8 @@ variable "internal_user_database_enabled" {
 variable "master_user_name" {
   description = "Master user name for OpenSearch"
   type        = string
-  default     = ""
+  default     = "admin"
 }
-
-# variable "master_user_password" {
-#   description = "Master user password for OpenSearch"
-#   type        = string
-#   default     = ""
-# }
 
 variable "enable_auto_tune" {
   description = "Enable Auto-Tune for the domain"
