@@ -47,7 +47,7 @@ module "opensearch" {
 
 
   enable_encrypt_at_rest = false
-  auto_software_update_enabled = false
+
   enable_domain_endpoint_options = false
 
   enable_off_peak_window_options = true
