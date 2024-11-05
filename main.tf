@@ -75,7 +75,7 @@ resource "aws_ssm_parameter" "master_user_password" {
   count     = var.advanced_security_enabled && !var.use_iam_arn_as_master_user ? 1 : 0
   name      = "/opensearch/${var.domain_name}/master_user_password"
   type      = "SecureString"
-  value     = random_password.master_user_password.result
+  value     = random_password.master_user_password[0].result
 }
 
 ##############################################

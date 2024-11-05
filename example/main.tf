@@ -80,7 +80,6 @@ module "opensearch" {
   #   iops         = var.iops
   #   throughput   = var.throughput
 
-  saml_options = true
 
 tags = merge(
     module.terraform-aws-arc-tags.tags
