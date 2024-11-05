@@ -435,8 +435,8 @@ variable "rest_action_multi_allow_explicit_index" {
   default     = "false"
 }
 
-variable "cognito_role_name" {
-  description = "Name of the IAM role for OpenSearch Cognito integration"
+variable "opensearch_cognito_role_name" {
+  description = "Name of the OpenSearch Cognito IAM role"
   type        = string
   default     = "opensearch-cognito-role"
 }

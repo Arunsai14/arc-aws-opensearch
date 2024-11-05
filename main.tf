@@ -112,7 +112,7 @@ resource "aws_cloudwatch_log_resource_policy" "this" {
   })
 }
 
- ######### Generate a random password #########
+######### Generate a random password #########
 resource "random_password" "master_user_password" {
   count     = var.advanced_security_enabled && !var.use_iam_arn_as_master_user ? 1 : 0
   length           = 32
@@ -133,7 +133,8 @@ resource "aws_ssm_parameter" "master_user_password" {
 
 ######### IAM role for OpenSearch Service Cognito Access ########
 resource "aws_iam_role" "opensearch_cognito_role" {
-  name = "opensearch-cognito-role"
+  count = var.enable_cognito_options ? 1 : 0
+  name = var.opensearch_cognito_role_name
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -141,7 +142,7 @@ resource "aws_iam_role" "opensearch_cognito_role" {
       {
         Effect    = "Allow",
         Principal = {
-          Service = "es.amazonaws.com"  # This is OpenSearch Service
+          Service = "es.amazonaws.com"
         },
         Action    = "sts:AssumeRole"
       }
@@ -151,7 +152,8 @@ resource "aws_iam_role" "opensearch_cognito_role" {
 
 # Attach the AmazonOpenSearchServiceCognitoAccess managed policy to the role
 resource "aws_iam_role_policy_attachment" "opensearch_cognito_policy_attachment" {
-  role       = aws_iam_role.opensearch_cognito_role.name
+  count     = var.enable_cognito_options ? 1 : 0
+  role       = aws_iam_role.opensearch_cognito_role[0].name
   policy_arn = "arn:aws:iam::aws:policy/AmazonOpenSearchServiceCognitoAccess"
 }
 
@@ -292,7 +294,7 @@ resource "aws_opensearch_domain" "this" {
     content {
       enabled           = true
       identity_pool_id  = var.cognito_identity_pool_id
-      role_arn          = aws_iam_role.opensearch_cognito_role.arn
+      role_arn          = aws_iam_role.opensearch_cognito_role[0].arn
       user_pool_id      = var.cognito_user_pool_id
     }
   }
