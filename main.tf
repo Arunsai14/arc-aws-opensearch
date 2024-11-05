@@ -133,7 +133,7 @@ resource "aws_ssm_parameter" "master_user_password" {
 
 ######### IAM role for OpenSearch Service Cognito Access ########
 resource "aws_iam_role" "opensearch_cognito_role" {
-  name = "opensearch-cognito-role"
+  name = var.cognito_role_name
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -181,7 +181,7 @@ resource "aws_iam_role" "opensearch_cognito_role" {
         {
           Effect = "Allow",
           Action = "iam:PassRole",
-          Resource = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${aws_iam_role.opensearch_cognito_role.name}",
+          Resource = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.cognito_role_name}",
           Condition = {
             StringLike = {
               "iam:PassedToService" = "cognito-identity.amazonaws.com"
