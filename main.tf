@@ -297,7 +297,7 @@ resource "aws_opensearch_domain" "this" {
     content {
       enabled           = true
       identity_pool_id  = var.cognito_identity_pool_id
-      role_arn          = var.cognito_role_arn
+      role_arn          = aws_iam_role.opensearch_cognito_role.arn
       user_pool_id      = var.cognito_user_pool_id
     }
   }
