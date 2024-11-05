@@ -61,6 +61,7 @@ resource "aws_cloudwatch_log_resource_policy" "this" {
 
  ######### Generate a random password #########
 resource "random_password" "master_user_password" {
+  count     = var.advanced_security_enabled && !var.use_iam_arn_as_master_user ? 1 : 0
   length           = 32
   special          = true
   upper            = true
@@ -71,6 +72,7 @@ resource "random_password" "master_user_password" {
 
 ######### Store the generated password in ssm #########
 resource "aws_ssm_parameter" "master_user_password" {
+  count     = var.advanced_security_enabled && !var.use_iam_arn_as_master_user ? 1 : 0
   name      = "/opensearch/${var.domain_name}/master_user_password"
   type      = "SecureString"
   value     = random_password.master_user_password.result
