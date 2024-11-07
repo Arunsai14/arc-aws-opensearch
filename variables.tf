@@ -380,7 +380,7 @@ variable "saml_options" {
     subject_key             = optional(string)
   })
   default = {
-    enabled                 = false
+    enabled                 = true
     idp_entity_id           = null
     idp_metadata_content    = null
     roles_key               = null
