@@ -324,18 +324,16 @@ resource "aws_opensearch_domain" "this" {
 
 ######## SAML Options #######
 resource "aws_opensearch_domain_saml_options" "this" {
+  count       = var.saml_options.enabled ? 1 : 0
   domain_name = aws_opensearch_domain.this.domain_name
 
-  dynamic "saml_options" {
-    for_each = var.saml_options.enabled ? [1] : []
-    content {
-      idp {
-        entity_id        = var.saml_options.idp_entity_id
-        metadata_content = var.saml_options.idp_metadata_content
-      }
-      roles_key               = var.saml_options.roles_key
-      session_timeout_minutes = var.saml_options.session_timeout_minutes
-      subject_key             = var.saml_options.subject_key
+  saml_options {
+    idp {
+      entity_id        = var.saml_options.idp_entity_id
+      metadata_content = var.saml_options.idp_metadata_content
     }
+    roles_key               = var.saml_options.roles_key
+    session_timeout_minutes = var.saml_options.session_timeout_minutes
+    subject_key             = var.saml_options.subject_key
   }
 }
