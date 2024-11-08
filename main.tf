@@ -342,8 +342,6 @@ resource "aws_opensearch_domain_saml_options" "this" {
 ########   OpenSearch Serverless   ###########
 ##############################################
 
-# Create a security policy for encryption (as required by OpenSearch Serverless)
-# modules/opensearch_serverless/main.tf
 
 resource "aws_opensearchserverless_security_policy" "example" {
   name   = var.encryption_policy_name
@@ -359,21 +357,21 @@ resource "aws_opensearchserverless_security_policy" "example" {
   })
 }
 
-resource "aws_opensearchserverless_security_policy" "vpc_security" {
-  name   = var.vpc_security_policy_name
-  type   = "network"
-  policy = jsonencode({
-    "Rules" = [
-      {
-        "Resource"    = [var.collection_resource],
-        "ResourceType" = "collection"
-      }
-    ],
-    "VPC" = {
-      "VpcId" = var.vpc_id
-    }
-  })
-}
+# resource "aws_opensearchserverless_security_policy" "vpc_security" {
+#   name   = var.vpc_security_policy_name
+#   type   = "network"
+#   policy = jsonencode({
+#     "Rules" = [
+#       {
+#         "Resource"    = [var.collection_resource],
+#         "ResourceType" = "collection"
+#       }
+#     ],
+#     "VPC" = {
+#       "VpcId" = var.vpc_id
+#     }
+#   })
+# }
 
 resource "aws_opensearchserverless_security_policy" "public_security" {
   name   = var.public_security_policy_name
@@ -398,7 +396,6 @@ resource "aws_opensearchserverless_collection" "example" {
 
   depends_on = [
     aws_opensearchserverless_security_policy.example,
-    aws_opensearchserverless_security_policy.vpc_security,
     aws_opensearchserverless_security_policy.public_security
   ]
 }
