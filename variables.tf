@@ -19,7 +19,7 @@ variable "environment" {
 variable "domain_name" {
   description = "Name of the OpenSearch domain"
   type        = string
-   default    = "openSearch"
+   default    = "opensearch"
 }
 
 variable "engine_version" {
