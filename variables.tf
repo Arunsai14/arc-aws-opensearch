@@ -19,6 +19,7 @@ variable "environment" {
 variable "domain_name" {
   description = "Name of the OpenSearch domain"
   type        = string
+   default    = "OpenSearch"
 }
 
 variable "engine_version" {
@@ -447,11 +448,6 @@ variable "opensearch_cognito_role_name" {
 
 variable "collection_resource" {
   description = "The resource name to associate with the security policies."
-  type        = string
-}
-
-variable "serverless_domain_name" {
-  description = "The domain name for the OpenSearch Serverless collection."
   type        = string
 }
 
