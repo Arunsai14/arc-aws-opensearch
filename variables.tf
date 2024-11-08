@@ -450,6 +450,11 @@ variable "collection_resource" {
   type        = string
 }
 
+variable "serverless_domain_name" {
+  description = "The domain name for the OpenSearch Serverless collection."
+  type        = string
+}
+
 variable "encryption_policy_name" {
   description = "Name for the encryption security policy."
   type        = string

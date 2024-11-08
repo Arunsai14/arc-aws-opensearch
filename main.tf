@@ -391,6 +391,7 @@ resource "aws_opensearchserverless_security_policy" "public_security" {
 
 resource "aws_opensearchserverless_collection" "example" {
   name             = var.collection_name
+  domain_name      = var.serverless_domain_name
   description      = var.collection_description
   standby_replicas = var.standby_replicas
   tags             = var.tags
