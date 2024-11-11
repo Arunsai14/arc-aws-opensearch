@@ -55,7 +55,7 @@ module "opensearch_serverless" {
     retention  = 60
   }
 ]
-  network_policy_name = "arc_network_policy"
+  network_policy_name = "arc-network-policy"
   vpce_security_group_name = "arc_vpce_sg"
   access_policy_rules = [
   {
