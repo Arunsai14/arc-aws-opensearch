@@ -9,7 +9,7 @@ create_encryption_policy     = true
 encryption_policy_name       = "opensearch-encryption-policy"
 encryption_policy_description = "Encryption policy for OpenSearch domain"
 vpce_name                    = "vpc-test"
-vpce_security_group_ids      = ["sg-0c71f9a200077617b", "sg-0fa6b2a413e945f0a"]
+vpce_security_group_ids      = ["sg-0fa6b2a413e945f0a"]
 
 vpce_security_group_sources = [
   {
