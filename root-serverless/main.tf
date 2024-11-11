@@ -72,15 +72,15 @@ resource "aws_opensearchserverless_security_policy" "public_security" {
 
 resource "aws_opensearchserverless_security_policy" "encryption_security" {
   name = "example-encryption-policy"
-  type = "encryption"  # Use encryption type for the security policy
+  type = "encryption"  # Security policy type is encryption
 
   policy = jsonencode([{
-    "AllowFromPublic" = false  # Restrict public access
+    "AllowFromPublic" = false  # Disallow public access
     "Rules" = [
       {
-        "ResourceType" = "collection"  # Resource type is collection for OpenSearch Serverless
+        "ResourceType" = "collection"  # Resource type is collection
         "Resource"     = [
-          "collection/${var.collection_name}"  # Reference your collection with the correct pattern
+          "collection/${var.collection_name}"  # Define your collection's resource name
         ]
       }
     ]
@@ -93,7 +93,6 @@ resource "aws_opensearchserverless_collection" "example" {
   name             = var.collection_name
   description      = var.collection_description
   standby_replicas = var.standby_replicas
-  security_policy_arn = aws_opensearchserverless_security_policy.encryption_security.arn
   tags             = var.tags
   type             = var.collection_type
 
