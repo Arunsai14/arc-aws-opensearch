@@ -20,21 +20,32 @@ data "aws_route_tables" "selected" {
 
 module "opensearch_serverless" {
   source                = "../root-serverless"
-  vpc_id                = var.vpc_id
-  subnet_ids           = ["subnet-0559fb2ec2711b6ae", "subnet-0ecaddef65763a35f"]
-    ingress_rules      = var.ingress_rules
-  egress_rules       = var.egress_rules
-  network_type          = "vpc"
-  security_group_name   = "serverless-open"
-  collection_resource   = "collection/example-collection"
-  encryption_policy_name = "custom-encryption-policy"
-  collection_name       = "custom-collection"
-  collection_description = "Custom description for the OpenSearch collection"
-  standby_replicas      = "ENABLED"
-  collection_type       = "TIMESERIES"
-  route_table_ids   = data.aws_route_tables.selected.ids 
-  public_access         = true
+
+  name                         = var.name
+  description                  = var.description
+  use_standby_replicas         = var.use_standby_replicas
+  type                         = var.type
+  create_encryption_policy     = var.create_encryption_policy
+  encryption_policy_name       = var.encryption_policy_name
+  encryption_policy_description = var.encryption_policy_description
+  vpce_name                    = var.vpce_name
+  vpce_subnet_ids              = ["subnet-0559fb2ec2711b6ae", "subnet-0ecaddef65763a35f"]
+  vpce_vpc_id                  = var.vpce_vpc_id
+  vpce_security_group_ids      = var.vpce_security_group_ids
   tags = merge(
     module.terraform-aws-arc-tags.tags
   )
 }
+
+# module "opensearch_without_vpc" {
+#   source = "./opensearch_without_vpc"
+
+#   name                         = var.name
+#   description                  = var.description
+#   use_standby_replicas         = var.use_standby_replicas
+#   type                         = var.type
+#   tags                         = var.tags
+#   create_encryption_policy     = var.create_encryption_policy
+#   encryption_policy_name       = var.encryption_policy_name
+#   encryption_policy_description = var.encryption_policy_description
+# }

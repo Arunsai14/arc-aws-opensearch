@@ -1,120 +1,145 @@
-##############################################
-########   OpenSearch Serverless   ###########
-##############################################
-
-# AWS Caller Identity (to get the account ID)
-data "aws_caller_identity" "current" {}
-
-######## OpenSearch Security Group Options #######
-resource "aws_security_group" "opensearch_sg" {
-  name        = var.security_group_name
-  description = "Security group for the OpenSearch Domain"
-  vpc_id      = var.vpc_id
-
-  dynamic "ingress" {
-    for_each = var.ingress_rules
-    content {
-      from_port   = ingress.value.from_port
-      to_port     = ingress.value.to_port
-      protocol    = ingress.value.protocol
-      cidr_blocks = ingress.value.cidr_blocks
-    }
-  }
-
-  dynamic "egress" {
-    for_each = var.egress_rules
-    content {
-      from_port   = egress.value.from_port
-      to_port     = egress.value.to_port
-      protocol    = egress.value.protocol
-      cidr_blocks = egress.value.cidr_blocks
-    }
-  }
-  tags = var.tags
+resource "aws_opensearchserverless_collection" "this" {
+  name             = var.name
+  description      = var.description
+  standby_replicas = var.use_standby_replicas ? "ENABLED" : "DISABLED"
+  type             = var.type
+  tags             = var.tags
+  depends_on       = [aws_opensearchserverless_security_policy.encryption]
 }
 
-# VPC Endpoint for OpenSearch
-# VPC Endpoint for OpenSearch (Interface type)
-resource "aws_vpc_endpoint" "opensearch" {
-  vpc_id            = var.vpc_id  
-  service_name      = "com.amazonaws.${var.region}.es" 
-  security_group_ids = [aws_security_group.opensearch_sg.id]
-  
-  # Specify subnets for Interface type VPC endpoint
-  subnet_ids = var.subnet_ids
-  
-  # Interface type endpoint
-  vpc_endpoint_type = "Interface"
-  
-  # Optionally enable private DNS
-  private_dns_enabled = true
-}
-
-
-# Security Policy for VPC Access
-resource "aws_opensearchserverless_security_policy" "vpc_security" {
-  count  = var.network_type == "vpc" ? 1 : 0  # Only create this if network_type is 'vpc'
-  name   = "example-vpc-access-policy"
-  type   = "network"
-
-  policy = jsonencode([{
-    "SourceVPCEs" = [aws_vpc_endpoint.opensearch.id]  # Use the VPC ID instead of the endpoint ID
-    "SourceServices" = ["es.amazonaws.com"]  # Specify the service for VPC access
-    "Rules" = [
+resource "aws_opensearchserverless_security_policy" "encryption" {
+  count       = var.create_encryption_policy ? 1 : 0
+  name        = var.encryption_policy_name
+  type        = "encryption"
+  description = var.encryption_policy_description
+  policy      = jsonencode({
+    Rules = [
       {
-        "ResourceType" = "collection"
-        "Resource"     = ["collection/${var.collection_name}"]
-      }
-    ]
-  }])
-}
-
-# Security Policy for Public Access (if public network type is selected)
-resource "aws_opensearchserverless_security_policy" "public_security" {
-  count = var.network_type == "public" ? 1 : 0  # Only create if network_type is 'public'
-  name  = "example-public-access-policy"
-  type  = "network"
-
-  policy = jsonencode([{
-    "AllowFromPublic" = true
-    "Rules" = [
-      {
-        "ResourceType" = "collection"
-        "Resource"     = [
-          "collection/${var.collection_name}"
-        ]
-      }
-    ]
-  }])
-}
-
-# Encryption Policy for OpenSearch Collection
-resource "aws_opensearchserverless_security_policy" "encryption_security" {
-  name   = "example-encryption-policy"
-  type   = "encryption"
-
-  policy = jsonencode({
-    "AWSOwnedKey" = true
-    "Rules" = [
-      {
-        "ResourceType" = "collection"
-        "Resource"     = ["collection/${var.collection_name}"]
+        Resource     = ["collection/${var.name}"]
+        ResourceType = "collection"
       }
     ]
   })
 }
 
-# OpenSearch Serverless Collection
-resource "aws_opensearchserverless_collection" "example" {
-  name             = var.collection_name
-  description      = var.collection_description
-  standby_replicas = var.standby_replicas
-  tags             = var.tags
-  type             = var.collection_type
+resource "aws_opensearchserverless_security_policy" "network" {
+  count       = var.create_network_policy ? 1 : 0
+  name        = var.network_policy_name
+  type        = "network"
+  description = var.network_policy_description
+  policy      = jsonencode({
+    AllPublic = [{
+      Description = "Public access to collection and Dashboards endpoint for ${var.name}",
+      Rules = [
+        {
+          ResourceType = "collection",
+          Resource     = ["collection/${var.name}"]
+        },
+        {
+          ResourceType = "dashboard",
+          Resource     = ["collection/${var.name}"]
+        }
+      ],
+      AllowFromPublic = true
+    }],
+    AllPrivate = [{
+      Description = "VPC access to collection and Dashboards endpoint for ${var.name}",
+      Rules = [
+        {
+          ResourceType = "collection",
+          Resource     = ["collection/${var.name}"]
+        },
+        {
+          ResourceType = "dashboard",
+          Resource     = ["collection/${var.name}"]
+        }
+      ],
+      AllowFromPublic = false,
+      SourceVPCEs     = var.create_network_policy && var.network_policy_type != "AllPublic" ? [aws_opensearchserverless_vpc_endpoint.this[0].id] : null
+    }]
+  })
+}
 
-  depends_on = [
-    aws_opensearchserverless_security_policy.public_security,
-    aws_opensearchserverless_security_policy.vpc_security,
-    aws_opensearchserverless_security_policy.encryption_security
-  ]
+resource "aws_opensearchserverless_vpc_endpoint" "this" {
+  count              = var.create_network_policy && var.network_policy_type != "AllPublic" ? 1 : 0
+  name               = var.vpce_name
+  subnet_ids         = var.vpce_subnet_ids
+  vpc_id             = var.vpce_vpc_id
+  security_group_ids = var.vpce_security_group_ids
+}
+
+resource "aws_opensearchserverless_access_policy" "this" {
+  count       = var.create_access_policy ? 1 : 0
+  name        = var.access_policy_name
+  type        = "data"
+  description = var.access_policy_description
+  policy      = jsonencode([for rule in var.access_policy_rules : {
+    Rules = [{
+      ResourceType = rule.type
+      Resource     = rule.type == "collection" ? ["collection/${var.name}"] : [for index in rule.indexes : "index/${var.name}/${index}"]
+      Permission   = [for permission in rule.permissions : {
+        All           = "aoss:*",
+        Create        = "aoss:CreateCollectionItems",
+        Read          = "aoss:DescribeCollectionItems",
+        Update        = "aoss:UpdateCollectionItems",
+        Delete        = "aoss:DeleteCollectionItems"
+      }[permission]]
+    }],
+    Principal = rule.principals
+  }])
+}
+
+resource "aws_opensearchserverless_lifecycle_policy" "this" {
+  count       = var.create_data_lifecycle_policy ? 1 : 0
+  name        = var.data_lifecycle_policy_name
+  type        = "retention"
+  description = var.data_lifecycle_policy_description
+  policy      = jsonencode({
+    Rules = [
+      for rule in var.data_lifecycle_policy_rules : {
+        ResourceType      = "index",
+        Resource          = [for index in rule.indexes : "index/${var.name}/${index}"],
+        MinIndexRetention = rule.retention != "Unlimited" ? rule.retention : null
+      }
+    ]
+  })
+}
+
+resource "aws_opensearchserverless_security_config" "this" {
+  count       = var.create_security_config ? 1 : 0
+  name        = var.security_config_name
+  description = var.security_config_description
+  type        = "saml"
+  saml_options {
+    metadata        = file(var.saml_metadata)
+    group_attribute = var.saml_group_attribute
+    user_attribute  = var.saml_user_attribute
+    session_timeout = var.saml_session_timeout
+  }
+}
+
+##################
+# Security Group
+##################
+resource "aws_security_group" "this" {
+  count       = var.create_network_policy && var.network_policy_type != "AllPublic" && var.vpce_create_security_group ? 1 : 0
+  name        = var.vpce_security_group_name
+  description = var.vpce_security_group_description
+  vpc_id      = var.vpce_vpc_id
+  ingress {
+    from_port        = 443
+    to_port          = 443
+    protocol         = "tcp"
+    cidr_blocks      = flatten([for item in var.vpce_security_group_sources : [for source in item.sources : source] if item.type == "IPv4"])
+    ipv6_cidr_blocks = flatten([for item in var.vpce_security_group_sources : [for source in item.sources : source] if item.type == "IPv6"])
+    prefix_list_ids  = flatten([for item in var.vpce_security_group_sources : [for source in item.sources : source] if item.type == "PrefixLists"])
+    security_groups  = flatten([for item in var.vpce_security_group_sources : [for source in item.sources : source] if item.type == "SGs"])
+    description      = "Allow Inbound HTTPS Traffic"
+  }
+  tags = merge(
+    var.tags,
+    {
+      Name : "${var.name}-sg"
+    }
+  )
 }

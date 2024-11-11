@@ -1,44 +1,59 @@
-# variables.tf
-
-variable "vpc_id" {
-  description = "VPC ID to allow network access."
+variable "name" {
+  description = "The name of the OpenSearch domain."
   type        = string
 }
 
-variable "project_name" {
+variable "description" {
+  description = "The description of the OpenSearch domain."
   type        = string
-  default     = "sourcefuse"
-  description = "Project name"
 }
 
-variable "environment" {
+variable "use_standby_replicas" {
+  description = "Flag to specify whether standby replicas are used."
+  type        = bool
+}
+
+variable "type" {
+  description = "The type of OpenSearch domain (e.g., `dedicated`, `standard`)."
   type        = string
-  default     = "dev"
-  description = "ID element. Usually used for region e.g. 'uw2', 'us-west-2', OR role 'prod', 'staging', 'dev', 'UAT'"
 }
 
-variable "region" {
-  description = "AWS region"
+variable "tags" {
+  description = "A map of key-value pairs to assign as tags."
+  type        = map(string)
+}
+
+variable "create_encryption_policy" {
+  description = "Flag to create encryption policy."
+  type        = bool
+}
+
+variable "encryption_policy_name" {
+  description = "The name of the encryption policy."
   type        = string
-  default     = "us-east-1"
 }
 
-variable "ingress_rules" {
-  description = "A list of ingress rules for the security group."
-  type = list(object({
-    from_port   = number
-    to_port     = number
-    protocol    = string
-    cidr_blocks = list(string)
-  }))
+variable "encryption_policy_description" {
+  description = "Description for the encryption policy."
+  type        = string
 }
 
-variable "egress_rules" {
-  description = "A list of egress rules for the security group."
-  type = list(object({
-    from_port   = number
-    to_port     = number
-    protocol    = string
-    cidr_blocks = list(string)
-  }))
+variable "vpce_name" {
+  description = "The name of the VPC endpoint."
+  type        = string
+}
+
+variable "vpce_subnet_ids" {
+  description = "A list of subnet IDs for the VPC endpoint."
+  type        = list(string)
+}
+
+variable "vpce_vpc_id" {
+  description = "The VPC ID to create the VPC endpoint."
+  type        = string
+}
+
+variable "vpce_security_group_ids" {
+  description = "A list of security group IDs associated with the VPC endpoint."
+  type        = list(string)
 }
