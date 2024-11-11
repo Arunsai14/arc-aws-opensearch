@@ -22,7 +22,7 @@ resource "aws_opensearchserverless_security_policy" "encryption" {
       ]
     },
     {
-      "AWSOwnedKey" = true  # Use the AWS-owned key for encryption
+      "AWSOwnedKey" = true  
     }
   ))
 }
