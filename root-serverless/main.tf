@@ -9,17 +9,20 @@ resource "aws_opensearchserverless_collection" "this" {
 
 resource "aws_opensearchserverless_security_policy" "encryption" {
   count       = var.create_encryption_policy ? 1 : 0
-  name        = var.encryption_policy_name
+  name        = coalesce(var.encryption_policy_name, "${var.name}-encryption-policy")
   type        = "encryption"
   description = var.encryption_policy_description
-  policy      = jsonencode({
+
+  policy = jsonencode({
     Rules = [
       {
-        Resource     = ["collection/${var.name}"]
+        Resource     = ["collection/${var.name}"],
         ResourceType = "collection"
       }
     ],
-    EncryptionEnabled = true
+    # Only one of these should be set based on whether a custom KMS key ARN is provided
+    AWSOwnedKey = var.encryption_policy_kms_key_arn == null ? true : null,
+    KmsARN      = var.encryption_policy_kms_key_arn != null ? var.encryption_policy_kms_key_arn : null
   })
 }
 
