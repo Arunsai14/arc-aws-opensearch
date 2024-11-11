@@ -117,7 +117,7 @@ variable "create_data_lifecycle_policy" {
 variable "data_lifecycle_policy_name" {
   description = "The name of the data lifecycle policy."
   type        = string
-  default     = "data_lifecycle_policy"
+  default     = "data-lifecycle-policy"
 }
 
 variable "data_lifecycle_policy_description" {
