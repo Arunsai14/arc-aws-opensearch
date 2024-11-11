@@ -210,20 +210,3 @@ variable "encryption_policy_kms_key_arn" {
   type        = string
   default     = null
 }
-
-# Variable declaration for encryption_policy_name (if not already declared)
-
-
-# Variable declaration for encryption_policy_description (if not already declared)
-variable "encryption_policy_description" {
-  description = "The description of the OpenSearch encryption policy."
-  type        = string
-  default     = ""
-}
-
-# Variable declaration for create_encryption_policy (if not already declared)
-variable "create_encryption_policy" {
-  description = "A boolean to decide if encryption policy should be created."
-  type        = bool
-  default     = true
-}
