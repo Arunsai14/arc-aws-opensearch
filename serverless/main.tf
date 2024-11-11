@@ -48,7 +48,7 @@ module "opensearch_serverless" {
       action     = "Retain"
       transition = "none"
     }
-  
+  ]
   network_policy_name = "arc_network_policy"
   vpce_security_group_name = "arc_vpce_sg"
   access_policy_rules    = [
