@@ -43,7 +43,7 @@ resource "aws_opensearchserverless_security_policy" "example" {
 #       "SourceServices" = ["es.amazonaws.com"]  
 #       "Rules" = [
 #         {
-#           "ResourceType" = "OpenSearchDomain" 
+#           "ResourceType" = "collection" 
 #           "Resource" = [
 #             "arn:aws:opensearchserverless:${var.region}:${data.aws_caller_identity.current.account_id}:collection/${var.collection_name}"
 #           ]
@@ -63,20 +63,12 @@ resource "aws_opensearchserverless_security_policy" "public_security" {
       {
         "ResourceType" = "collection"  # Resource type is collection for OpenSearch Serverless
         "Resource"     = [
-          "collection/${var.collection_name}"  # Reference your collection
-        ]
-      },
-      {
-        "ResourceType" = "dashboard"  # Resource type is dashboard for OpenSearch Serverless
-        "Resource"     = [
-          "dashboard/${var.collection_name}-dashboard"  # Use actual dashboard name here if available
+          "collection/${var.collection_name}"  # Reference your collection with correct pattern
         ]
       }
     ]
   }])
 }
-
-
 
 
 resource "aws_opensearchserverless_collection" "example" {
