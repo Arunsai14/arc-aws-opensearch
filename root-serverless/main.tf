@@ -35,21 +35,24 @@ resource "aws_opensearchserverless_security_policy" "example" {
 
 resource "aws_opensearchserverless_security_policy" "public_security" {
   name = "example-public-access-policy"
-  type = "network"
+  type = "network"  # Use "network" for public network access policy
 
   policy = jsonencode([
     {
-      "Rules": [
+      "AllowFromPublic" = true             
+      "SourceServices" = ["es.amazonaws.com"]  
+      "Rules" = [
         {
-          "Resource": "arn:aws:opensearchserverless:${data.aws_caller_identity.current.account_id}:collection/${var.collection_name}",
-          "Permission": "aoss:*"
+          "ResourceType" = "OpenSearchDomain" 
+          "Resource" = [
+            "arn:aws:opensearchserverless:${var.region}:${data.aws_caller_identity.current.account_id}:collection/${var.collection_name}"
+          ]
         }
-      ],
-      "Principal": "*",
-      "Effect": "Allow"
+      ]
     }
   ])
 }
+
 
 
 resource "aws_opensearchserverless_collection" "example" {
