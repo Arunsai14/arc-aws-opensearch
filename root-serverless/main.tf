@@ -58,17 +58,18 @@ resource "aws_opensearchserverless_security_policy" "public_security" {
   type = "network"  # Use "network" for public network access policy
 
   policy = jsonencode([{
-    "SourceServices" = ["es"]
+    "AllowFromPublic" = true
     "Rules" = [
       {
         "ResourceType" = "collection"  # Resource type is collection for OpenSearch Serverless
         "Resource"     = [
-          "collection/${var.collection_name}"  # Reference your collection with correct pattern
+          "collection/${var.collection_name}"  # Reference your collection with the correct pattern
         ]
       }
     ]
   }])
 }
+
 
 
 resource "aws_opensearchserverless_collection" "example" {
