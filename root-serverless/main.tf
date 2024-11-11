@@ -40,7 +40,7 @@ resource "aws_vpc_endpoint" "opensearch" {
   vpc_id            = var.vpc_id  
   service_name      = "com.amazonaws.${var.region}.es" 
   route_table_ids   = var.route_table_ids
-  security_group_ids = [aws_security_group.opensearch_sg.id]
+  security_group_ids = [aws_security_group.opensearch_sg.ids]
   
   # Optionally enable private DNS
   private_dns_enabled = true
