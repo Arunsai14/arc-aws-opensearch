@@ -58,7 +58,7 @@ resource "aws_opensearchserverless_security_policy" "public_security" {
   type = "network"  # Use "network" for public network access policy
 
   policy = jsonencode([{
-    "SourceServices" = ["es.amazonaws.com"]
+    "SourceServices" = ["es"]
     "Rules" = [
       {
         "ResourceType" = "collection"  # Resource type is collection for OpenSearch Serverless
