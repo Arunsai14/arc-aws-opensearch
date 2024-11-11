@@ -39,7 +39,7 @@ resource "aws_vpc_endpoint" "opensearch" {
   service_name      = "com.amazonaws.${var.region}.es" 
   route_table_ids   = var.route_table_ids
   security_group_ids = [aws_security_group.opensearch_sg.id]
-  
+   vpc_endpoint_type = "Interface"
   # Optionally enable private DNS
   private_dns_enabled = true
 }
@@ -51,7 +51,7 @@ resource "aws_opensearchserverless_security_policy" "vpc_security" {
   type   = "network"
 
   policy = jsonencode([{
-    "SourceVPCEs" = [var.vpc_id]  # Use the VPC ID instead of the endpoint ID
+    "SourceVPCEs" = [aws_vpc_endpoint.opensearch.id]  # Use the VPC ID instead of the endpoint ID
     "SourceServices" = ["es.amazonaws.com"]  # Specify the service for VPC access
     "Rules" = [
       {
