@@ -90,18 +90,19 @@ resource "aws_opensearchserverless_access_policy" "this" {
       {
         ResourceType = rule.type
         Resource     = rule.type == "collection" ? ["collection/${var.name}"] : [for index in rule.indexes : "index/${var.name}/${index}"]
-        Permission   = [for permission in rule.permissions : {
+        Permission   = [for permission in rule.permissions : lookup({
           All           = "aoss:*",
           Create        = "aoss:CreateCollectionItems",
           Read          = "aoss:DescribeCollectionItems",
           Update        = "aoss:UpdateCollectionItems",
           Delete        = "aoss:DeleteCollectionItems"
-        }[permission]]
+        }, permission, "unknown-permission")]
       }
     ],
     Principal = rule.principals
   }])
 }
+
 
 
 resource "aws_opensearchserverless_lifecycle_policy" "this" {
