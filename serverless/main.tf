@@ -33,6 +33,9 @@ module "opensearch_serverless" {
   vpce_subnet_ids              = ["subnet-0559fb2ec2711b6ae", "subnet-0ecaddef65763a35f"]
   vpce_vpc_id                  = var.vpce_vpc_id
   vpce_security_group_ids      = var.vpce_security_group_ids
+  data_lifecycle_policy_rules    = ["lifecycle_rule1", "lifecycle_rule2"]
+  network_policy_name = "arc_network_policy"
+  vpce_security_group_name = "arc_vpce_sg"
   tags = merge(
     module.terraform-aws-arc-tags.tags
   )

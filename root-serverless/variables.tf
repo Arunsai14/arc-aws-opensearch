@@ -55,6 +55,7 @@ variable "network_policy_name" {
 variable "network_policy_description" {
   description = "The description of the network policy."
   type        = string
+  default     = "Network policy description"
 }
 
 variable "vpce_name" {
@@ -103,6 +104,8 @@ variable "access_policy_rules" {
     permissions = list(string)
     principals  = list(string)
   }))
+
+  default = ["rule1", "rule2"]
 }
 
 variable "create_data_lifecycle_policy" {
