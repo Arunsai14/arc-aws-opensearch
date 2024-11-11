@@ -114,8 +114,3 @@ variable "egress_rules" {
   }))
   default     = []
 }
-
-variable "route_table_ids" {
-  description = "Route table IDs associated with the VPC"
-  type        = list(string)
-}
