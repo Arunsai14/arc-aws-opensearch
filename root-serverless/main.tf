@@ -35,7 +35,7 @@ resource "aws_opensearchserverless_security_policy" "example" {
 
 resource "aws_opensearchserverless_security_policy" "public_security" {
   name = "example-public-access-policy"
-  type = "data"  # or "network", depending on your use case
+  type = "network"
 
   policy = jsonencode([
     {
