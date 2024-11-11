@@ -1,3 +1,21 @@
+variable "region" {
+  description = "AWS region"
+  type        = string
+  default     = "us-east-1"  # Change as needed
+}
+
+variable "project_name" {
+  type        = string
+  default     = "sourcefuse"
+  description = "Project name"
+}
+
+variable "environment" {
+  type        = string
+  default     = "dev"
+  description = "ID element. Usually used for region e.g. 'uw2', 'us-west-2', OR role 'prod', 'staging', 'dev', 'UAT'"
+}
+
 variable "name" {
   description = "The name of the OpenSearch domain."
   type        = string
