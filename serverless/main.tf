@@ -14,6 +14,10 @@ module "terraform-aws-arc-tags" {
   }
 }
 
+data "aws_route_tables" "selected" {
+  vpc_id = var.vpc_id 
+}
+
 module "opensearch_serverless" {
   source                = "../root-serverless"
   vpc_id                = var.vpc_id
@@ -27,6 +31,7 @@ module "opensearch_serverless" {
   collection_description = "Custom description for the OpenSearch collection"
   standby_replicas      = "ENABLED"
   collection_type       = "TIMESERIES"
+  route_table_ids   = data.aws_route_tables.selected.ids 
   public_access         = true
   tags = merge(
     module.terraform-aws-arc-tags.tags
