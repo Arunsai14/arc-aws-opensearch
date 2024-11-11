@@ -203,3 +203,30 @@ variable "network_policy_type" {
   description = "The network policy type, e.g., 'AllPublic' or another specified type."
   type        = string
 }
+
+# Variable declaration for encryption_policy_kms_key_arn
+variable "encryption_policy_kms_key_arn" {
+  description = "The ARN of the KMS key to use for OpenSearch encryption. If null, AWS-owned key will be used."
+  type        = string
+  default     = null
+}
+
+# Variable declaration for encryption_policy_name (if not already declared)
+variable "encryption_policy_name" {
+  description = "The name of the OpenSearch encryption policy."
+  type        = string
+}
+
+# Variable declaration for encryption_policy_description (if not already declared)
+variable "encryption_policy_description" {
+  description = "The description of the OpenSearch encryption policy."
+  type        = string
+  default     = ""
+}
+
+# Variable declaration for create_encryption_policy (if not already declared)
+variable "create_encryption_policy" {
+  description = "A boolean to decide if encryption policy should be created."
+  type        = bool
+  default     = true
+}

@@ -34,6 +34,7 @@ module "opensearch_serverless" {
   vpce_name                    = var.vpce_name
   vpce_subnet_ids              = ["subnet-0559fb2ec2711b6ae", "subnet-0ecaddef65763a35f"]
   vpce_vpc_id                  = var.vpce_vpc_id
+  encryption_policy_name       = "arc-test"
   network_policy_type = "AllPublic"
 #   vpc_id = var.vpc_id
   vpce_security_group_ids      = var.vpce_security_group_ids
