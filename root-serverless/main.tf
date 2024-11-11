@@ -16,7 +16,7 @@ resource "aws_opensearchserverless_security_policy" "encryption" {
     {
       "Rules" = [
         {
-          "Resource"     = ["collection/${var.name}"] # local.encryption_policy_collections
+          "Resource"     = ["collection/${var.name}"]
           "ResourceType" = "collection"
         }
       ]
@@ -24,10 +24,11 @@ resource "aws_opensearchserverless_security_policy" "encryption" {
     var.encryption_policy_kms_key_arn != null ? {
       "KmsARN" = var.encryption_policy_kms_key_arn
     } : {
-      "AWSOwnedKey" = false
+      "AWSOwnedKey" = true  # Set to true to use AWS-owned key if no KMS ARN is provided
     }
   ))
 }
+
 
 # Public access policy
 resource "aws_opensearchserverless_security_policy" "public_network" {

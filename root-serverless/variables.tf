@@ -28,7 +28,7 @@ variable "tags" {
 variable "create_encryption_policy" {
   description = "Flag to determine if encryption policy should be created."
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "encryption_policy_name" {
@@ -37,8 +37,9 @@ variable "encryption_policy_name" {
 }
 
 variable "encryption_policy_description" {
-  description = "The description of the encryption policy."
+  description = "Description of the encryption policy"
   type        = string
+  default     = "Encryption policy for OpenSearch collection"
 }
 
 variable "create_network_policy" {
