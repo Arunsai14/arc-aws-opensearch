@@ -13,10 +13,9 @@ variable "use_standby_replicas" {
   type        = bool
 }
 
-
-variable "tags" {
-  description = "A map of key-value pairs to assign as tags."
-  type        = map(string)
+variable "type" {
+  description = "The type of OpenSearch domain (e.g., `dedicated`, `standard`)."
+  type        = string
 }
 
 variable "create_encryption_policy" {
