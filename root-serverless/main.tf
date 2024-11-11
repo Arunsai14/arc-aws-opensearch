@@ -8,7 +8,7 @@ resource "aws_opensearchserverless_security_policy" "vpc_security" {
   name   = "example-vpc-access-policy"
   type   = "network"
   
-  policy = jsonencode({
+  policy = jsonencode([{
     "Rules" = [
       {
         "ResourceType" = "collection"
@@ -16,28 +16,30 @@ resource "aws_opensearchserverless_security_policy" "vpc_security" {
       }
     ],
     "VPC" = {
-      "VpcId" = var.vpc_id 
+      "VpcId" = var.vpc_id  # Replace this with the actual VPC ID
     }
-  })
+  }])
 }
 
+
 resource "aws_opensearchserverless_security_policy" "public_security" {
-  count = var.network_type == "public" ? 1 : 0
-  name = "example-public-access-policy"
-  type = "network" 
+  count = var.network_type == "public" ? 1 : 0  # Only create this if network_type is 'public'
+  name  = "example-public-access-policy"
+  type  = "network"
 
   policy = jsonencode([{
     "AllowFromPublic" = true
     "Rules" = [
       {
-        "ResourceType" = "collection" 
+        "ResourceType" = "collection"
         "Resource"     = [
-          "collection/${var.collection_name}"  
+          "collection/${var.collection_name}"
         ]
       }
     ]
   }])
 }
+
 
 resource "aws_opensearchserverless_security_policy" "encryption_security" {
   name   = "example-encryption-policy"
