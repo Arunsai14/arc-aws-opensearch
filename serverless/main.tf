@@ -2,6 +2,8 @@ provider "aws" {
   region = var.region
 }
 
+data "aws_caller_identity" "current" {}
+
 module "terraform-aws-arc-tags" {
   source      = "sourcefuse/arc-tags/aws"
   version     = "1.2.5"
@@ -36,6 +38,16 @@ module "opensearch_serverless" {
   data_lifecycle_policy_rules    = ["lifecycle_rule1", "lifecycle_rule2"]
   network_policy_name = "arc_network_policy"
   vpce_security_group_name = "arc_vpce_sg"
+  access_policy_rules    = [
+    {
+      action   = "read"
+      resource = "arn:aws:opensearch:${var.region}:${data.aws_caller_identity.current.account_id}:domain/resource1"
+    },
+    {
+      action   = "write"
+      resource = "arn:aws:opensearch:${var.region}:${data.aws_caller_identity.current.account_id}:domain/resource2"
+    }
+  ]
   tags = merge(
     module.terraform-aws-arc-tags.tags
   )

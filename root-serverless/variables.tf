@@ -105,7 +105,6 @@ variable "access_policy_rules" {
     principals  = list(string)
   }))
 
-  default = ["rule1", "rule2"]
 }
 
 variable "create_data_lifecycle_policy" {
