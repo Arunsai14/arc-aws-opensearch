@@ -114,3 +114,8 @@ variable "egress_rules" {
   }))
   default     = []
 }
+
+variable "subnet_ids" {
+  description = "List of subnet IDs for the VPC endpoint"
+  type        = list(string)
+}
