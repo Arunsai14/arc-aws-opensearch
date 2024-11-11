@@ -7,19 +7,19 @@ resource "aws_opensearchserverless_security_policy" "vpc_security" {
   count  = var.network_type == "vpc" ? 1 : 0  # Only create this if network_type is 'vpc'
   name   = "example-vpc-access-policy"
   type   = "network"
-  
+
   policy = jsonencode([{
+    "SourceVPCEs" = [var.vpc_id]  # Use the correct VPC ID for SourceVPCEs
+    "SourceServices" = ["es.amazonaws.com"]  # Specify the service for VPC access
     "Rules" = [
       {
         "ResourceType" = "collection"
         "Resource"     = ["collection/${var.collection_name}"]
       }
-    ],
-    "VPC" = {
-      "VpcId" = var.vpc_id  # Replace this with the actual VPC ID
-    }
+    ]
   }])
 }
+
 
 
 resource "aws_opensearchserverless_security_policy" "public_security" {
