@@ -49,7 +49,6 @@ resource "aws_opensearchserverless_security_policy" "public_network" {
         }
       ],
       "AllowFromPublic" = true,
-      "SourceVPCEs" = [],
     }
   ])
 }
