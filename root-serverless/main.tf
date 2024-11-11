@@ -36,43 +36,38 @@ resource "aws_opensearchserverless_security_policy" "network" {
   name        = var.network_policy_name
   type        = "network"
   description = var.network_policy_description
-  policy      = jsonencode([
-    {
-      AllPublic = [{
-        Description = "Public access to collection and Dashboards endpoint for ${var.name}",
-        Rules = [
-          {
-            ResourceType = "collection",
-            Resource     = ["collection/${var.name}"]
-          },
-          {
-            ResourceType = "dashboard",
-            Resource     = ["collection/${var.name}"]
-          }
-        ],
-        AllowFromPublic = true
-      }]
-    },
-    {
-      AllPrivate = [{
-        Description = "VPC access to collection and Dashboards endpoint for ${var.name}",
-        Rules = [
-          {
-            ResourceType = "collection",
-            Resource     = ["collection/${var.name}"]
-          },
-          {
-            ResourceType = "dashboard",
-            Resource     = ["collection/${var.name}"]
-          }
-        ],
-        AllowFromPublic = false,
-        SourceVPCEs     = var.create_network_policy && var.network_policy_type != "AllPublic" ? [aws_opensearchserverless_vpc_endpoint.this[0].id] : null
-      }]
-    }
-  ])
+  policy      = jsonencode({
+    AllPublic = [{
+      Description = "Public access to collection and Dashboards endpoint for ${var.name}",
+      Rules = [
+        {
+          ResourceType = "collection",
+          Resource     = ["collection/${var.name}"]
+        },
+        {
+          ResourceType = "dashboard",
+          Resource     = ["collection/${var.name}"]
+        }
+      ],
+      AllowFromPublic = true
+    }],
+    AllPrivate = [{
+      Description = "VPC access to collection and Dashboards endpoint for ${var.name}",
+      Rules = [
+        {
+          ResourceType = "collection",
+          Resource     = ["collection/${var.name}"]
+        },
+        {
+          ResourceType = "dashboard",
+          Resource     = ["collection/${var.name}"]
+        }
+      ],
+      AllowFromPublic = false,
+      SourceVPCEs     = var.create_network_policy && var.network_policy_type != "AllPublic" ? [aws_opensearchserverless_vpc_endpoint.this[0].id] : null
+    }]
+  })
 }
-
 
 resource "aws_opensearchserverless_vpc_endpoint" "this" {
   count              = var.create_network_policy && var.network_policy_type != "AllPublic" ? 1 : 0
