@@ -15,14 +15,14 @@ variable "environment" {
   default     = "dev"
   description = "ID element. Usually used for region e.g. 'uw2', 'us-west-2', OR role 'prod', 'staging', 'dev', 'UAT'"
 }
-variable "network_policy_type" {
-  description = "The network policy type, e.g., 'AllPublic' or another specified type."
-  type        = string
-}
-variable "vpc_id" {
-  description = "The ID of the VPC"
-  type        = string
-}
+# variable "network_policy_type" {
+#   description = "The network policy type, e.g., 'AllPublic' or another specified type."
+#   type        = string
+# }
+# variable "vpc_id" {
+#   description = "The ID of the VPC"
+#   type        = string
+# }
 variable "name" {
   description = "The name of the OpenSearch domain."
   type        = string
