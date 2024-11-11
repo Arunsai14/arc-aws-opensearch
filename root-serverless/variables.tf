@@ -212,10 +212,7 @@ variable "encryption_policy_kms_key_arn" {
 }
 
 # Variable declaration for encryption_policy_name (if not already declared)
-variable "encryption_policy_name" {
-  description = "The name of the OpenSearch encryption policy."
-  type        = string
-}
+
 
 # Variable declaration for encryption_policy_description (if not already declared)
 variable "encryption_policy_description" {
