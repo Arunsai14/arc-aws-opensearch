@@ -35,6 +35,7 @@ module "opensearch_serverless" {
   vpce_subnet_ids              = ["subnet-0559fb2ec2711b6ae", "subnet-0ecaddef65763a35f"]
   vpce_vpc_id                  = var.vpce_vpc_id
   create_data_lifecycle_policy = true
+  create_access_policy         = true
    network_policy_type = "AllPrivate"
 #   vpc_id = var.vpc_id
   vpce_security_group_ids      = var.vpce_security_group_ids
