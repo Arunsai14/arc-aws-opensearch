@@ -82,7 +82,7 @@ module "opensearch_serverless" {
 }
 
 module "opensearch_without_vpc" {
-  source = "./opensearch_without_vpc"
+  source = "../root-serverless"
 
   name                         = var.name
   description                  = var.description
