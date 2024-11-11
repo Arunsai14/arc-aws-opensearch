@@ -38,22 +38,19 @@ resource "aws_opensearchserverless_security_policy" "public_network" {
   description = "Public access policy for ${var.name}"
   policy      = jsonencode([
     {
-      "AllPublic" = [
+      "Rules" = [
         {
-          "Description" = "Public access to collection and Dashboards endpoint for ${var.name}",
-          "Rules" = [
-            {
-              "ResourceType" = "collection",
-              "Resource"     = ["collection/${var.name}"]
-            },
-            {
-              "ResourceType" = "dashboard",
-              "Resource"     = ["collection/${var.name}"]
-            }
-          ],
-          "AllowFromPublic" = true
+          "ResourceType" = "collection",
+          "Resource"     = ["collection/${var.name}"]
+        },
+        {
+          "ResourceType" = "dashboard",
+          "Resource"     = ["collection/${var.name}"]
         }
-      ]
+      ],
+      "AllowFromPublic" = true,
+      "SourceVPCEs" = [],
+      "SourceServices" = ["aws:ec2"]
     }
   ])
 }
@@ -65,23 +62,19 @@ resource "aws_opensearchserverless_security_policy" "private_network" {
   description = "Private VPC access policy for ${var.name}"
   policy      = jsonencode([
     {
-      "AllPrivate" = [
+      "Rules" = [
         {
-          "Description" = "VPC access to collection and Dashboards endpoint for ${var.name}",
-          "Rules" = [
-            {
-              "ResourceType" = "collection",
-              "Resource"     = ["collection/${var.name}"]
-            },
-            {
-              "ResourceType" = "dashboard",
-              "Resource"     = ["collection/${var.name}"]
-            }
-          ],
-          "AllowFromPublic" = false,
-          "SourceVPCEs" = var.create_network_policy && var.network_policy_type != "AllPublic" ? [aws_opensearchserverless_vpc_endpoint.this[0].id] : null
+          "ResourceType" = "collection",
+          "Resource"     = ["collection/${var.name}"]
+        },
+        {
+          "ResourceType" = "dashboard",
+          "Resource"     = ["collection/${var.name}"]
         }
-      ]
+      ],
+      "AllowFromPublic" = false,
+      "SourceVPCEs" = [aws_opensearchserverless_vpc_endpoint.this[0].id],
+      "SourceServices" = ["aws:vpc"]
     }
   ])
 }
