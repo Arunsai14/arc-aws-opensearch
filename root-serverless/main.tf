@@ -3,67 +3,36 @@
 ##############################################
 data "aws_caller_identity" "current" {}
 
-resource "aws_opensearchserverless_security_policy" "example" {
-  name   = var.encryption_policy_name
-  type   = "encryption"
+resource "aws_opensearchserverless_security_policy" "vpc_security" {
+  count  = var.network_type == "vpc" ? 1 : 0  # Only create this if network_type is 'vpc'
+  name   = "example-vpc-access-policy"
+  type   = "network"
+  
   policy = jsonencode({
     "Rules" = [
       {
-        "Resource"    = [var.collection_resource],
         "ResourceType" = "collection"
+        "Resource"     = ["collection/${var.collection_name}"]
       }
     ],
-    "AWSOwnedKey" = var.aws_owned_key
+    "VPC" = {
+      "VpcId" = var.vpc_id 
+    }
   })
 }
 
-# resource "aws_opensearchserverless_security_policy" "vpc_security" {
-#   name   = var.vpc_security_policy_name
-#   type   = "network"
-#   policy = jsonencode({
-#     "Rules" = [
-#       {
-#         "Resource"    = [var.collection_resource],
-#         "ResourceType" = "collection"
-#       }
-#     ],
-#     "VPC" = {
-#       "VpcId" = var.vpc_id
-#     }
-#   })
-# }
-
-# resource "aws_opensearchserverless_security_policy" "public_security" {
-#   name = "example-public-access-policy"
-#   type = "network"  # Use "network" for public network access policy
-
-#   policy = jsonencode([
-#     {
-#       "AllowFromPublic" = true             
-#       "SourceServices" = ["es.amazonaws.com"]  
-#       "Rules" = [
-#         {
-#           "ResourceType" = "collection" 
-#           "Resource" = [
-#             "arn:aws:opensearchserverless:${var.region}:${data.aws_caller_identity.current.account_id}:collection/${var.collection_name}"
-#           ]
-#         }
-#       ]
-#     }
-#   ])
-# }
-
 resource "aws_opensearchserverless_security_policy" "public_security" {
+  count = var.network_type == "public" ? 1 : 0
   name = "example-public-access-policy"
-  type = "network"  # Use "network" for public network access policy
+  type = "network" 
 
   policy = jsonencode([{
     "AllowFromPublic" = true
     "Rules" = [
       {
-        "ResourceType" = "collection"  # Resource type is collection for OpenSearch Serverless
+        "ResourceType" = "collection" 
         "Resource"     = [
-          "collection/${var.collection_name}"  # Reference your collection with the correct pattern
+          "collection/${var.collection_name}"  
         ]
       }
     ]
@@ -75,7 +44,7 @@ resource "aws_opensearchserverless_security_policy" "encryption_security" {
   type   = "encryption"
 
   policy = jsonencode({
-    "AWSOwnedKey" = true  # Ensure the policy uses AWS-owned encryption key
+    "AWSOwnedKey" = true  
     "Rules" = [
       {
         "ResourceType" = "collection"
@@ -96,7 +65,8 @@ resource "aws_opensearchserverless_collection" "example" {
 
   depends_on = [
     aws_opensearchserverless_security_policy.example,
-    aws_opensearchserverless_security_policy.encryption_security,
-    aws_opensearchserverless_security_policy.public_security
+    # aws_opensearchserverless_security_policy.encryption_security,
+    aws_opensearchserverless_security_policy.public_security,
+    aws_opensearchserverless_security_policy.vpc_security
   ]
 }

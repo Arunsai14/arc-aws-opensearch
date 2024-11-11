@@ -12,6 +12,12 @@ variable "vpc_id" {
   default     = null
 }
 
+variable "network_type" {
+  description = "Type of network access. Valid values are 'public' or 'vpc'."
+  type        = string
+  default     = "public"  # Default to public, but you can change it to 'vpc' as needed
+}
+
 variable "tags" {
   description = "Tags to apply to resources"
   type        = map(string)
