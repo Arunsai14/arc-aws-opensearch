@@ -45,7 +45,7 @@ module "opensearch_serverless" {
     action     = "Delete"
     transition = "archive"
     indexes    = ["index1", "index2"]
-    retention  = 30 # Specify retention period in days, or any appropriate value
+    retention  = "30d" # Specify retention period in days, or any appropriate value
   },
   {
     id         = "rule2"
@@ -53,7 +53,7 @@ module "opensearch_serverless" {
     action     = "Retain"
     transition = "none"
     indexes    = ["index3"]
-    retention  = 60
+    retention  = "24h"
   }
 ]
   network_policy_name = "arc-network-policy"
