@@ -88,20 +88,23 @@ resource "aws_opensearchserverless_access_policy" "this" {
   type        = "data"
   description = var.access_policy_description
   policy      = jsonencode([for rule in var.access_policy_rules : {
-    Rules = [{
-      ResourceType = rule.type
-      Resource     = rule.type == "collection" ? ["collection/${var.name}"] : [for index in rule.indexes : "index/${var.name}/${index}"]
-      Permission   = [for permission in rule.permissions : {
-        All           = "aoss:*",
-        Create        = "aoss:CreateCollectionItems",
-        Read          = "aoss:DescribeCollectionItems",
-        Update        = "aoss:UpdateCollectionItems",
-        Delete        = "aoss:DeleteCollectionItems"
-      }[permission]]
-    }],
+    Rules = [
+      {
+        ResourceType = rule.type
+        Resource     = rule.type == "collection" ? ["collection/${var.name}"] : [for index in rule.indexes : "index/${var.name}/${index}"]
+        Permission   = [for permission in rule.permissions : {
+          All           = "aoss:*",
+          Create        = "aoss:CreateCollectionItems",
+          Read          = "aoss:DescribeCollectionItems",
+          Update        = "aoss:UpdateCollectionItems",
+          Delete        = "aoss:DeleteCollectionItems"
+        }[permission]]
+      }
+    ],
     Principal = rule.principals
   }])
 }
+
 
 resource "aws_opensearchserverless_lifecycle_policy" "this" {
   count       = var.create_data_lifecycle_policy ? 1 : 0
