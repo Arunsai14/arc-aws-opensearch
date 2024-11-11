@@ -34,18 +34,23 @@ resource "aws_opensearchserverless_security_policy" "example" {
 # }
 
 resource "aws_opensearchserverless_security_policy" "public_security" {
-  name   = var.public_security_policy_name
-  type   = "network"
-  policy = jsonencode({
-    "Rules" = [
-      {
-        "Resource"    = [var.collection_resource],
-        "ResourceType" = "collection"
-      }
-    ],
-    "PublicAccess" = var.public_access
-  })
+  name = "example-public-access-policy"
+  type = "data"  # or "network", depending on your use case
+
+  policy = jsonencode([
+    {
+      "Rules": [
+        {
+          "Resource": "arn:aws:opensearchserverless:${data.aws_caller_identity.current.account_id}:collection/${var.collection_name}",
+          "Permission": "aoss:*"
+        }
+      ],
+      "Principal": "*",
+      "Effect": "Allow"
+    }
+  ])
 }
+
 
 resource "aws_opensearchserverless_collection" "example" {
   name             = var.collection_name
