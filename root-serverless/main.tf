@@ -7,6 +7,29 @@ resource "aws_opensearchserverless_collection" "this" {
   depends_on       = [aws_opensearchserverless_security_policy.encryption]
 }
 
+resource "aws_opensearchserverless_security_policy" "encryption" {
+  count       = var.create_encryption_policy ? 1 : 0
+  name        = coalesce(var.encryption_policy_name, "${var.name}-encryption-policy")
+  type        = "encryption"
+  description = var.encryption_policy_description
+  policy = jsonencode(merge(
+    {
+      "Rules" = [
+        {
+          "Resource"     = ["collection/${var.name}"] # local.encryption_policy_collections
+          "ResourceType" = "collection"
+        }
+      ]
+    },
+    var.encryption_policy_kms_key_arn != null ? {
+    #   "KmsARN" = var.encryption_policy_kms_key_arn
+      "KmsARN" = false
+    } : {
+      "AWSOwnedKey" = true
+    }
+  ))
+}
+
 
 resource "aws_opensearchserverless_security_policy" "public_network" {
   count       = var.create_network_policy ? 1 : 0
