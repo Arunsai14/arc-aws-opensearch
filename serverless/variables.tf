@@ -13,10 +13,6 @@ variable "use_standby_replicas" {
   type        = bool
 }
 
-variable "type" {
-  description = "The type of OpenSearch domain (e.g., `dedicated`, `standard`)."
-  type        = string
-}
 
 variable "tags" {
   description = "A map of key-value pairs to assign as tags."
@@ -41,11 +37,6 @@ variable "encryption_policy_description" {
 variable "vpce_name" {
   description = "The name of the VPC endpoint."
   type        = string
-}
-
-variable "vpce_subnet_ids" {
-  description = "A list of subnet IDs for the VPC endpoint."
-  type        = list(string)
 }
 
 variable "vpce_vpc_id" {
