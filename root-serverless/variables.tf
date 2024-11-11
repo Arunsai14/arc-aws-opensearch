@@ -86,11 +86,13 @@ variable "create_access_policy" {
 variable "access_policy_name" {
   description = "The name of the access policy."
   type        = string
+   default    = "arc_access_policy"
 }
 
 variable "access_policy_description" {
   description = "The description of the access policy."
   type        = string
+  default     = "Network policy description"
 }
 
 variable "access_policy_rules" {
@@ -112,11 +114,13 @@ variable "create_data_lifecycle_policy" {
 variable "data_lifecycle_policy_name" {
   description = "The name of the data lifecycle policy."
   type        = string
+  default     = "data_lifecycle_policy"
 }
 
 variable "data_lifecycle_policy_description" {
   description = "The description of the data lifecycle policy."
   type        = string
+   default     = "Data lifecycle policy description"
 }
 
 variable "data_lifecycle_policy_rules" {
@@ -136,31 +140,37 @@ variable "create_security_config" {
 variable "security_config_name" {
   description = "The name of the security configuration."
   type        = string
+  default     = "my_security_config"
 }
 
 variable "security_config_description" {
   description = "The description of the security configuration."
   type        = string
+  default     = "Security config description"
 }
 
 variable "saml_metadata" {
   description = "The path to the SAML metadata file."
   type        = string
+  default     = ""
 }
 
 variable "saml_group_attribute" {
   description = "The SAML attribute that represents groups."
   type        = string
+  default     = "group"
 }
 
 variable "saml_user_attribute" {
   description = "The SAML attribute that represents users."
   type        = string
+  default     = "user"
 }
 
 variable "saml_session_timeout" {
   description = "The session timeout for the SAML configuration."
   type        = string
+  default     = "3600"
 }
 
 variable "vpce_security_group_sources" {
@@ -185,5 +195,6 @@ variable "vpce_security_group_name" {
 variable "vpce_security_group_description" {
   description = "The description of the VPC endpoint security group."
   type        = string
+  default     = "Security group for VPC endpoint"
 }
 

@@ -47,3 +47,11 @@ variable "vpce_security_group_ids" {
   description = "A list of security group IDs associated with the VPC endpoint."
   type        = list(string)
 }
+
+variable "vpce_security_group_sources" {
+  description = "The security group sources for VPC endpoint."
+  type = list(object({
+    type    = string
+    sources = list(string)
+  }))
+}

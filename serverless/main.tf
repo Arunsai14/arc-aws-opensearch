@@ -25,6 +25,7 @@ module "opensearch_serverless" {
   description                  = var.description
   use_standby_replicas         = var.use_standby_replicas
   type                         = var.type
+  vpce_security_group_sources      = var.vpce_security_group_sources
   create_encryption_policy     = var.create_encryption_policy
   encryption_policy_name       = var.encryption_policy_name
   encryption_policy_description = var.encryption_policy_description
