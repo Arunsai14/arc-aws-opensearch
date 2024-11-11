@@ -1,7 +1,7 @@
 ##############################################
 ########   OpenSearch Serverless   ###########
 ##############################################
-
+data "aws_caller_identity" "current" {}
 
 resource "aws_opensearchserverless_security_policy" "example" {
   name   = var.encryption_policy_name
