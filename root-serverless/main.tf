@@ -31,13 +31,13 @@ resource "aws_opensearchserverless_security_policy" "encryption" {
 }
 
 
-resource "aws_opensearchserverless_security_policy" "network" {
+resource "aws_opensearchserverless_security_policy" "public_network" {
   count       = var.create_network_policy ? 1 : 0
-  name        = var.network_policy_name
+  name        = "${var.name}-public-network-policy"
   type        = "network"
-  description = var.network_policy_description
+  description = "Public access policy for ${var.name}"
   policy      = jsonencode({
-    "AllPublic" = [
+    AllPublic = [
       {
         Description = "Public access to collection and Dashboards endpoint for ${var.name}",
         Rules = [
@@ -52,8 +52,18 @@ resource "aws_opensearchserverless_security_policy" "network" {
         ],
         AllowFromPublic = true
       }
-    ],
-    "AllPrivate" = [
+    ]
+  })
+}
+
+
+resource "aws_opensearchserverless_security_policy" "private_network" {
+  count       = var.create_network_policy ? 1 : 0
+  name        = "${var.name}-private-network-policy"
+  type        = "network"
+  description = "Private VPC access policy for ${var.name}"
+  policy      = jsonencode({
+    AllPrivate = [
       {
         Description = "VPC access to collection and Dashboards endpoint for ${var.name}",
         Rules = [
@@ -72,6 +82,50 @@ resource "aws_opensearchserverless_security_policy" "network" {
     ]
   })
 }
+
+
+
+# resource "aws_opensearchserverless_security_policy" "network" {
+#   count       = var.create_network_policy ? 1 : 0
+#   name        = var.network_policy_name
+#   type        = "network"
+#   description = var.network_policy_description
+#   policy      = jsonencode({
+#     "AllPublic" = [
+#       {
+#         Description = "Public access to collection and Dashboards endpoint for ${var.name}",
+#         Rules = [
+#           {
+#             ResourceType = "collection",
+#             Resource     = ["collection/${var.name}"]
+#           },
+#           {
+#             ResourceType = "dashboard",
+#             Resource     = ["collection/${var.name}"]
+#           }
+#         ],
+#         AllowFromPublic = true
+#       }
+#     ],
+#     "AllPrivate" = [
+#       {
+#         Description = "VPC access to collection and Dashboards endpoint for ${var.name}",
+#         Rules = [
+#           {
+#             ResourceType = "collection",
+#             Resource     = ["collection/${var.name}"]
+#           },
+#           {
+#             ResourceType = "dashboard",
+#             Resource     = ["collection/${var.name}"]
+#           }
+#         ],
+#         AllowFromPublic = false,
+#         SourceVPCEs = var.create_network_policy && var.network_policy_type != "AllPublic" ? [aws_opensearchserverless_vpc_endpoint.this[0].id] : null
+#       }
+#     ]
+#   })
+# }
 
 
 
