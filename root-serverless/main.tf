@@ -1,16 +1,62 @@
 ##############################################
 ########   OpenSearch Serverless   ###########
 ##############################################
+
+# AWS Caller Identity (to get the account ID)
 data "aws_caller_identity" "current" {}
 
+######## OpenSearch Security Group Options #######
+resource "aws_security_group" "opensearch_sg" {
+  name        = var.security_group_name
+  description = "Security group for the OpenSearch Domain"
+  vpc_id      = var.vpc_id
+
+  dynamic "ingress" {
+    for_each = var.ingress_rules
+    content {
+      from_port   = ingress.value.from_port
+      to_port     = ingress.value.to_port
+      protocol    = ingress.value.protocol
+      cidr_blocks = ingress.value.cidr_blocks
+    }
+  }
+
+  dynamic "egress" {
+    for_each = var.egress_rules
+    content {
+      from_port   = egress.value.from_port
+      to_port     = egress.value.to_port
+      protocol    = egress.value.protocol
+      cidr_blocks = egress.value.cidr_blocks
+    }
+  }
+  tags = var.tags
+}
+
+data "aws_route_tables" "selected" {
+  vpc_id = var.vpc_id 
+}
+
+# VPC Endpoint for OpenSearch
+resource "aws_vpc_endpoint" "opensearch" {
+  vpc_id            = var.vpc_id  
+  service_name      = "com.amazonaws.${var.region}.es" 
+  route_table_ids   = data.aws_route_tables.selected.ids  
+  security_group_ids = [aws_security_group.opensearch_sg.id]
+  
+  # Optionally enable private DNS
+  private_dns_enabled = true
+}
+
+# Security Policy for VPC Access
 resource "aws_opensearchserverless_security_policy" "vpc_security" {
-  count  = var.network_type == "vpc" ? 1 : 0  # Only create this if network_type is 'vpc'
+  count  = var.network_type == "vpc" ? 1 : 0  
   name   = "example-vpc-access-policy"
   type   = "network"
 
   policy = jsonencode([{
-    "SourceVPCEs" = [var.vpc_id]  # Use the correct VPC ID for SourceVPCEs
-    "SourceServices" = ["es.amazonaws.com"]  # Specify the service for VPC access
+    "SourceVPCEs" = [aws_vpc_endpoint.opensearch.id]  
+    "SourceServices" = ["es.amazonaws.com"] 
     "Rules" = [
       {
         "ResourceType" = "collection"
@@ -20,10 +66,9 @@ resource "aws_opensearchserverless_security_policy" "vpc_security" {
   }])
 }
 
-
-
+# Security Policy for Public Access (if public network type is selected)
 resource "aws_opensearchserverless_security_policy" "public_security" {
-  count = var.network_type == "public" ? 1 : 0  # Only create this if network_type is 'public'
+  count = var.network_type == "public" ? 1 : 0  # Only create if network_type is 'public'
   name  = "example-public-access-policy"
   type  = "network"
 
@@ -40,13 +85,13 @@ resource "aws_opensearchserverless_security_policy" "public_security" {
   }])
 }
 
-
+# Encryption Policy for OpenSearch Collection
 resource "aws_opensearchserverless_security_policy" "encryption_security" {
   name   = "example-encryption-policy"
   type   = "encryption"
 
   policy = jsonencode({
-    "AWSOwnedKey" = true  
+    "AWSOwnedKey" = true
     "Rules" = [
       {
         "ResourceType" = "collection"
@@ -56,8 +101,7 @@ resource "aws_opensearchserverless_security_policy" "encryption_security" {
   })
 }
 
-
-
+# OpenSearch Serverless Collection
 resource "aws_opensearchserverless_collection" "example" {
   name             = var.collection_name
   description      = var.collection_description
@@ -66,8 +110,8 @@ resource "aws_opensearchserverless_collection" "example" {
   type             = var.collection_type
 
   depends_on = [
-    # aws_opensearchserverless_security_policy.encryption_security,
     aws_opensearchserverless_security_policy.public_security,
-    aws_opensearchserverless_security_policy.vpc_security
+    aws_opensearchserverless_security_policy.vpc_security,
+    aws_opensearchserverless_security_policy.encryption_security
   ]
 }

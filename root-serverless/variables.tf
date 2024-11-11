@@ -12,6 +12,16 @@ variable "vpc_id" {
   default     = null
 }
 
+variable "route_table_ids" {
+  description = "Route table IDs associated with the VPC"
+  type        = list(string)
+}
+
+variable "security_group_name" {
+  description = "Security group IDs for the VPC endpoint"
+  type        = string
+}
+
 variable "network_type" {
   description = "Type of network access. Valid values are 'public' or 'vpc'."
   type        = string
@@ -81,4 +91,26 @@ variable "aws_owned_key" {
   description = "Whether to use AWS owned encryption key for the encryption policy."
   type        = bool
   default     = true
+}
+
+variable "ingress_rules" {
+  description = "A list of ingress rules for the security group."
+  type = list(object({
+    from_port   = number
+    to_port     = number
+    protocol    = string
+    cidr_blocks = list(string)
+  }))
+  default     = []
+}
+
+variable "egress_rules" {
+  description = "A list of egress rules for the security group."
+  type = list(object({
+    from_port   = number
+    to_port     = number
+    protocol    = string
+    cidr_blocks = list(string)
+  }))
+  default     = []
 }
