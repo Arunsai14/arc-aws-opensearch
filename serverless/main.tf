@@ -58,7 +58,7 @@ module "opensearch_serverless" {
   }
 ]
   network_policy_name = "arc-network-policy"
-  vpce_security_group_name = "arc_vpce_sg"
+  vpce_security_group_name = "arc-vpce-sg"
   access_policy_rules = [
   {
     action      = "read"

@@ -88,7 +88,7 @@ variable "create_access_policy" {
 variable "access_policy_name" {
   description = "The name of the access policy."
   type        = string
-   default    = "arc_access_policy"
+   default    = "arc-access-policy"
 }
 
 variable "access_policy_description" {
