@@ -21,13 +21,12 @@ resource "aws_opensearchserverless_security_policy" "encryption" {
         }
       ]
     },
-    var.encryption_policy_kms_key_arn != null ? {
-      "KmsARN" = var.encryption_policy_kms_key_arn
-    } : {
-      "AWSOwnedKey" = true  # Set to true to use AWS-owned key if no KMS ARN is provided
+    {
+      "AWSOwnedKey" = true  # Use the AWS-owned key for encryption
     }
   ))
 }
+
 
 
 # Public access policy
