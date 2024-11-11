@@ -88,20 +88,27 @@ resource "aws_opensearchserverless_access_policy" "this" {
   policy      = jsonencode([for rule in var.access_policy_rules : {
     Rules = [
       {
-        ResourceType = rule.type
+        ResourceType = rule.type == "collection" ? "collection" : "index"
         Resource     = rule.type == "collection" ? ["collection/${var.name}"] : [for index in rule.indexes : "index/${var.name}/${index}"]
         Permission   = [for permission in rule.permissions : lookup({
-          All           = "aoss:*",
-          Create        = "aoss:CreateCollectionItems",
-          Read          = "aoss:DescribeCollectionItems",
-          Update        = "aoss:UpdateCollectionItems",
-          Delete        = "aoss:DeleteCollectionItems"
-        }, permission, "unknown-permission")]
+          "read"      = "aoss:ReadDocument",
+          "write"     = "aoss:WriteDocument",
+          "create"    = "aoss:CreateIndex",
+          "delete"    = "aoss:DeleteIndex",
+          "update"    = "aoss:UpdateIndex",
+          "describe"  = "aoss:DescribeIndex",
+          "*"         = "aoss:*",
+          "create_coll" = "aoss:CreateCollectionItems",
+          "delete_coll" = "aoss:DeleteCollectionItems",
+          "update_coll" = "aoss:UpdateCollectionItems",
+          "describe_coll" = "aoss:DescribeCollectionItems"
+        }, permission, "aoss:*")]
       }
     ],
     Principal = rule.principals
   }])
 }
+
 
 
 
