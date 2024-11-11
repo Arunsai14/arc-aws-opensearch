@@ -21,6 +21,7 @@ data "aws_route_tables" "selected" {
 module "opensearch_serverless" {
   source                = "../root-serverless"
   vpc_id                = var.vpc_id
+  subnet_ids           = ["subnet-0559fb2ec2711b6ae", "subnet-0ecaddef65763a35f"]
     ingress_rules      = var.ingress_rules
   egress_rules       = var.egress_rules
   network_type          = "vpc"

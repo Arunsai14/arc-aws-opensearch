@@ -34,15 +34,22 @@ resource "aws_security_group" "opensearch_sg" {
 }
 
 # VPC Endpoint for OpenSearch
+# VPC Endpoint for OpenSearch (Interface type)
 resource "aws_vpc_endpoint" "opensearch" {
   vpc_id            = var.vpc_id  
   service_name      = "com.amazonaws.${var.region}.es" 
-  route_table_ids   = var.route_table_ids
   security_group_ids = [aws_security_group.opensearch_sg.id]
-   vpc_endpoint_type = "Interface"
+  
+  # Specify subnets for Interface type VPC endpoint
+  subnet_ids = var.subnet_ids
+  
+  # Interface type endpoint
+  vpc_endpoint_type = "Interface"
+  
   # Optionally enable private DNS
   private_dns_enabled = true
 }
+
 
 # Security Policy for VPC Access
 resource "aws_opensearchserverless_security_policy" "vpc_security" {
