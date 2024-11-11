@@ -18,7 +18,8 @@ resource "aws_opensearchserverless_security_policy" "encryption" {
         Resource     = ["collection/${var.name}"]
         ResourceType = "collection"
       }
-    ]
+    ],
+    EncryptionEnabled = true
   })
 }
 
