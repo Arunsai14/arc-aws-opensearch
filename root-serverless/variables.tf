@@ -202,6 +202,7 @@ variable "vpce_security_group_description" {
 variable "network_policy_type" {
   description = "The network policy type, e.g., 'AllPublic' or another specified type."
   type        = string
+  default     = "AllPrivate"
 }
 
 # Variable declaration for encryption_policy_kms_key_arn
@@ -209,4 +210,16 @@ variable "encryption_policy_kms_key_arn" {
   description = "The ARN of the KMS key to use for OpenSearch encryption. If null, AWS-owned key will be used."
   type        = string
   default     = null
+}
+
+variable "create_public_access" {
+  description = "Enable or disable public access for the OpenSearch collection"
+  type        = bool
+  default     = false
+}
+
+variable "create_private_access" {
+  description = "Enable or disable private access for the OpenSearch collection"
+  type        = bool
+  default     = true
 }

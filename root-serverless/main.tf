@@ -22,109 +22,58 @@ resource "aws_opensearchserverless_security_policy" "encryption" {
       ]
     },
     var.encryption_policy_kms_key_arn != null ? {
-    #   "KmsARN" = var.encryption_policy_kms_key_arn
-      "KmsARN" = false
+      "KmsARN" = var.encryption_policy_kms_key_arn
     } : {
       "AWSOwnedKey" = true
     }
   ))
 }
 
-
+# Public access policy
 resource "aws_opensearchserverless_security_policy" "public_network" {
-  count       = var.create_network_policy ? 1 : 0
+  count       = var.create_public_access ? 1 : 0
   name        = "${substr(var.name, 0, 28)}-public-policy"  # Limit to 28 characters for the suffix
   type        = "network"
   description = "Public access policy for ${var.name}"
-  policy      = jsonencode([
-    {
-      "Rules" = [
-        {
-          "ResourceType" = "collection",
-          "Resource"     = ["collection/${var.name}"]
-        },
-        {
-          "ResourceType" = "dashboard",
-          "Resource"     = ["collection/${var.name}"]
-        }
-      ],
-      "AllowFromPublic" = true,
-    }
-  ])
+  policy      = jsonencode([{
+    "Rules" = [
+      {
+        "ResourceType" = "collection",
+        "Resource"     = ["collection/${var.name}"]
+      },
+      {
+        "ResourceType" = "dashboard",
+        "Resource"     = ["collection/${var.name}"]
+      }
+    ],
+    "AllowFromPublic" = true,
+  }])
 }
 
+# Private access policy - this won't create if public access is enabled
 resource "aws_opensearchserverless_security_policy" "private_network" {
-  count       = var.create_network_policy ? 1 : 0
-  name        = "${substr(var.name, 0, 28)}-private-policy"  # Limit to 28 characters for the suffix
+  count       = var.create_private_access && !var.create_public_access ? 1 : 0  # Ensure it's only created if public access is disabled
+  name        = "${substr(var.name, 0, 28)}-private-policy"
   type        = "network"
   description = "Private VPC access policy for ${var.name}"
-  policy      = jsonencode([
-    {
-      "Rules" = [
-        {
-          "ResourceType" = "collection",
-          "Resource"     = ["collection/${var.name}"]
-        },
-        {
-          "ResourceType" = "dashboard",
-          "Resource"     = ["collection/${var.name}"]
-        }
-      ],
-      "AllowFromPublic" = false,
-      "SourceVPCEs" = [aws_opensearchserverless_vpc_endpoint.this[0].id],
-    }
-  ])
+  policy      = jsonencode([{
+    "Rules" = [
+      {
+        "ResourceType" = "collection",
+        "Resource"     = ["collection/${var.name}"]
+      },
+      {
+        "ResourceType" = "dashboard",
+        "Resource"     = ["collection/${var.name}"]
+      }
+    ],
+    "AllowFromPublic" = false,
+    "SourceVPCEs" = [aws_opensearchserverless_vpc_endpoint.this[0].id],
+  }])
 }
 
-
-
-
-# resource "aws_opensearchserverless_security_policy" "network" {
-#   count       = var.create_network_policy ? 1 : 0
-#   name        = var.network_policy_name
-#   type        = "network"
-#   description = var.network_policy_description
-#   policy      = jsonencode({
-#     "AllPublic" = [
-#       {
-#         Description = "Public access to collection and Dashboards endpoint for ${var.name}",
-#         Rules = [
-#           {
-#             ResourceType = "collection",
-#             Resource     = ["collection/${var.name}"]
-#           },
-#           {
-#             ResourceType = "dashboard",
-#             Resource     = ["collection/${var.name}"]
-#           }
-#         ],
-#         AllowFromPublic = true
-#       }
-#     ],
-#     "AllPrivate" = [
-#       {
-#         Description = "VPC access to collection and Dashboards endpoint for ${var.name}",
-#         Rules = [
-#           {
-#             ResourceType = "collection",
-#             Resource     = ["collection/${var.name}"]
-#           },
-#           {
-#             ResourceType = "dashboard",
-#             Resource     = ["collection/${var.name}"]
-#           }
-#         ],
-#         AllowFromPublic = false,
-#         SourceVPCEs = var.create_network_policy && var.network_policy_type != "AllPublic" ? [aws_opensearchserverless_vpc_endpoint.this[0].id] : null
-#       }
-#     ]
-#   })
-# }
-
-
-
 resource "aws_opensearchserverless_vpc_endpoint" "this" {
-  count              = var.create_network_policy && var.network_policy_type != "AllPublic" ? 1 : 0
+  count              = var.create_private_access && !var.create_public_access ? 1 : 0  # Only create VPC endpoint for private access
   name               = var.vpce_name
   subnet_ids         = var.vpce_subnet_ids
   vpc_id             = var.vpce_vpc_id
