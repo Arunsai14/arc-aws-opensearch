@@ -28,7 +28,6 @@ resource "aws_opensearchserverless_security_policy" "encryption" {
 }
 
 
-
 # Public access policy
 resource "aws_opensearchserverless_security_policy" "public_network" {
   count       = var.create_public_access ? 1 : 0
@@ -52,7 +51,7 @@ resource "aws_opensearchserverless_security_policy" "public_network" {
 
 # Private access policy - this won't create if public access is enabled
 resource "aws_opensearchserverless_security_policy" "private_network" {
-  count       = var.create_private_access && !var.create_public_access ? 1 : 0  # Ensure it's only created if public access is disabled
+  count       = var.create_private_access && !var.create_public_access ? 1 : 0  # it's only created if public access is disabled
   name        = "${substr(var.name, 0, 28)}-private-policy"
   type        = "network"
   description = "Private VPC access policy for ${var.name}"

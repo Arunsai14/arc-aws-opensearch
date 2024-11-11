@@ -51,6 +51,7 @@ variable "create_network_policy" {
 variable "network_policy_name" {
   description = "The name of the network policy."
   type        = string
+  default   = null
 }
 
 variable "network_policy_description" {
@@ -59,24 +60,28 @@ variable "network_policy_description" {
   default     = "Network policy description"
 }
 
-variable "vpce_name" {
+variable "vpc_name" {
   description = "The name of the VPC endpoint."
   type        = string
+  default   = null
 }
 
-variable "vpce_subnet_ids" {
+variable "vpc_subnet_ids" {
   description = "A list of subnet IDs for the VPC endpoint."
   type        = list(string)
+  default     = []
 }
 
-variable "vpce_vpc_id" {
+variable "vpc_vpc_id" {
   description = "The VPC ID for the VPC endpoint."
   type        = string
+  default   = null
 }
 
-variable "vpce_security_group_ids" {
+variable "vpc_security_group_ids" {
   description = "A list of security group IDs for the VPC endpoint."
   type        = list(string)
+  default   = []
 }
 
 variable "create_access_policy" {
@@ -101,11 +106,11 @@ variable "access_policy_rules" {
   description = "List of rules for the access policy."
   type        = list(object({
     type        = string
-    indexes     = list(string)
+    indexes     = optional(list(string), [])
     permissions = list(string)
     principals  = list(string)
   }))
-
+  default = []
 }
 
 variable "create_data_lifecycle_policy" {
@@ -176,7 +181,7 @@ variable "saml_session_timeout" {
   default     = "3600"
 }
 
-variable "vpce_security_group_sources" {
+variable "vpc_security_group_sources" {
   description = "List of security group sources for VPC endpoint."
   type        = list(object({
     type    = string
@@ -184,18 +189,18 @@ variable "vpce_security_group_sources" {
   }))
 }
 
-variable "vpce_create_security_group" {
+variable "vpc_create_security_group" {
   description = "Flag to determine if a security group for VPC endpoint should be created."
   type        = bool
-  default     = true
+  default     = false
 }
 
-variable "vpce_security_group_name" {
+variable "vpc_security_group_name" {
   description = "The name of the VPC endpoint security group."
   type        = string
 }
 
-variable "vpce_security_group_description" {
+variable "vpc_security_group_description" {
   description = "The description of the VPC endpoint security group."
   type        = string
   default     = "Security group for VPC endpoint"
