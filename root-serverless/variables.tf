@@ -235,5 +235,5 @@ variable "create_public_access" {
 variable "create_private_access" {
   description = "Enable or disable private access for the OpenSearch collection"
   type        = bool
-  default     = true
+  default     = false
 }
