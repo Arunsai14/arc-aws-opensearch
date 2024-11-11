@@ -132,13 +132,18 @@ variable "data_lifecycle_policy_description" {
 }
 
 variable "data_lifecycle_policy_rules" {
-  description = "List of rules for the data lifecycle policy."
-  type        = list(object({
+  description = "Data lifecycle policy rules for the indices."
+  type = list(object({
     indexes    = list(string)
     retention  = string
   }))
+  default = [
+    {
+      indexes   = ["*"] 
+      retention = "Unlimited"
+    }
+  ]
 }
-
 variable "create_security_config" {
   description = "Flag to determine if security configuration should be created."
   type        = bool
@@ -148,7 +153,7 @@ variable "create_security_config" {
 variable "security_config_name" {
   description = "The name of the security configuration."
   type        = string
-  default     = "my_security_config"
+  default     = "arc-security-config"
 }
 
 variable "security_config_description" {
@@ -187,6 +192,8 @@ variable "vpc_security_group_sources" {
     type    = string
     sources = list(string)
   }))
+
+  default = []
 }
 
 variable "vpc_create_security_group" {
@@ -198,6 +205,7 @@ variable "vpc_create_security_group" {
 variable "vpc_security_group_name" {
   description = "The name of the VPC endpoint security group."
   type        = string
+  default     = "opensearch-vpc-sg"
 }
 
 variable "vpc_security_group_description" {
