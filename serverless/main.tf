@@ -15,7 +15,7 @@ module "terraform-aws-arc-tags" {
 }
 
 module "opensearch_serverless" {
-  source                = "../"
+  source                = "../root-serverless"
   vpc_id                = var.vpc_id
   collection_resource   = "collection/example-collection"
   encryption_policy_name = "custom-encryption-policy"
