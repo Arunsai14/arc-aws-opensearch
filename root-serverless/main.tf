@@ -50,7 +50,6 @@ resource "aws_opensearchserverless_security_policy" "public_network" {
       ],
       "AllowFromPublic" = true,
       "SourceVPCEs" = [],
-      "SourceServices" = ["aws:ec2"]
     }
   ])
 }
@@ -74,7 +73,6 @@ resource "aws_opensearchserverless_security_policy" "private_network" {
       ],
       "AllowFromPublic" = false,
       "SourceVPCEs" = [aws_opensearchserverless_vpc_endpoint.this[0].id],
-      "SourceServices" = ["aws:vpc"]
     }
   ])
 }
