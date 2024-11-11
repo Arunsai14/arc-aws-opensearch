@@ -34,7 +34,7 @@ module "opensearch_serverless" {
   vpce_name                    = var.vpce_name
   vpce_subnet_ids              = ["subnet-0559fb2ec2711b6ae", "subnet-0ecaddef65763a35f"]
   vpce_vpc_id                  = var.vpce_vpc_id
-  network_policy_type = "AllPublic"
+   network_policy_type = null
 #   vpc_id = var.vpc_id
   vpce_security_group_ids      = var.vpce_security_group_ids
   data_lifecycle_policy_rules = [
@@ -81,15 +81,15 @@ module "opensearch_serverless" {
   )
 }
 
-module "opensearch_without_vpc" {
-  source = "../root-serverless"
+# module "opensearch_without_vpc" {
+#   source = "../root-serverless"
 
-  name                         = var.name
-  description                  = var.description
-  use_standby_replicas         = var.use_standby_replicas
-  type                         = var.type
-  tags                         = var.tags
-  create_encryption_policy     = var.create_encryption_policy
-  encryption_policy_name       = var.encryption_policy_name
-  encryption_policy_description = var.encryption_policy_description
-}
+#   name                         = var.name
+#   description                  = var.description
+#   use_standby_replicas         = var.use_standby_replicas
+#   type                         = var.type
+#   tags                         = var.tags
+#   create_encryption_policy     = var.create_encryption_policy
+#   encryption_policy_name       = var.encryption_policy_name
+#   encryption_policy_description = var.encryption_policy_description
+# }
