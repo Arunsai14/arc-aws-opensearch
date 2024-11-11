@@ -64,7 +64,6 @@ resource "aws_opensearchserverless_collection" "example" {
   type             = var.collection_type
 
   depends_on = [
-    aws_opensearchserverless_security_policy.example,
     # aws_opensearchserverless_security_policy.encryption_security,
     aws_opensearchserverless_security_policy.public_security,
     aws_opensearchserverless_security_policy.vpc_security
