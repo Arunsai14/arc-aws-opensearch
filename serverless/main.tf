@@ -90,6 +90,7 @@ module "opensearch_without_vpc" {
   description                  = var.description
   use_standby_replicas         = var.use_standby_replicas
   type                         = var.type
+  create_public_access         = true
   create_encryption_policy     = var.create_encryption_policy
   encryption_policy_name       = var.encryption_policy_name
   encryption_policy_description = var.encryption_policy_description
