@@ -199,4 +199,7 @@ variable "vpce_security_group_description" {
   type        = string
   default     = "Security group for VPC endpoint"
 }
-
+variable "network_policy_type" {
+  description = "The network policy type, e.g., 'AllPublic' or another specified type."
+  type        = string
+}
