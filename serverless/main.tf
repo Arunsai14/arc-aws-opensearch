@@ -81,15 +81,15 @@ module "opensearch_serverless" {
   )
 }
 
-# module "opensearch_without_vpc" {
-#   source = "./opensearch_without_vpc"
+module "opensearch_without_vpc" {
+  source = "./opensearch_without_vpc"
 
-#   name                         = var.name
-#   description                  = var.description
-#   use_standby_replicas         = var.use_standby_replicas
-#   type                         = var.type
-#   tags                         = var.tags
-#   create_encryption_policy     = var.create_encryption_policy
-#   encryption_policy_name       = var.encryption_policy_name
-#   encryption_policy_description = var.encryption_policy_description
-# }
+  name                         = var.name
+  description                  = var.description
+  use_standby_replicas         = var.use_standby_replicas
+  type                         = var.type
+  tags                         = var.tags
+  create_encryption_policy     = var.create_encryption_policy
+  encryption_policy_name       = var.encryption_policy_name
+  encryption_policy_description = var.encryption_policy_description
+}
