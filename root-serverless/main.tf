@@ -33,7 +33,7 @@ resource "aws_opensearchserverless_security_policy" "encryption" {
 
 resource "aws_opensearchserverless_security_policy" "public_network" {
   count       = var.create_network_policy ? 1 : 0
-  name        = "${var.name}-public-network-policy"
+  name        = "${var.name}-public-policy"
   type        = "network"
   description = "Public access policy for ${var.name}"
   policy      = jsonencode({
@@ -59,7 +59,7 @@ resource "aws_opensearchserverless_security_policy" "public_network" {
 
 resource "aws_opensearchserverless_security_policy" "private_network" {
   count       = var.create_network_policy ? 1 : 0
-  name        = "${var.name}-private-network-policy"
+  name        = "${var.name}-private-policy"
   type        = "network"
   description = "Private VPC access policy for ${var.name}"
   policy      = jsonencode({
