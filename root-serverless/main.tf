@@ -12,19 +12,24 @@ resource "aws_opensearchserverless_security_policy" "encryption" {
   name        = coalesce(var.encryption_policy_name, "${var.name}-encryption-policy")
   type        = "encryption"
   description = var.encryption_policy_description
-
-  policy = jsonencode({
-    Rules = [
-      {
-        Resource     = ["collection/${var.name}"],
-        ResourceType = "collection"
-      }
-    ],
-    # Only one of these should be set based on whether a custom KMS key ARN is provided
-    AWSOwnedKey = var.encryption_policy_kms_key_arn == null ? true : null,
-    KmsARN      = var.encryption_policy_kms_key_arn != null ? var.encryption_policy_kms_key_arn : null
-  })
+  policy = jsonencode(merge(
+    {
+      "Rules" = [
+        {
+          "Resource"     = ["collection/${var.name}"] # local.encryption_policy_collections
+          "ResourceType" = "collection"
+        }
+      ]
+    },
+    var.encryption_policy_kms_key_arn != null ? {
+      "KmsARN" = var.encryption_policy_kms_key_arn
+    } : {},
+    var.encryption_policy_kms_key_arn == null ? {
+      "AWSOwnedKey" = false
+    } : {}
+  ))
 }
+
 
 resource "aws_opensearchserverless_security_policy" "network" {
   count       = var.create_network_policy ? 1 : 0
