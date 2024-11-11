@@ -71,20 +71,18 @@ resource "aws_opensearchserverless_security_policy" "public_security" {
 }
 
 resource "aws_opensearchserverless_security_policy" "encryption_security" {
-  name = "example-encryption-policy"
-  type = "encryption"  # Security policy type is encryption
+  name   = "example-encryption-policy"
+  type   = "encryption"
 
-  policy = jsonencode([{
-    "AllowFromPublic" = false  # Disallow public access
+  policy = jsonencode({
+    "AWSOwnedKey" = true  # Ensure the policy uses AWS-owned encryption key
     "Rules" = [
       {
-        "ResourceType" = "collection"  # Resource type is collection
-        "Resource"     = [
-          "collection/${var.collection_name}"  # Define your collection's resource name
-        ]
+        "ResourceType" = "collection"
+        "Resource"     = ["collection/${var.collection_name}"]
       }
     ]
-  }])
+  })
 }
 
 
@@ -98,6 +96,7 @@ resource "aws_opensearchserverless_collection" "example" {
 
   depends_on = [
     aws_opensearchserverless_security_policy.example,
+    aws_opensearchserverless_security_policy.encryption_security,
     aws_opensearchserverless_security_policy.public_security
   ]
 }
