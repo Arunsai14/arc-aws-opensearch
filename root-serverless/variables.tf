@@ -1,5 +1,15 @@
 ####################################################################
 ################################################################
+variable "vpc_id" {
+  description = "ID of the VPC for OpenSearch domain"
+  type        = string
+  default     = null
+}
+
+variable "tags" {
+  description = "Tags to apply to resources"
+  type        = map(string)
+}
 
 variable "collection_resource" {
   description = "The resource name to associate with the security policies."
