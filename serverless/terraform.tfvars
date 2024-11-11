@@ -1,5 +1,6 @@
 region               = "us-east-2"
 vpce_vpc_id               = "vpc-024aff0fdd1a1d6fe"
+vpc_id               = "vpc-024aff0fdd1a1d6fe"
 name                         = "opensearch-domain"
 description                  = "OpenSearch domain for logs and search"
 use_standby_replicas         = true
