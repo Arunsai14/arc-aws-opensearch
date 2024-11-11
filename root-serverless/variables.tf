@@ -1,5 +1,11 @@
 ####################################################################
 ################################################################
+variable "region" {
+  description = "AWS region"
+  type        = string
+  default     = "us-east-1"
+}
+
 variable "vpc_id" {
   description = "ID of the VPC for OpenSearch domain"
   type        = string
