@@ -24,7 +24,7 @@ resource "aws_opensearchserverless_security_policy" "encryption" {
     var.encryption_policy_kms_key_arn != null ? {
       "KmsARN" = var.encryption_policy_kms_key_arn
     } : {
-      "AWSOwnedKey" = true
+      "AWSOwnedKey" = false
     }
   ))
 }
