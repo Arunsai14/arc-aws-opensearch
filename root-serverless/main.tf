@@ -7,61 +7,6 @@ resource "aws_opensearchserverless_collection" "this" {
   depends_on       = [aws_opensearchserverless_security_policy.encryption]
 }
 
-resource "aws_opensearchserverless_security_policy" "public_network" {
-  count       = var.create_network_policy ? 1 : 0
-  name        = "${substr(var.name, 0, 28)}-public-policy"  # Limit to 28 characters for the suffix
-  type        = "network"
-  description = "Public access policy for ${var.name}"
-  policy      = jsonencode([
-    {
-      "AllPublic" = [
-        {
-          "Description" = "Public access to collection and Dashboards endpoint for ${var.name}",
-          "Rules" = [
-            {
-              "ResourceType" = "collection",
-              "Resource"     = ["collection/${var.name}"]
-            },
-            {
-              "ResourceType" = "dashboard",
-              "Resource"     = ["collection/${var.name}"]
-            }
-          ],
-          "AllowFromPublic" = true
-        }
-      ]
-    }
-  ])
-}
-
-resource "aws_opensearchserverless_security_policy" "private_network" {
-  count       = var.create_network_policy ? 1 : 0
-  name        = "${substr(var.name, 0, 28)}-private-policy"  # Limit to 28 characters for the suffix
-  type        = "network"
-  description = "Private VPC access policy for ${var.name}"
-  policy      = jsonencode([
-    {
-      "AllPrivate" = [
-        {
-          "Description" = "VPC access to collection and Dashboards endpoint for ${var.name}",
-          "Rules" = [
-            {
-              "ResourceType" = "collection",
-              "Resource"     = ["collection/${var.name}"]
-            },
-            {
-              "ResourceType" = "dashboard",
-              "Resource"     = ["collection/${var.name}"]
-            }
-          ],
-          "AllowFromPublic" = false,
-          "SourceVPCEs" = var.create_network_policy && var.network_policy_type != "AllPublic" ? [aws_opensearchserverless_vpc_endpoint.this[0].id] : null
-        }
-      ]
-    }
-  ])
-}
-
 
 resource "aws_opensearchserverless_security_policy" "public_network" {
   count       = var.create_network_policy ? 1 : 0
