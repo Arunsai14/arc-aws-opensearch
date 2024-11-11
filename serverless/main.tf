@@ -17,7 +17,7 @@ module "terraform-aws-arc-tags" {
 }
 
 data "aws_route_tables" "selected" {
-  vpc_id = var.vpce_vpc_id 
+  vpc_id = var.vpc_vpc_id 
 }
 
 # module "opensearch_serverless" {
@@ -27,18 +27,18 @@ data "aws_route_tables" "selected" {
 #   description                  = var.description
 #   use_standby_replicas         = var.use_standby_replicas
 #   type                         = var.type
-#   vpce_security_group_sources      = var.vpce_security_group_sources
+#   vpc_security_group_sources      = var.vpc_security_group_sources
 #   create_encryption_policy     = var.create_encryption_policy
 #   encryption_policy_name       = var.encryption_policy_name
 #   encryption_policy_description = var.encryption_policy_description
-#   vpce_name                    = var.vpce_name
-#   vpce_subnet_ids              = ["subnet-0559fb2ec2711b6ae", "subnet-0ecaddef65763a35f"]
-#   vpce_vpc_id                  = var.vpce_vpc_id
+#   vpc_name                    = var.vpc_name
+#   vpc_subnet_ids              = ["subnet-0559fb2ec2711b6ae", "subnet-0ecaddef65763a35f"]
+#   vpc_vpc_id                  = var.vpc_vpc_id
 #   create_data_lifecycle_policy = true
 #   create_access_policy         = true
 #    network_policy_type = "AllPrivate"
 # #   vpc_id = var.vpc_id
-#   vpce_security_group_ids      = var.vpce_security_group_ids
+#   vpc_security_group_ids      = var.vpc_security_group_ids
 #   data_lifecycle_policy_rules = [
 #   {
 #     id         = "rule1"
@@ -58,7 +58,7 @@ data "aws_route_tables" "selected" {
 #   }
 # ]
 #   network_policy_name = "arc-network-policy"
-#   vpce_security_group_name = "arc-vpce-sg"
+#   vpc_security_group_name = "arc-vpc-sg"
 #   access_policy_rules = [
 #   {
 #     action      = "read"

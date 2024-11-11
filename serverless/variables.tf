@@ -58,22 +58,22 @@ variable "encryption_policy_description" {
   type        = string
 }
 
-variable "vpce_name" {
+variable "vpc_name" {
   description = "The name of the VPC endpoint."
   type        = string
 }
 
-variable "vpce_vpc_id" {
+variable "vpc_vpc_id" {
   description = "The VPC ID to create the VPC endpoint."
   type        = string
 }
 
-variable "vpce_security_group_ids" {
+variable "vpc_security_group_ids" {
   description = "A list of security group IDs associated with the VPC endpoint."
   type        = list(string)
 }
 
-variable "vpce_security_group_sources" {
+variable "vpc_security_group_sources" {
   description = "The security group sources for VPC endpoint."
   type = list(object({
     type    = string

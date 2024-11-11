@@ -67,16 +67,16 @@ resource "aws_opensearchserverless_security_policy" "private_network" {
       }
     ],
     "AllowFromPublic" = false,
-    "SourceVPCEs" = [aws_opensearchserverless_vpc_endpoint.this[0].id],
+    "Sourcevpcs" = [aws_opensearchserverless_vpc_endpoint.this[0].id],
   }])
 }
 
 resource "aws_opensearchserverless_vpc_endpoint" "this" {
   count              = var.create_private_access && !var.create_public_access ? 1 : 0  # Only create VPC endpoint for private access
-  name               = var.vpce_name
-  subnet_ids         = var.vpce_subnet_ids
-  vpc_id             = var.vpce_vpc_id
-  security_group_ids = var.vpce_security_group_ids
+  name               = var.vpc_name
+  subnet_ids         = var.vpc_subnet_ids
+  vpc_id             = var.vpc_vpc_id
+  security_group_ids = var.vpc_security_group_ids
 }
 
 resource "aws_opensearchserverless_access_policy" "this" {
@@ -144,18 +144,18 @@ resource "aws_opensearchserverless_security_config" "this" {
 # Security Group
 ##################
 resource "aws_security_group" "this" {
-  count       = var.create_network_policy && var.network_policy_type != "AllPublic" && var.vpce_create_security_group ? 1 : 0
-  name        = var.vpce_security_group_name
-  description = var.vpce_security_group_description
-  vpc_id      = var.vpce_vpc_id
+  count       = var.create_network_policy && var.network_policy_type != "AllPublic" && var.vpc_create_security_group ? 1 : 0
+  name        = var.vpc_security_group_name
+  description = var.vpc_security_group_description
+  vpc_id      = var.vpc_vpc_id
   ingress {
     from_port        = 443
     to_port          = 443
     protocol         = "tcp"
-    cidr_blocks      = flatten([for item in var.vpce_security_group_sources : [for source in item.sources : source] if item.type == "IPv4"])
-    ipv6_cidr_blocks = flatten([for item in var.vpce_security_group_sources : [for source in item.sources : source] if item.type == "IPv6"])
-    prefix_list_ids  = flatten([for item in var.vpce_security_group_sources : [for source in item.sources : source] if item.type == "PrefixLists"])
-    security_groups  = flatten([for item in var.vpce_security_group_sources : [for source in item.sources : source] if item.type == "SGs"])
+    cidr_blocks      = flatten([for item in var.vpc_security_group_sources : [for source in item.sources : source] if item.type == "IPv4"])
+    ipv6_cidr_blocks = flatten([for item in var.vpc_security_group_sources : [for source in item.sources : source] if item.type == "IPv6"])
+    prefix_list_ids  = flatten([for item in var.vpc_security_group_sources : [for source in item.sources : source] if item.type == "PrefixLists"])
+    security_groups  = flatten([for item in var.vpc_security_group_sources : [for source in item.sources : source] if item.type == "SGs"])
     description      = "Allow Inbound HTTPS Traffic"
   }
   tags = merge(
