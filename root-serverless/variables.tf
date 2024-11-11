@@ -44,7 +44,7 @@ variable "encryption_policy_description" {
 variable "create_network_policy" {
   description = "Flag to determine if network policy should be created."
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "network_policy_name" {
