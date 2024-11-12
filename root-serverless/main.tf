@@ -46,10 +46,10 @@ resource "aws_opensearchserverless_security_policy" "public_network" {
         "ResourceType" = "collection",
         "Resource"     = ["collection/${var.name}"]
       },
-      {
-        "ResourceType" = "dashboard",
-        "Resource"     = ["collection/${var.name}"]
-      }
+      # {
+      #   "ResourceType" = "dashboard",
+      #   "Resource"     = ["collection/${var.name}"]
+      # }
     ],
     "AllowFromPublic" = true,
   }])
