@@ -28,7 +28,6 @@ module "opensearch_serverless" {
   use_standby_replicas         = var.use_standby_replicas
   type                         = var.type
   create_encryption_policy     = var.create_encryption_policy
-  encryption_policy_name       = var.encryption_policy_name
   ingress_rules                = var.ingress_rules
   egress_rules                 = var.egress_rules
   vpc_name                     = var.vpc_name
@@ -39,7 +38,6 @@ module "opensearch_serverless" {
   create_private_access        = true
   vpc_create_security_group    = true
   network_policy_type          = "AllPrivate"
-  vpc_security_group_ids       = var.vpc_security_group_ids
   data_lifecycle_policy_rules  = local.data_lifecycle_policy_rules
   vpc_security_group_name      = "arc-vpc-sg"
   access_policy_rules          = local.access_policy_rules

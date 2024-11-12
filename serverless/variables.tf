@@ -53,11 +53,6 @@ variable "vpc_id" {
   type        = string
 }
 
-variable "vpc_security_group_ids" {
-  description = "A list of security group IDs associated with the VPC endpoint."
-  type        = list(string)
-}
-
 variable "ingress_rules" {
   description = "A list of ingress rules for the security group."
   type = list(object({
