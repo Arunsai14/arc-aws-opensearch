@@ -13,16 +13,19 @@ variable "create_opensearch_serverless" {
 variable "name" {
   description = "Name of the OpenSearch domain"
   type        = string
+  default     = "arc-opensearch"
 }
 
 variable "environment" {
   type        = string
   description = "Name of the environment, i.e. dev, stage, prod"
+  default     = "dev"
 }
 
 variable "namespace" {
   type        = string
   description = "Namespace of the project, i.e. arc"
+  default     = "arc"
 }
 
 variable "engine_version" {
@@ -441,6 +444,7 @@ variable "use_standby_replicas" {
 variable "type" {
   description = "The type of OpenSearch collection."
   type        = string
+  default     = "TIMESERIES"
 }
 
 
