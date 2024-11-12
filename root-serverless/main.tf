@@ -76,7 +76,7 @@ resource "aws_opensearchserverless_vpc_endpoint" "this" {
   name               = var.vpc_name
   subnet_ids         = var.vpc_subnet_ids
   vpc_id             = var.vpc_id
-  security_group_ids = [aws_security_group.opensearch_sg[0].id]
+  security_group_ids = [aws_security_group.this[0].id]
 }
 
 # resource "aws_opensearchserverless_access_policy" "this" {
