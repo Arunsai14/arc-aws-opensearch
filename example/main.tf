@@ -33,7 +33,7 @@ module "terraform-aws-arc-tags" {
 
 module "opensearch" {
   source            = "../" 
-  create_opensearch_domain = false
+  create_opensearch = false
   region            = var.region
   domain_name       = var.domain_name
   engine_version     = var.engine_version
@@ -94,7 +94,7 @@ tags = merge(
 }
 
 module "opensearch_without_vpc" {
-  source = "../root-serverless"
+  source = "../"
 
   collection_name              = var.collection_name
   create_opensearchserverless  = true

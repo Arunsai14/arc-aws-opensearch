@@ -1,28 +1,25 @@
-variable "create_opensearch" {
-  description = "If true, creates OpenSearch domain"
-  type        = bool
-  default     = true
-}
-
-variable "create_opensearch_serverless" {
-  description = "If true, creates OpenSearch Serverless domain"
-  type        = bool
-  default     = false
-}
-
-variable "name" {
-  description = "Name of the OpenSearch domain"
+variable "region" {
+  description = "AWS region"
   type        = string
+  default     = "us-east-1"
+}
+
+variable "project_name" {
+  type        = string
+  default     = "sourcefuse"
+  description = "Project name"
 }
 
 variable "environment" {
   type        = string
-  description = "Name of the environment, i.e. dev, stage, prod"
+  default     = "dev"
+  description = "ID element. Usually used for region e.g. 'uw2', 'us-west-2', OR role 'prod', 'staging', 'dev', 'UAT'"
 }
 
-variable "namespace" {
+variable "domain_name" {
+  description = "Name of the OpenSearch domain"
   type        = string
-  description = "Namespace of the project, i.e. arc"
+   default    = "opensearch"
 }
 
 variable "engine_version" {
@@ -34,7 +31,7 @@ variable "engine_version" {
 variable "instance_type" {
   description = "Instance type for the OpenSearch domain"
   type        = string
-  default     = "m5.large.search"
+  default     = "m4.large.search"
 }
 
 variable "instance_count" {
@@ -58,7 +55,7 @@ variable "dedicated_master_enabled" {
 variable "dedicated_master_type" {
   description = "Instance type for the dedicated master node"
   type        = string
-  default     = "m5.large.search"
+  default     = "m4.large.search"
 }
 
 variable "dedicated_master_count" {
@@ -77,6 +74,12 @@ variable "warm_type" {
   description = "UltraWarm node instance type"
   type        = string
   default     = "ultrawarm1.medium.search"
+}
+
+variable "log_group_name" {
+  description = "The name of the CloudWatch Log Group"
+  type        = string
+  default     = "arc-example-log-group"
 }
 
 variable "retention_in_days" {
@@ -160,7 +163,7 @@ variable "enforce_https" {
 variable "tls_security_policy" {
   description = "TLS security policy for HTTPS endpoints"
   type        = string
-  default     = "Policy-Min-TLS-1-2-PFS-2023-10"
+  default     = "Policy-Min-TLS-1-2-2019-07"
 }
 
 variable "enable_custom_endpoint" {
@@ -200,9 +203,9 @@ variable "log_types" {
 }
 
 variable "access_policies" {
-  description = "Custom access policy for OpenSearch domain. If empty, default policy will be used"
+  description = "Access policy for the OpenSearch domain"
   type        = string
-  default     = ""
+  default     = null
 }
 
 variable "advanced_security_enabled" {
@@ -277,6 +280,12 @@ variable "cognito_identity_pool_id" {
   default     = ""
 }
 
+variable "cognito_role_arn" {
+  description = "Cognito Role ARN"
+  type        = string
+  default     = ""
+}
+
 variable "cognito_user_pool_id" {
   description = "Cognito User Pool ID"
   type        = string
@@ -304,6 +313,18 @@ variable "off_peak_minutes" {
 variable "tags" {
   description = "Tags to apply to resources"
   type        = map(string)
+}
+
+variable "cold_storage_enabled" {
+  description = "Flag to enable or disable cold storage options"
+  type        = bool
+  default     = false
+}
+
+variable "cold_storage_retention_period" {
+  description = "Retention period for cold storage in days"
+  type        = number
+  default     = 30  # Example default value
 }
 
 variable "enable_zone_awareness" {
@@ -339,7 +360,7 @@ variable "log_publishing_enabled" {
 variable "enable_vpc_options" {
   description = "Enable VPC options for the OpenSearch domain."
   type        = bool
-  default     = false
+  default     = false  # Set a default value or leave it out if it's required
 }
 
 variable "auto_software_update_enabled" {
@@ -378,7 +399,7 @@ variable "use_iam_arn_as_master_user" {
 variable "master_user_arn" {
   description = "The ARN of the IAM role for fine-grained access control. Required if use_iam_arn_as_master_user is true."
   type        = string
-  default     = ""
+  default     = "" 
 }
 
 variable "ingress_rules" {
@@ -389,7 +410,7 @@ variable "ingress_rules" {
     protocol    = string
     cidr_blocks = list(string)
   }))
-  default = []
+  default     = []
 }
 
 variable "egress_rules" {
@@ -400,7 +421,7 @@ variable "egress_rules" {
     protocol    = string
     cidr_blocks = list(string)
   }))
-  default = []
+  default     = []
 }
 
 variable "security_group_name" {
@@ -409,15 +430,33 @@ variable "security_group_name" {
   default     = ""
 }
 
+variable "rest_action_multi_allow_explicit_index" {
+  description = "Setting to control whether to allow explicit index usage in multi-document actions"
+  type        = string
+  default     = "false"
+}
 
-##################################################
-######## OpenSearch Serverless Domain  ###########
-##################################################
+variable "opensearch_cognito_role_name" {
+  description = "Name of the OpenSearch Cognito IAM role"
+  type        = string
+  default     = "opensearch-cognito-role"
+}
 
+variable "create_opensearch_domain" {
+  description = "Flag to create OpenSearch Serverless resources"
+  type        = bool
+  default     = true
+}
+
+
+############################################################################################
+###########################  create_opensearch_domain ######################################
+############################################################################################
 
 variable "collection_name" {
   description = "The name of the OpenSearch collection."
   type        = string
+  default     = ""
 }
 
 variable "description" {
@@ -441,8 +480,8 @@ variable "use_standby_replicas" {
 variable "type" {
   description = "The type of OpenSearch collection."
   type        = string
+  default     = "TIMESERIES"
 }
-
 
 variable "create_encryption_policy" {
   description = "Flag to determine if encryption policy should be created."
@@ -467,7 +506,6 @@ variable "vpc_subnet_ids" {
   type        = list(string)
   default     = []
 }
-
 
 variable "vpc_security_group_ids" {
   description = "A list of security group IDs for the VPC endpoint."
