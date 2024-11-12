@@ -2,7 +2,7 @@ locals {
     access_policy_rules = [
   {
     resource_type = "collection"
-    resource      = ["collection/${var.name}"]
+    resource      = ["collection/arc-public"]
     permissions   = ["aoss:CreateCollectionItems", "aoss:DeleteCollectionItems", "aoss:UpdateCollectionItems", "aoss:DescribeCollectionItems"]
   },
 ]
