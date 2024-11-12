@@ -2,7 +2,7 @@ data "aws_caller_identity" "current" {}
 
 resource "aws_opensearchserverless_collection" "this" {
   count = var.create_opensearchserverless == true ? 1 : 0
-  name             = var.name
+  name             = var.collection_name
   description      = var.description
   standby_replicas = var.use_standby_replicas ? "ENABLED" : "DISABLED"
   type             = var.type
@@ -12,14 +12,14 @@ resource "aws_opensearchserverless_collection" "this" {
 
 resource "aws_opensearchserverless_security_policy" "encryption" {
   count       = var.create_opensearchserverless == true && var.create_encryption_policy ? 1 : 0
-  name        = "${var.name}-encryption"
+  name        = "${var.collection_name}-encryption"
   type        = "encryption"
   description = "Encryption policy for OpenSearch collection"
   policy = jsonencode(merge(
     {
       "Rules" = [
         {
-          "Resource"     = ["collection/${var.name}"]
+          "Resource"     = ["collection/${var.collection_name}"]
           "ResourceType" = "collection"
         }
       ],
@@ -34,18 +34,18 @@ resource "aws_opensearchserverless_security_policy" "encryption" {
 # Public access policy
 resource "aws_opensearchserverless_security_policy" "public_network" {
   count       = var.create_opensearchserverless == true && var.create_public_access ? 1 : 0
-  name        = "${var.name}-public-policy" 
+  name        = "${var.collection_name}-public-policy" 
   type        = "network"
-  description = "Public access policy for ${var.name}"
+  description = "Public access policy for ${var.collection_name}"
   policy      = jsonencode([{
     "Rules" = [
       {
         "ResourceType" = "collection",
-        "Resource"     = ["collection/${var.name}"]
+        "Resource"     = ["collection/${var.collection_name}"]
       },
       {
         "ResourceType" = "dashboard",
-        "Resource"     = ["collection/${var.name}"]
+        "Resource"     = ["collection/${var.collection_name}"]
       },
     ],
     "AllowFromPublic" = true,
@@ -54,18 +54,18 @@ resource "aws_opensearchserverless_security_policy" "public_network" {
 
 resource "aws_opensearchserverless_security_policy" "private_network" {
   count       = var.create_opensearchserverless == true && var.create_private_access && !var.create_public_access ? 1 : 0 
-  name        = "${var.name}-private-policy"
+  name        = "${var.collection_name}-private-policy"
   type        = "network"
-  description = "Private VPC access policy for ${var.name}"
+  description = "Private VPC access policy for ${var.collection_name}"
   policy      = jsonencode([{
     "Rules" = [
       {
         "ResourceType" = "collection",
-        "Resource"     = ["collection/${var.name}"]
+        "Resource"     = ["collection/${var.collection_name}"]
       },
       {
         "ResourceType" = "dashboard",
-        "Resource"     = ["collection/${var.name}"]
+        "Resource"     = ["collection/${var.collection_name}"]
       }
     ],
     "AllowFromPublic" = false,
@@ -84,7 +84,7 @@ resource "aws_opensearchserverless_vpc_endpoint" "this" {
 
 resource "aws_iam_role" "opensearch_access_role" {
   count = var.create_opensearchserverless == true && var.create_access_policy ? 1 : 0 
-  name = "${var.name}-role"
+  name = "${var.collection_name}-role"
   assume_role_policy = jsonencode({
     "Version": "2012-10-17",
     "Statement": [
@@ -101,7 +101,7 @@ resource "aws_iam_role" "opensearch_access_role" {
 
 resource "aws_iam_policy" "opensearch_custom_policy" {
   count = var.create_opensearchserverless == true && var.create_access_policy ? 1 : 0 
-  name        = "${var.name}-os-custompolicy"
+  name        = "${var.collection_name}-os-custompolicy"
   description = "Custom policy for OpenSearch Serverless access"
   policy      = jsonencode({
     "Version": "2012-10-17",
@@ -129,7 +129,7 @@ resource "aws_iam_role_policy_attachment" "opensearch_access_policy_attachment" 
 
 resource "aws_opensearchserverless_access_policy" "this" {
   count       = var.create_opensearchserverless == true && var.create_access_policy ? 1 : 0
-  name        = "${var.name}-access-policy"
+  name        = "${var.collection_name}-access-policy"
   type        = "data"
   description = "Network policy description"
 
@@ -151,36 +151,19 @@ resource "aws_opensearchserverless_access_policy" "this" {
 
 resource "aws_opensearchserverless_lifecycle_policy" "this" {
   count       = var.create_opensearchserverless == true && var.create_data_lifecycle_policy ? 1 : 0
-  name        = "${var.name}-data-policy"
+  name        = "${var.collection_name}-data-policy"
   type        = "retention"
   description = "Data lifecycle policy description"
   policy      = jsonencode({
     Rules = [
       for rule in var.data_lifecycle_policy_rules : {
         ResourceType      = "index",
-        Resource          = [for index in rule.indexes : "index/${var.name}/${index}"],
+        Resource          = [for index in rule.indexes : "index/${var.collection_name}/${index}"],
         MinIndexRetention = rule.retention != "Unlimited" ? rule.retention : null
       }
     ]
   })
 }
-
-# resource "aws_opensearchserverless_lifecycle_policy" "this" {
-#   count       = var.create_data_lifecycle_policy ? 1 : 0
-#   name        = var.data_lifecycle_policy_name
-#   type        = "retention"
-#   description = "Data lifecycle policy description"
-  
-#   policy = jsonencode({
-#     Rules = [
-#       for rule in var.data_lifecycle_policy_rules : {
-#         ResourceType      = "index",
-#         Resource          = var.global_resource,  # Use global resource variable
-#         MinIndexRetention = var.global_retention
-#       }
-#     ]
-#   })
-# }
 
 
 ##################
@@ -213,3 +196,21 @@ resource "aws_security_group" "this" {
   }
   tags = var.tags
 }
+
+
+# resource "aws_opensearchserverless_lifecycle_policy" "this" {
+#   count       = var.create_data_lifecycle_policy ? 1 : 0
+#   name        = var.data_lifecycle_policy_name
+#   type        = "retention"
+#   description = "Data lifecycle policy description"
+  
+#   policy = jsonencode({
+#     Rules = [
+#       for rule in var.data_lifecycle_policy_rules : {
+#         ResourceType      = "index",
+#         Resource          = var.global_resource,  # Use global resource variable
+#         MinIndexRetention = var.global_retention
+#       }
+#     ]
+#   })
+# }

@@ -33,6 +33,7 @@ module "terraform-aws-arc-tags" {
 
 module "opensearch" {
   source            = "../" 
+  create_opensearch_domain = false
   region            = var.region
   domain_name       = var.domain_name
   engine_version     = var.engine_version
@@ -90,4 +91,23 @@ tags = merge(
     module.terraform-aws-arc-tags.tags
   )
 
+}
+
+module "opensearch_without_vpc" {
+  source = "../root-serverless"
+
+  name                         = "arc-public"
+  create_opensearchserverless  = true
+  use_standby_replicas         = var.use_standby_replicas
+  type                         = var.type
+  create_public_access         = true
+  create_access_policy         = true
+  create_data_lifecycle_policy = true
+  data_lifecycle_policy_rules  = local.data_lifecycle_policy_rules
+  access_policy_rules          = local.access_policy_rules
+  create_encryption_policy     = var.create_encryption_policy
+
+   tags = merge(
+    module.terraform-aws-arc-tags.tags
+  )
 }

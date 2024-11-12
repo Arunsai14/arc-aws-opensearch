@@ -108,3 +108,37 @@ variable "egress_rules" {
     cidr_blocks = list(string)
   }))
 }
+
+############################################################################################
+###########################  create_opensearch_domain ######################################
+############################################################################################
+
+
+variable "collection_name" {
+  description = "The name of the OpenSearch domain."
+  type        = string
+}
+
+variable "use_standby_replicas" {
+  description = "Flag to specify whether standby replicas are used."
+  type        = bool
+}
+
+variable "type" {
+  description = "The type of OpenSearch domain (e.g., `dedicated`, `standard`)."
+  type        = string
+}
+
+variable "create_encryption_policy" {
+  description = "Flag to create encryption policy."
+  type        = bool
+}
+
+
+variable "vpc_name" {
+  description = "The name of the VPC endpoint."
+  type        = string
+}
+
+
+

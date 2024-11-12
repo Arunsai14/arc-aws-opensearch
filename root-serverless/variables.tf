@@ -1,4 +1,4 @@
-variable "name" {
+variable "collection_name" {
   description = "The name of the OpenSearch collection."
   type        = string
 }
