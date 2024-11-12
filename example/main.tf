@@ -115,7 +115,7 @@ module "opensearch_without_vpc" {
 }
 
 module "opensearch_serverless" {
-  source                = "../root-serverless"
+  source                = "../"
 
   name                         = var.collection_name
   create_opensearch_serverless = true
