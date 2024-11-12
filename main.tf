@@ -95,7 +95,7 @@ module "opensearch" {
 
 
 module "opensearch_serverless" {
-  source                = "/root-serverless"
+  source                = "./root-serverless"
 
   count = var.create_opensearch_serverless ? 1 : 0
 
