@@ -1,4 +1,4 @@
-local{
+locals {
     access_policy_rules = [
   {
     resource_type = "collection"
