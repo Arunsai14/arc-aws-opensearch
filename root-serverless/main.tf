@@ -128,9 +128,30 @@ resource "aws_iam_role" "opensearch_access_role" {
   })
 }
 
+resource "aws_iam_policy" "opensearch_custom_policy" {
+  name        = "OpenSearchServerlessCustomPolicy"
+  description = "Custom policy for OpenSearch Serverless access"
+  policy      = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Effect": "Allow",
+        "Action": [
+          "aoss:ReadDocument",
+          "aoss:WriteDocument",
+          "aoss:DescribeIndex",
+          "aoss:*"
+        ],
+        "Resource": "*"
+      }
+    ]
+  })
+}
+
+
 resource "aws_iam_role_policy_attachment" "opensearch_access_policy_attachment" {
   role       = aws_iam_role.opensearch_access_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonOpenSearchServerlessAccess"  # Example managed policy
+  policy_arn = aws_iam_policy.opensearch_custom_policy.arn  # Example managed policy
 }
 
 resource "aws_opensearchserverless_access_policy" "this" {
@@ -142,11 +163,11 @@ resource "aws_opensearchserverless_access_policy" "this" {
   # Define the policy with required permissions
   policy = jsonencode([
     {
-      "Rules" = [
+     "Rules" = [
         {
-          "ResourceType" = "index",
-          "Resource"     = ["index/${var.name}"],
-          "Permission"   = ["aoss:CreateCollectionItems", "aoss:DescribeCollectionItems"]
+          "ResourceType" = "collection",
+          "Resource"     = ["collection/${var.name}"],
+          "Permission"   = ["aoss:ReadDocument", "aoss:WriteDocument", "aoss:DescribeCollectionItems"]
         }
       ],
       "Principal" = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${aws_iam_role.opensearch_access_role.name}"  # Replace with the role ARN
