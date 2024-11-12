@@ -36,12 +36,6 @@ variable "encryption_policy_name" {
   type        = string
 }
 
-variable "encryption_policy_description" {
-  description = "Description of the encryption policy"
-  type        = string
-  default     = "Encryption policy for OpenSearch collection"
-}
-
 variable "create_network_policy" {
   description = "Flag to determine if network policy should be created."
   type        = bool
@@ -52,12 +46,6 @@ variable "network_policy_name" {
   description = "The name of the network policy."
   type        = string
   default   = null
-}
-
-variable "network_policy_description" {
-  description = "The description of the network policy."
-  type        = string
-  default     = "Network policy description"
 }
 
 variable "vpc_name" {
@@ -96,12 +84,6 @@ variable "access_policy_name" {
    default    = "arc-access-policy"
 }
 
-variable "access_policy_description" {
-  description = "The description of the access policy."
-  type        = string
-  default     = "Network policy description"
-}
-
 variable "access_policy_rules" {
   description = "List of rules for the access policy."
   type        = list(object({
@@ -123,12 +105,6 @@ variable "data_lifecycle_policy_name" {
   description = "The name of the data lifecycle policy."
   type        = string
   default     = "data-lifecycle-policy"
-}
-
-variable "data_lifecycle_policy_description" {
-  description = "The description of the data lifecycle policy."
-  type        = string
-   default     = "Data lifecycle policy description"
 }
 
 variable "data_lifecycle_policy_rules" {
@@ -156,11 +132,6 @@ variable "security_config_name" {
   default     = "arc-security-config"
 }
 
-variable "security_config_description" {
-  description = "The description of the security configuration."
-  type        = string
-  default     = "Security config description"
-}
 
 variable "saml_metadata" {
   description = "The path to the SAML metadata file."
