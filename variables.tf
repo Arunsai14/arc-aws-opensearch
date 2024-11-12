@@ -7,7 +7,7 @@ variable "create_opensearch" {
 variable "create_opensearch_serverless" {
   description = "If true, creates OpenSearch Serverless domain"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "name" {
