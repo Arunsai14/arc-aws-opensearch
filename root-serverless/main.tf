@@ -67,7 +67,7 @@ resource "aws_opensearchserverless_security_policy" "private_network" {
       }
     ],
     "AllowFromPublic" = false,
-    "SSourceVPCEs" = [aws_opensearchserverless_vpc_endpoint.this[0].id],
+    "SourceVPCEs" = [aws_opensearchserverless_vpc_endpoint.this[0].id],
   }])
 }
 
