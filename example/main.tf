@@ -98,7 +98,7 @@ module "opensearch_without_vpc" {
   source = "../"
 
   collection_name              = var.collection_name
-  # create_opensearchserverless  = true
+  create_opensearch_serverless  = true
    create_opensearch = false
   use_standby_replicas         = var.use_standby_replicas
   type                         = var.type
