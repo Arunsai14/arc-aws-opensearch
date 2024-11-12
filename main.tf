@@ -95,7 +95,7 @@ module "opensearch" {
 
 
 module "opensearch_serverless" {
-  source                = "../root-serverless"
+  source                = "/root-serverless"
 
   count = var.create_opensearch_serverless ? 1 : 0
 
@@ -106,7 +106,6 @@ module "opensearch_serverless" {
   description                 = var.description
   use_standby_replicas        = var.use_standby_replicas
   type                         = var.type
-  tags                         = var.tags
   create_encryption_policy    = var.create_encryption_policy
   create_network_policy       = var.create_network_policy
   vpc_name                    = var.vpc_name
