@@ -163,11 +163,11 @@ resource "aws_opensearchserverless_access_policy" "this" {
   # Define the policy with required permissions
   policy = jsonencode([
     {
-     "Rules" = [
+      "Rules" = [
         {
           "ResourceType" = "collection",
-          "Resource"     = ["collection/${var.name}"],
-          "Permission"   = ["aoss:ReadDocument", "aoss:WriteDocument", "aoss:DescribeCollectionItems"]
+          "Resource"     = ["collection/${var.name}"],  # Ensure this matches your collection naming
+          "Permission"   = ["aoss:CreateCollectionItems", "aoss:DeleteCollectionItems", "aoss:UpdateCollectionItems", "aoss:DescribeCollectionItems"]
         }
       ],
       "Principal" = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${aws_iam_role.opensearch_access_role.name}"  # Replace with the role ARN
