@@ -12,7 +12,7 @@ resource "aws_opensearchserverless_collection" "this" {
 ######### encryption policy #########
 resource "aws_opensearchserverless_security_policy" "encryption" {
   count       = var.create_encryption_policy ? 1 : 0
-  name        = "${var.namespace}/${var.environment}-encryption"
+  name        = "${var.namespace}-${var.environment}-encryption"
   type        = "encryption"
   description = "Encryption policy for OpenSearch collection"
   policy = jsonencode(merge(
@@ -34,7 +34,7 @@ resource "aws_opensearchserverless_security_policy" "encryption" {
 ########## Public access policy #########
 resource "aws_opensearchserverless_security_policy" "public_network" {
   count       = var.create_public_access ? 1 : 0
-  name        = "${var.namespace}/${var.environment}-public-policy" 
+  name        = "${var.namespace}-${var.environment}-public-policy" 
   type        = "network"
   description = "Public access policy for ${var.collection_name}"
   policy      = jsonencode([{
@@ -55,7 +55,7 @@ resource "aws_opensearchserverless_security_policy" "public_network" {
 ########## Private access policy #########
 resource "aws_opensearchserverless_security_policy" "private_network" {
   count       = var.create_private_access && !var.create_public_access ? 1 : 0 
-  name        = "${var.namespace}/${var.environment}-private-policy"
+  name        = "${var.namespace}-${var.environment}-private-policy"
   type        = "network"
   description = "Private VPC access policy for ${var.collection_name}"
   policy      = jsonencode([{
@@ -86,7 +86,7 @@ resource "aws_opensearchserverless_vpc_endpoint" "this" {
 ########## access role #########
 resource "aws_iam_role" "opensearch_access_role" {
   count = var.create_access_policy ? 1 : 0 
-  name = "${var.namespace}/${var.environment}-role"
+  name = "${var.namespace}-${var.environment}-role"
   assume_role_policy = jsonencode({
     "Version": "2012-10-17",
     "Statement": [
@@ -104,7 +104,7 @@ resource "aws_iam_role" "opensearch_access_role" {
 ########## role cuetom policy #########
 resource "aws_iam_policy" "opensearch_custom_policy" {
   count = var.create_access_policy ? 1 : 0 
-  name        = "${var.namespace}/${var.environment}-os-custompolicy"
+  name        = "${var.namespace}-${var.environment}-os-custompolicy"
   description = "Custom policy for OpenSearch Serverless access"
   policy      = jsonencode({
     "Version": "2012-10-17",
@@ -133,7 +133,7 @@ resource "aws_iam_role_policy_attachment" "opensearch_access_policy_attachment" 
 ########## access policy #########
 resource "aws_opensearchserverless_access_policy" "this" {
   count       = var.create_access_policy ? 1 : 0
-  name        = "${var.namespace}/${var.environment}-access-policy"
+  name        = "${var.namespace}-${var.environment}-access-policy"
   type        = "data"
   description = "Network policy description"
 
@@ -156,7 +156,7 @@ resource "aws_opensearchserverless_access_policy" "this" {
 ########## lifecycle policy #########
 resource "aws_opensearchserverless_lifecycle_policy" "this" {
   count       = var.create_data_lifecycle_policy ? 1 : 0
-  name        = "${var.namespace}/${var.environment}-data-policy"
+  name        = "${var.namespace}-${var.environment}-data-policy"
   type        = "retention"
   description = "Data lifecycle policy description"
   policy      = jsonencode({
