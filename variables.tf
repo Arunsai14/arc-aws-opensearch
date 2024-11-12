@@ -456,6 +456,7 @@ variable "create_opensearch_domain" {
 variable "collection_name" {
   description = "The name of the OpenSearch collection."
   type        = string
+  default     = ""
 }
 
 variable "description" {
@@ -479,6 +480,7 @@ variable "use_standby_replicas" {
 variable "type" {
   description = "The type of OpenSearch collection."
   type        = string
+  default     = "TIMESERIES"
 }
 
 variable "create_encryption_policy" {
