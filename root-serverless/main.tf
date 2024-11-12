@@ -11,7 +11,7 @@ resource "aws_opensearchserverless_collection" "this" {
 
 resource "aws_opensearchserverless_security_policy" "encryption" {
   count       = var.create_encryption_policy ? 1 : 0
-  name        = "${var.name}-encryption-policy"
+  name        = "${var.name}-encryption"
   type        = "encryption"
   description = "Encryption policy for OpenSearch collection"
   policy = jsonencode(merge(
@@ -154,7 +154,7 @@ resource "aws_opensearchserverless_access_policy" "this" {
 
 resource "aws_opensearchserverless_lifecycle_policy" "this" {
   count       = var.create_data_lifecycle_policy ? 1 : 0
-  name        = "${var.name}-data-lifecycle-policy"
+  name        = "${var.name}-data-policy"
   type        = "retention"
   description = "Data lifecycle policy description"
   policy      = jsonencode({
