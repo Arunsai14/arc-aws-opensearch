@@ -1,3 +1,5 @@
+data "aws_caller_identity" "current" {}
+
 resource "aws_opensearchserverless_collection" "this" {
   name             = var.name
   description      = var.description
@@ -142,21 +144,12 @@ resource "aws_opensearchserverless_access_policy" "this" {
     {
       "Rules" = [
         {
-          "ResourceType" = "collection",
-          "Resource"     = ["collection/${var.name}"],
-          "Permission"   = ["aoss:ReadDocument", "aoss:WriteDocument"]
-        },
-        {
-          "ResourceType" = "dashboard",
-          "Resource"     = ["collection/${var.name}"],
-          "Permission"   = ["aoss:ReadDocument", "aoss:DescribeCollection"]
+          "ResourceType" = "index",
+          "Resource"     = ["index/${var.name}"],
+          "Permission"   = ["aoss:CreateCollectionItems", "aoss:DescribeCollectionItems"]
         }
       ],
-      "Principal" = [
-        {
-          "AWS": [aws_iam_role.opensearch_access_role.arn]  # Referencing the created IAM role ARN
-        }
-      ]
+      "Principal" = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${aws_iam_role.opensearch_access_role.name}"  # Replace with the role ARN
     }
   ])
 }
