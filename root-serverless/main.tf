@@ -104,7 +104,7 @@ resource "aws_iam_role" "opensearch_access_role" {
 
 resource "aws_iam_policy" "opensearch_custom_policy" {
   count = var.create_access_policy ? 1 : 0 
-  name        = "OpenSearchServerlessCustomPolicy"
+  name        = "${var.name}-os-custompolicy"
   description = "Custom policy for OpenSearch Serverless access"
   policy      = jsonencode({
     "Version": "2012-10-17",
