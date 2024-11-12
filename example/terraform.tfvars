@@ -62,7 +62,7 @@
 
 region               = "us-east-2"
 vpc_id               = "vpc-024aff0fdd1a1d6fe"
-name                         = "arc-opensearch-domain"
+collection_name                        = "arc-opensearch-domain"
 use_standby_replicas         = true
 type                         = "TIMESERIES"
 create_encryption_policy     = true

@@ -16,10 +16,10 @@ variable "environment" {
   description = "ID element. Usually used for region e.g. 'uw2', 'us-west-2', OR role 'prod', 'staging', 'dev', 'UAT'"
 }
 
-variable "domain_name" {
-  description = "Name of the OpenSearch domain"
-  type        = string
-}
+# variable "domain_name" {
+#   description = "Name of the OpenSearch domain"
+#   type        = string
+# }
 
 variable "engine_version" {
   description = "OpenSearch or Elasticsearch engine version"
@@ -44,10 +44,10 @@ variable "vpc_id" {
   type        = string
 }
 
-variable "allowed_cidr_blocks" {
-  description = "List of CIDR blocks allowed to access the domain"
-  type        = list(string)
-}
+# variable "allowed_cidr_blocks" {
+#   description = "List of CIDR blocks allowed to access the domain"
+#   type        = list(string)
+# }
 
 variable "ebs_enabled" {
   description = "Whether EBS is enabled for the domain"
@@ -79,15 +79,15 @@ variable "throughput" {
   default     = null
 }
 
-variable "subnet_ids" {
-  description = "List of subnet IDs for the OpenSearch domain"
-  type        = list(string)
-}
+# variable "subnet_ids" {
+#   description = "List of subnet IDs for the OpenSearch domain"
+#   type        = list(string)
+# }
 
-variable "access_policy" {
-  description = "Access policy for the OpenSearch domain"
-  type        = string
-}
+# variable "access_policy" {
+#   description = "Access policy for the OpenSearch domain"
+#   type        = string
+# }
 
 variable "ingress_rules" {
   description = "A list of ingress rules for the security group."

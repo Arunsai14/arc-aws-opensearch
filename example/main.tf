@@ -96,7 +96,7 @@ tags = merge(
 module "opensearch_without_vpc" {
   source = "../root-serverless"
 
-  name                         = "arc-public"
+  name                         = var.collection_name
   create_opensearchserverless  = true
   use_standby_replicas         = var.use_standby_replicas
   type                         = var.type
