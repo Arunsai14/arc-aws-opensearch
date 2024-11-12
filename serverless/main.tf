@@ -53,7 +53,6 @@ module "opensearch_without_vpc" {
   description                  = var.description
   use_standby_replicas         = var.use_standby_replicas
   type                         = var.type
-  use_standby_replicas         = true
   create_public_access         = true
   create_access_policy         = true
   create_data_lifecycle_policy = true
