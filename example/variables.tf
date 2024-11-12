@@ -19,6 +19,7 @@ variable "environment" {
 variable "domain_name" {
   description = "Name of the OpenSearch domain"
   type        = string
+  default     = "arc-opensearch"
 }
 
 variable "engine_version" {
@@ -82,6 +83,7 @@ variable "throughput" {
 variable "subnet_ids" {
   description = "List of subnet IDs for the OpenSearch domain"
   type        = list(string)
+  default     = null
 }
 
 # variable "access_policy" {
