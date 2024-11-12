@@ -11,13 +11,26 @@ encryption_policy_description = "Encryption policy for OpenSearch domain"
 vpc_name                    = "vpc-test"
 vpc_security_group_ids      = ["sg-0fa6b2a413e945f0a"]
 
-vpc_security_group_sources = [
+ingress_rules = [
   {
-    type    = "IPv4"
-    sources = ["192.168.1.0/24"]
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   },
   {
-    type    = "IPv6"
-    sources = ["2001:db8::/32"]
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+]
+
+egress_rules = [
+  {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1" # "-1" allows all protocols
+    cidr_blocks = ["0.0.0.0/0"]
   }
 ]

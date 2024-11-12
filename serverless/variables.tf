@@ -63,7 +63,7 @@ variable "vpc_name" {
   type        = string
 }
 
-variable "vpc_vpc_id" {
+variable "vpc_id" {
   description = "The VPC ID to create the VPC endpoint."
   type        = string
 }
@@ -73,10 +73,25 @@ variable "vpc_security_group_ids" {
   type        = list(string)
 }
 
-variable "vpc_security_group_sources" {
-  description = "The security group sources for VPC endpoint."
+variable "ingress_rules" {
+  description = "A list of ingress rules for the security group."
   type = list(object({
-    type    = string
-    sources = list(string)
+    from_port   = number
+    to_port     = number
+    protocol    = string
+    cidr_blocks = list(string)
   }))
+  default     = []
 }
+
+variable "egress_rules" {
+  description = "A list of egress rules for the security group."
+  type = list(object({
+    from_port   = number
+    to_port     = number
+    protocol    = string
+    cidr_blocks = list(string)
+  }))
+  default     = []
+}
+

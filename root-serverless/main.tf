@@ -75,7 +75,7 @@ resource "aws_opensearchserverless_vpc_endpoint" "this" {
   count              = var.create_private_access && !var.create_public_access ? 1 : 0  # Only create VPC endpoint for private access
   name               = var.vpc_name
   subnet_ids         = var.vpc_subnet_ids
-  vpc_id             = var.vpc_vpc_id
+  vpc_id             = var.vpc_id
   security_group_ids = var.vpc_security_group_ids
 }
 
@@ -146,22 +146,27 @@ resource "aws_opensearchserverless_security_config" "this" {
 resource "aws_security_group" "this" {
   count       = var.create_network_policy && var.network_policy_type != "AllPublic" && var.vpc_create_security_group ? 1 : 0
   name        = var.vpc_security_group_name
-  description = var.vpc_security_group_description
-  vpc_id      = var.vpc_vpc_id
-  ingress {
-    from_port        = 443
-    to_port          = 443
-    protocol         = "tcp"
-    cidr_blocks      = flatten([for item in var.vpc_security_group_sources : [for source in item.sources : source] if item.type == "IPv4"])
-    ipv6_cidr_blocks = flatten([for item in var.vpc_security_group_sources : [for source in item.sources : source] if item.type == "IPv6"])
-    prefix_list_ids  = flatten([for item in var.vpc_security_group_sources : [for source in item.sources : source] if item.type == "PrefixLists"])
-    security_groups  = flatten([for item in var.vpc_security_group_sources : [for source in item.sources : source] if item.type == "SGs"])
-    description      = "Allow Inbound HTTPS Traffic"
-  }
-  tags = merge(
-    var.tags,
-    {
-      Name : "${var.name}-sg"
+  description = "Security group for the OpenSearch collection"
+  vpc_id      = var.vpc_id
+
+  dynamic "ingress" {
+    for_each = var.ingress_rules
+    content {
+      from_port   = ingress.value.from_port
+      to_port     = ingress.value.to_port
+      protocol    = ingress.value.protocol
+      cidr_blocks = ingress.value.cidr_blocks
     }
-  )
+  }
+
+  dynamic "egress" {
+    for_each = var.egress_rules
+    content {
+      from_port   = egress.value.from_port
+      to_port     = egress.value.to_port
+      protocol    = egress.value.protocol
+      cidr_blocks = egress.value.cidr_blocks
+    }
+  }
+  tags = var.tags
 }

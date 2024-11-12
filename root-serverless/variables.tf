@@ -72,7 +72,7 @@ variable "vpc_subnet_ids" {
   default     = []
 }
 
-variable "vpc_vpc_id" {
+variable "vpc_id" {
   description = "The VPC ID for the VPC endpoint."
   type        = string
   default   = null
@@ -186,15 +186,28 @@ variable "saml_session_timeout" {
   default     = "3600"
 }
 
-variable "vpc_security_group_sources" {
-  description = "List of security group sources for VPC endpoint."
-  type        = list(object({
-    type    = string
-    sources = list(string)
+variable "ingress_rules" {
+  description = "A list of ingress rules for the security group."
+  type = list(object({
+    from_port   = number
+    to_port     = number
+    protocol    = string
+    cidr_blocks = list(string)
   }))
-
-  default = []
+  default     = []
 }
+
+variable "egress_rules" {
+  description = "A list of egress rules for the security group."
+  type = list(object({
+    from_port   = number
+    to_port     = number
+    protocol    = string
+    cidr_blocks = list(string)
+  }))
+  default     = []
+}
+
 
 variable "vpc_create_security_group" {
   description = "Flag to determine if a security group for VPC endpoint should be created."
@@ -208,11 +221,6 @@ variable "vpc_security_group_name" {
   default     = "opensearch-vpc-sg"
 }
 
-variable "vpc_security_group_description" {
-  description = "The description of the VPC endpoint security group."
-  type        = string
-  default     = "Security group for VPC endpoint"
-}
 variable "network_policy_type" {
   description = "The network policy type, e.g., 'AllPublic' or another specified type."
   type        = string
