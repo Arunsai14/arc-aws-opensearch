@@ -126,8 +126,8 @@ resource "aws_iam_policy" "opensearch_custom_policy" {
 
 resource "aws_iam_role_policy_attachment" "opensearch_access_policy_attachment" {
   count = var.create_access_policy ? 1 : 0 
-  role       = aws_iam_role.opensearch_access_role.name
-  policy_arn = aws_iam_policy.opensearch_custom_policy.arn 
+  role       = aws_iam_role.opensearch_access_role[0].name
+  policy_arn = aws_iam_policy.opensearch_custom_policy[0].arn 
 } 
 
 resource "aws_opensearchserverless_access_policy" "this" {
@@ -147,7 +147,7 @@ resource "aws_opensearchserverless_access_policy" "this" {
         }
       ],
     "Principal" = [
-      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${aws_iam_role.opensearch_access_role.name}"
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${aws_iam_role.opensearch_access_role[0].name}"
     ]
   }])
 }
