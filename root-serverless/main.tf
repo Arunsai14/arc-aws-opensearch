@@ -20,10 +20,6 @@ resource "aws_opensearchserverless_security_policy" "encryption" {
         {
           "Resource"     = ["collection/${var.name}"]
           "ResourceType" = "collection"
-        },
-        {
-          "ResourceType" = "dashboard",
-          "Resource"     = ["collection/${var.name}"]
         }
       ],
     },
@@ -46,10 +42,10 @@ resource "aws_opensearchserverless_security_policy" "public_network" {
         "ResourceType" = "collection",
         "Resource"     = ["collection/${var.name}"]
       },
-      # {
-      #   "ResourceType" = "dashboard",
-      #   "Resource"     = ["collection/${var.name}"]
-      # }
+      {
+        "ResourceType" = "dashboard",
+        "Resource"     = ["collection/${var.name}"]
+      },
     ],
     "AllowFromPublic" = true,
   }])
