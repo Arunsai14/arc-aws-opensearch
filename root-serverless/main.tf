@@ -1,6 +1,7 @@
 data "aws_caller_identity" "current" {}
 
 resource "aws_opensearchserverless_collection" "this" {
+  count = var.create_opensearchserverless == true ? 1 : 0
   name             = var.name
   description      = var.description
   standby_replicas = var.use_standby_replicas ? "ENABLED" : "DISABLED"
@@ -10,7 +11,7 @@ resource "aws_opensearchserverless_collection" "this" {
 }
 
 resource "aws_opensearchserverless_security_policy" "encryption" {
-  count       = var.create_encryption_policy ? 1 : 0
+  count       = var.create_opensearchserverless == true && var.create_encryption_policy ? 1 : 0
   name        = "${var.name}-encryption"
   type        = "encryption"
   description = "Encryption policy for OpenSearch collection"
@@ -32,7 +33,7 @@ resource "aws_opensearchserverless_security_policy" "encryption" {
 
 # Public access policy
 resource "aws_opensearchserverless_security_policy" "public_network" {
-  count       = var.create_public_access ? 1 : 0
+  count       = var.create_opensearchserverless == true && var.create_public_access ? 1 : 0
   name        = "${var.name}-public-policy" 
   type        = "network"
   description = "Public access policy for ${var.name}"
@@ -52,7 +53,7 @@ resource "aws_opensearchserverless_security_policy" "public_network" {
 }
 
 resource "aws_opensearchserverless_security_policy" "private_network" {
-  count       = var.create_private_access && !var.create_public_access ? 1 : 0  # it's only created if public access is disabled
+  count       = var.create_opensearchserverless == true && var.create_private_access && !var.create_public_access ? 1 : 0 
   name        = "${var.name}-private-policy"
   type        = "network"
   description = "Private VPC access policy for ${var.name}"
@@ -73,7 +74,7 @@ resource "aws_opensearchserverless_security_policy" "private_network" {
 }
 
 resource "aws_opensearchserverless_vpc_endpoint" "this" {
-  count              = var.create_private_access && !var.create_public_access ? 1 : 0 
+  count              = var.create_opensearchserverless == true && var.create_private_access && !var.create_public_access ? 1 : 0 
   name               = var.vpc_name
   subnet_ids         = var.vpc_subnet_ids
   vpc_id             = var.vpc_id
@@ -82,7 +83,7 @@ resource "aws_opensearchserverless_vpc_endpoint" "this" {
 
 
 resource "aws_iam_role" "opensearch_access_role" {
-  count = var.create_access_policy ? 1 : 0 
+  count = var.create_opensearchserverless == true && var.create_access_policy ? 1 : 0 
   name = "${var.name}-role"
   assume_role_policy = jsonencode({
     "Version": "2012-10-17",
@@ -99,7 +100,7 @@ resource "aws_iam_role" "opensearch_access_role" {
 }
 
 resource "aws_iam_policy" "opensearch_custom_policy" {
-  count = var.create_access_policy ? 1 : 0 
+  count = var.create_opensearchserverless == true && var.create_access_policy ? 1 : 0 
   name        = "${var.name}-os-custompolicy"
   description = "Custom policy for OpenSearch Serverless access"
   policy      = jsonencode({
@@ -121,13 +122,13 @@ resource "aws_iam_policy" "opensearch_custom_policy" {
 
 
 resource "aws_iam_role_policy_attachment" "opensearch_access_policy_attachment" {
-  count = var.create_access_policy ? 1 : 0 
+  count      = var.create_opensearchserverless == true && var.create_access_policy ? 1 : 0 
   role       = aws_iam_role.opensearch_access_role[0].name
   policy_arn = aws_iam_policy.opensearch_custom_policy[0].arn 
 } 
 
 resource "aws_opensearchserverless_access_policy" "this" {
-  count       = var.create_access_policy ? 1 : 0
+  count       = var.create_opensearchserverless == true && var.create_access_policy ? 1 : 0
   name        = "${var.name}-access-policy"
   type        = "data"
   description = "Network policy description"
@@ -149,7 +150,7 @@ resource "aws_opensearchserverless_access_policy" "this" {
 }
 
 resource "aws_opensearchserverless_lifecycle_policy" "this" {
-  count       = var.create_data_lifecycle_policy ? 1 : 0
+  count       = var.create_opensearchserverless == true && var.create_data_lifecycle_policy ? 1 : 0
   name        = "${var.name}-data-policy"
   type        = "retention"
   description = "Data lifecycle policy description"
@@ -186,7 +187,7 @@ resource "aws_opensearchserverless_lifecycle_policy" "this" {
 # Security Group
 ##################
 resource "aws_security_group" "this" {
-  count       = var.create_network_policy && var.network_policy_type != "AllPublic" && var.vpc_create_security_group ? 1 : 0
+  count       = var.create_opensearchserverless == true && var.create_network_policy && var.network_policy_type != "AllPublic" && var.vpc_create_security_group ? 1 : 0
   name        = var.vpc_security_group_name
   description = "Security group for the OpenSearch collection"
   vpc_id      = var.vpc_id

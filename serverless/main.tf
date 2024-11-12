@@ -24,7 +24,6 @@ data "aws_route_tables" "selected" {
 #   source                = "../root-serverless"
 
 #   name                         = var.name
-#   description                  = var.description
 #   use_standby_replicas         = var.use_standby_replicas
 #   type                         = var.type
 #   create_encryption_policy     = var.create_encryption_policy
@@ -50,7 +49,7 @@ module "opensearch_without_vpc" {
   source = "../root-serverless"
 
   name                         = "arc-public"
-  description                  = var.description
+  create_opensearchserverless  = false
   use_standby_replicas         = var.use_standby_replicas
   type                         = var.type
   create_public_access         = true

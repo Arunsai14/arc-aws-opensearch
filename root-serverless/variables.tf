@@ -6,6 +6,13 @@ variable "name" {
 variable "description" {
   description = "A description for the OpenSearch collection."
   type        = string
+  default     = "OpenSearch collection domain for logs and search"
+}
+
+variable "create_opensearchserverless" {
+  description = "Flag to create OpenSearch Serverless resources"
+  type        = bool
+  default     = false
 }
 
 variable "use_standby_replicas" {

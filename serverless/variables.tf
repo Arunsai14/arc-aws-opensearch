@@ -21,11 +21,6 @@ variable "name" {
   type        = string
 }
 
-variable "description" {
-  description = "The description of the OpenSearch domain."
-  type        = string
-}
-
 variable "use_standby_replicas" {
   description = "Flag to specify whether standby replicas are used."
   type        = bool
