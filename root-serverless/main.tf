@@ -33,7 +33,7 @@ resource "aws_opensearchserverless_security_policy" "encryption" {
 # Public access policy
 resource "aws_opensearchserverless_security_policy" "public_network" {
   count       = var.create_public_access ? 1 : 0
-  name        = "${var.collection_name}-public-policy" 
+  name        = "${var.collection_name}-public" 
   type        = "network"
   description = "Public access policy for ${var.collection_name}"
   policy      = jsonencode([{
@@ -128,7 +128,7 @@ resource "aws_iam_role_policy_attachment" "opensearch_access_policy_attachment" 
 
 resource "aws_opensearchserverless_access_policy" "this" {
   count       = var.create_access_policy ? 1 : 0
-  name        = "${var.collection_name}-access-policy"
+  name        = "${var.collection_name}-access"
   type        = "data"
   description = "Network policy description"
 
@@ -150,7 +150,7 @@ resource "aws_opensearchserverless_access_policy" "this" {
 
 resource "aws_opensearchserverless_lifecycle_policy" "this" {
   count       = var.create_data_lifecycle_policy ? 1 : 0
-  name        = "${var.collection_name}-data-policy"
+  name        = "${var.collection_name}-data"
   type        = "retention"
   description = "Data lifecycle policy description"
   policy      = jsonencode({
