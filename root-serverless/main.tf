@@ -11,7 +11,7 @@ resource "aws_opensearchserverless_collection" "this" {
 
 resource "aws_opensearchserverless_security_policy" "encryption" {
   count       = var.create_encryption_policy ? 1 : 0
-  name        = coalesce(var.encryption_policy_name, "${var.name}-encryption-policy")
+  name        = "${var.name}-encryption-policy"
   type        = "encryption"
   description = "Encryption policy for OpenSearch collection"
   policy = jsonencode(merge(
@@ -20,8 +20,12 @@ resource "aws_opensearchserverless_security_policy" "encryption" {
         {
           "Resource"     = ["collection/${var.name}"]
           "ResourceType" = "collection"
+        },
+        {
+          "ResourceType" = "dashboard",
+          "Resource"     = ["collection/${var.name}"]
         }
-      ]
+      ],
     },
     {
       "AWSOwnedKey" = true  
@@ -33,7 +37,7 @@ resource "aws_opensearchserverless_security_policy" "encryption" {
 # Public access policy
 resource "aws_opensearchserverless_security_policy" "public_network" {
   count       = var.create_public_access ? 1 : 0
-  name        = "${substr(var.name, 0, 28)}-public-policy"  # Limit to 28 characters for the suffix
+  name        = "${var.name}-public-policy" 
   type        = "network"
   description = "Public access policy for ${var.name}"
   policy      = jsonencode([{
@@ -51,10 +55,9 @@ resource "aws_opensearchserverless_security_policy" "public_network" {
   }])
 }
 
-# Private access policy - this won't create if public access is enabled
 resource "aws_opensearchserverless_security_policy" "private_network" {
   count       = var.create_private_access && !var.create_public_access ? 1 : 0  # it's only created if public access is disabled
-  name        = "${substr(var.name, 0, 28)}-private-policy"
+  name        = "${var.name}-private-policy"
   type        = "network"
   description = "Private VPC access policy for ${var.name}"
   policy      = jsonencode([{
@@ -74,53 +77,24 @@ resource "aws_opensearchserverless_security_policy" "private_network" {
 }
 
 resource "aws_opensearchserverless_vpc_endpoint" "this" {
-  count              = var.create_private_access && !var.create_public_access ? 1 : 0  # Only create VPC endpoint for private access
+  count              = var.create_private_access && !var.create_public_access ? 1 : 0 
   name               = var.vpc_name
   subnet_ids         = var.vpc_subnet_ids
   vpc_id             = var.vpc_id
   security_group_ids = [aws_security_group.this[0].id]
 }
 
-# resource "aws_opensearchserverless_access_policy" "this" {
-#   count       = var.create_access_policy ? 1 : 0
-#   name        = var.access_policy_name
-#   type        = "data"
-#   description = "Network policy description"
-#   policy      = jsonencode([for rule in var.access_policy_rules : {
-#     Rules = [
-#       {
-#         ResourceType = rule.type == "collection" ? "collection" : "index"
-#         Resource     = rule.type == "collection" ? ["collection/${var.name}"] : [for index in rule.indexes : "index/${var.name}/${index}"]
-#         Permission   = [for permission in rule.permissions : lookup({
-#           "read"      = "aoss:ReadDocument",
-#           "write"     = "aoss:WriteDocument",
-#           "create"    = "aoss:CreateIndex",
-#           "delete"    = "aoss:DeleteIndex",
-#           "update"    = "aoss:UpdateIndex",
-#           "describe"  = "aoss:DescribeIndex",
-#           "*"         = "aoss:*",
-#           "create_coll" = "aoss:CreateCollectionItems",
-#           "delete_coll" = "aoss:DeleteCollectionItems",
-#           "update_coll" = "aoss:UpdateCollectionItems",
-#           "describe_coll" = "aoss:DescribeCollectionItems"
-#         }, permission, "aoss:*")]
-#       }
-#     ],
-#     Principal = rule.principals
-#   }])
-# }
 
 resource "aws_iam_role" "opensearch_access_role" {
-  name = "${substr(var.name, 0, 28)}-opensearch-role"
-  
-  # Trust policy allowing OpenSearch or specific services/users to assume the role
+  count = var.create_access_policy ? 1 : 0 
+  name = "${var.name}-role"
   assume_role_policy = jsonencode({
     "Version": "2012-10-17",
     "Statement": [
       {
         "Effect": "Allow",
         "Principal": {
-          "Service": "es.amazonaws.com"  # Replace with appropriate service if necessary
+          "Service": "es.amazonaws.com"  
         },
         "Action": "sts:AssumeRole"
       }
@@ -129,6 +103,7 @@ resource "aws_iam_role" "opensearch_access_role" {
 }
 
 resource "aws_iam_policy" "opensearch_custom_policy" {
+  count = var.create_access_policy ? 1 : 0 
   name        = "OpenSearchServerlessCustomPolicy"
   description = "Custom policy for OpenSearch Serverless access"
   policy      = jsonencode({
@@ -150,39 +125,36 @@ resource "aws_iam_policy" "opensearch_custom_policy" {
 
 
 resource "aws_iam_role_policy_attachment" "opensearch_access_policy_attachment" {
+  count = var.create_access_policy ? 1 : 0 
   role       = aws_iam_role.opensearch_access_role.name
-  policy_arn = aws_iam_policy.opensearch_custom_policy.arn  # Example managed policy
-}
+  policy_arn = aws_iam_policy.opensearch_custom_policy.arn 
+} 
 
 resource "aws_opensearchserverless_access_policy" "this" {
   count       = var.create_access_policy ? 1 : 0
-  name        = var.access_policy_name
+  name        = "${var.name}-access-policy"
   type        = "data"
   description = "Network policy description"
 
   # Define the policy with required permissions
-  policy = jsonencode([{
-    "Rules" = [
-      {
-        "ResourceType" = "collection",
-        "Resource"     = ["collection/${var.name}"],  # Ensure this matches your collection naming
-        "Permission"   = ["aoss:CreateCollectionItems", "aoss:DeleteCollectionItems", "aoss:UpdateCollectionItems", "aoss:DescribeCollectionItems"]
-      }
-    ],
+  policy = jsonencode([
+    for rule in var.access_policy_rules : {
+      "Rules" = [
+        {
+          "ResourceType" = rule.resource_type
+          "Resource"     = rule.resource
+          "Permission"   = rule.permissions
+        }
+      ],
     "Principal" = [
-      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${aws_iam_role.opensearch_access_role.name}"  # Replace with the role ARN
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${aws_iam_role.opensearch_access_role.name}"
     ]
   }])
 }
 
-
-
-
-
-
 resource "aws_opensearchserverless_lifecycle_policy" "this" {
   count       = var.create_data_lifecycle_policy ? 1 : 0
-  name        = var.data_lifecycle_policy_name
+  name        = "${var.name}-data-lifecycle-policy"
   type        = "retention"
   description = "Data lifecycle policy description"
   policy      = jsonencode({
@@ -196,18 +168,23 @@ resource "aws_opensearchserverless_lifecycle_policy" "this" {
   })
 }
 
-resource "aws_opensearchserverless_security_config" "this" {
-  count       = var.create_security_config ? 1 : 0
-  name        = var.security_config_name
-  description = "Security config description"
-  type        = "saml"
-  saml_options {
-    metadata        = file(var.saml_metadata)
-    group_attribute = var.saml_group_attribute
-    user_attribute  = var.saml_user_attribute
-    session_timeout = var.saml_session_timeout
-  }
-}
+# resource "aws_opensearchserverless_lifecycle_policy" "this" {
+#   count       = var.create_data_lifecycle_policy ? 1 : 0
+#   name        = var.data_lifecycle_policy_name
+#   type        = "retention"
+#   description = "Data lifecycle policy description"
+  
+#   policy = jsonencode({
+#     Rules = [
+#       for rule in var.data_lifecycle_policy_rules : {
+#         ResourceType      = "index",
+#         Resource          = var.global_resource,  # Use global resource variable
+#         MinIndexRetention = var.global_retention
+#       }
+#     ]
+#   })
+# }
+
 
 ##################
 # Security Group

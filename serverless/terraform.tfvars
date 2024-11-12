@@ -11,6 +11,13 @@ encryption_policy_description = "Encryption policy for OpenSearch domain"
 vpc_name                    = "vpc-test"
 vpc_security_group_ids      = ["sg-0fa6b2a413e945f0a"]
 
+access_policy_rules = [
+  {
+    resource_type = "collection"
+    resource      = ["collection/my-collection"]
+    permissions   = ["aoss:CreateCollectionItems", "aoss:DeleteCollectionItems", "aoss:UpdateCollectionItems", "aoss:DescribeCollectionItems"]
+  },
+]
 ingress_rules = [
   {
     from_port   = 80

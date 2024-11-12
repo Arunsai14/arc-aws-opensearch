@@ -41,10 +41,6 @@ variable "create_encryption_policy" {
   type        = bool
 }
 
-variable "encryption_policy_name" {
-  description = "The name of the encryption policy."
-  type        = string
-}
 
 
 variable "vpc_name" {

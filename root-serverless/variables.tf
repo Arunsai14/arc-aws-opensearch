@@ -31,21 +31,10 @@ variable "create_encryption_policy" {
   default     = true
 }
 
-variable "encryption_policy_name" {
-  description = "The name of the encryption policy."
-  type        = string
-}
-
 variable "create_network_policy" {
   description = "Flag to determine if network policy should be created."
   type        = bool
   default     = true
-}
-
-variable "network_policy_name" {
-  description = "The name of the network policy."
-  type        = string
-  default   = null
 }
 
 variable "vpc_name" {
@@ -78,19 +67,12 @@ variable "create_access_policy" {
   default     = false
 }
 
-variable "access_policy_name" {
-  description = "The name of the access policy."
-  type        = string
-   default    = "arc-access-policy"
-}
-
 variable "access_policy_rules" {
   description = "List of rules for the access policy."
-  type        = list(object({
-    type        = string
-    indexes     = optional(list(string), [])
-    permissions = list(string)
-    principals  = list(string)
+  type = list(object({
+    resource_type = string
+    resource      = list(string)
+    permissions   = list(string)
   }))
   default = []
 }
@@ -99,12 +81,6 @@ variable "create_data_lifecycle_policy" {
   description = "Flag to determine if data lifecycle policy should be created."
   type        = bool
   default     = false
-}
-
-variable "data_lifecycle_policy_name" {
-  description = "The name of the data lifecycle policy."
-  type        = string
-  default     = "data-lifecycle-policy"
 }
 
 variable "data_lifecycle_policy_rules" {
@@ -130,31 +106,6 @@ variable "security_config_name" {
   description = "The name of the security configuration."
   type        = string
   default     = "arc-security-config"
-}
-
-
-variable "saml_metadata" {
-  description = "The path to the SAML metadata file."
-  type        = string
-  default     = ""
-}
-
-variable "saml_group_attribute" {
-  description = "The SAML attribute that represents groups."
-  type        = string
-  default     = "group"
-}
-
-variable "saml_user_attribute" {
-  description = "The SAML attribute that represents users."
-  type        = string
-  default     = "user"
-}
-
-variable "saml_session_timeout" {
-  description = "The session timeout for the SAML configuration."
-  type        = string
-  default     = "3600"
 }
 
 variable "ingress_rules" {
