@@ -3,6 +3,18 @@ variable "collection_name" {
   type        = string
 }
 
+variable "environment" {
+  type        = string
+  description = "Name of the environment, i.e. dev, stage, prod"
+  default     = "dev"
+}
+
+variable "namespace" {
+  type        = string
+  description = "Namespace of the project, i.e. arc"
+  default     = "arc"
+}
+
 variable "description" {
   description = "A description for the OpenSearch collection."
   type        = string
