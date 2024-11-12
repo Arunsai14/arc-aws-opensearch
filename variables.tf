@@ -421,6 +421,7 @@ variable "security_group_name" {
 variable "collection_name" {
   description = "The name of the OpenSearch collection."
   type        = string
+  default     = "arc-opensearch-collection"
 }
 
 variable "description" {
