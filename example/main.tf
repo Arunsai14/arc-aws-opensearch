@@ -35,8 +35,7 @@ module "opensearch" {
   source            = "../" 
   create_opensearch = false
   create_opensearchserverless  = false
-  region            = var.region
-  domain_name       = var.domain_name
+  name       = var.domain_name
   engine_version     = var.engine_version
   instance_type      = var.instance_type
   instance_count     = var.instance_count
