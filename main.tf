@@ -2,7 +2,7 @@
 ####################     opensearch domain   ##################################
 ###############################################################################
 module "opensearch" {
-  source = "../opensearch-domain"
+  source = "./opensearch-domain"
 
   count = var.create_opensearch ? 1 : 0
 

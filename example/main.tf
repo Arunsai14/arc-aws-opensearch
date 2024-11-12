@@ -34,12 +34,14 @@ module "terraform-aws-arc-tags" {
 module "opensearch" {
   source            = "../" 
   create_opensearch = false
+  create_opensearchserverless  = false
   region            = var.region
   domain_name       = var.domain_name
   engine_version     = var.engine_version
   instance_type      = var.instance_type
   instance_count     = var.instance_count
   enable_vpc_options = true
+
   vpc_id             = var.vpc_id
   subnet_ids         = var.subnet_ids
   ingress_rules      = var.ingress_rules
@@ -98,6 +100,7 @@ module "opensearch_without_vpc" {
 
   collection_name              = var.collection_name
   create_opensearchserverless  = true
+  create_opensearch = false
   use_standby_replicas         = var.use_standby_replicas
   type                         = var.type
   create_public_access         = true
