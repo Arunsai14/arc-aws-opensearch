@@ -99,8 +99,8 @@ module "opensearch_serverless" {
 
   count = var.create_opensearch_serverless ? 1 : 0
 
-  namespace                    = var.namespace
-  environment                  = var.environment
+#   namespace                    = var.namespace
+#   environment                  = var.environment
 
   collection_name              = var.collection_name
   description                 = var.description
