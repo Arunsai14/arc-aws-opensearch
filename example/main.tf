@@ -98,8 +98,7 @@ module "opensearch_without_vpc" {
   source = "../"
 
   collection_name              = var.collection_name
-  create_opensearchserverless  = false
-  create_opensearch            = false
+  create_opensearchserverless  = true
   use_standby_replicas         = var.use_standby_replicas
   type                         = var.type
   create_public_access         = true
