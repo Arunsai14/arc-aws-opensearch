@@ -31,68 +31,68 @@ module "terraform-aws-arc-tags" {
 }
 
 
-module "opensearch" {
-  source            = "../" 
-  create_opensearch = false
-  create_opensearchserverless  = false
-  name       = var.domain_name
-  engine_version     = var.engine_version
-  instance_type      = var.instance_type
-  instance_count     = var.instance_count
-  enable_vpc_options = true
+# module "opensearch" {
+#   source            = "../" 
+#   create_opensearch = false
+#   create_opensearchserverless  = false
+#   name       = var.domain_name
+#   engine_version     = var.engine_version
+#   instance_type      = var.instance_type
+#   instance_count     = var.instance_count
+#   enable_vpc_options = true
 
-  vpc_id             = var.vpc_id
-  subnet_ids         = var.subnet_ids
-  ingress_rules      = var.ingress_rules
-  egress_rules       = var.egress_rules
-  enable_cognito_options = false
-  cognito_identity_pool_id = "us-east-2:e4d2566f-6f93-4a2d-885a-5963d8730f58"
-  cognito_user_pool_id = "us-east-2_PWWrC23P1"
+#   vpc_id             = var.vpc_id
+#   subnet_ids         = var.subnet_ids
+#   ingress_rules      = var.ingress_rules
+#   egress_rules       = var.egress_rules
+#   enable_cognito_options = false
+#   cognito_identity_pool_id = "us-east-2:e4d2566f-6f93-4a2d-885a-5963d8730f58"
+#   cognito_user_pool_id = "us-east-2_PWWrC23P1"
 
-  # access_policies                = local.access_policy
-  # enable_zone_awareness          = false
-  # tags                           = module.tags.tags
+#   # access_policies                = local.access_policy
+#   # enable_zone_awareness          = false
+#   # tags                           = module.tags.tags
 
-  # enable_encrypt_at_rest = false
+#   # enable_encrypt_at_rest = false
 
-  # enable_domain_endpoint_options = false
+#   # enable_domain_endpoint_options = false
 
-  # enable_off_peak_window_options = true
-  # auto_software_update_enabled   = true
-  #   advanced_security_enabled = false
-  # access_policies     = var.access_policy  
+#   # enable_off_peak_window_options = true
+#   # auto_software_update_enabled   = true
+#   #   advanced_security_enabled = false
+#   # access_policies     = var.access_policy  
 
-  # enable_auto_tune = false
-  # auto_tune_desired_state     = "ENABLED"
-  # auto_tune_cron_expression   = "cron(0 1 * * ? *)"
-  # auto_tune_duration_value    = 1
-  # auto_tune_duration_unit     = "HOURS"
-  # auto_tune_start_at          = "2024-11-04T01:00:00Z"
+#   # enable_auto_tune = false
+#   # auto_tune_desired_state     = "ENABLED"
+#   # auto_tune_cron_expression   = "cron(0 1 * * ? *)"
+#   # auto_tune_duration_value    = 1
+#   # auto_tune_duration_unit     = "HOURS"
+#   # auto_tune_start_at          = "2024-11-04T01:00:00Z"
 
 
-  # dedicated_master_enabled = false
-  # dedicated_master_type  = "m5.large.search"
-  # dedicated_master_count = 3
-  # master_user_name                    = "admin"
-  # master_user_password                = "Password123!"
+#   # dedicated_master_enabled = false
+#   # dedicated_master_type  = "m5.large.search"
+#   # dedicated_master_count = 3
+#   # master_user_name                    = "admin"
+#   # master_user_password                = "Password123!"
 
            
-  # allowed_cidr_blocks = var.allowed_cidr_blocks 
+#   # allowed_cidr_blocks = var.allowed_cidr_blocks 
 
-  # enable_zone_awareness = false
-  # availability_zone_count = 2
-  #  ebs_enabled  = var.ebs_enabled
-  #   volume_type  = var.volume_type
-  #   volume_size  = var.volume_size
-  #   iops         = var.iops
-  #   throughput   = var.throughput
+#   # enable_zone_awareness = false
+#   # availability_zone_count = 2
+#   #  ebs_enabled  = var.ebs_enabled
+#   #   volume_type  = var.volume_type
+#   #   volume_size  = var.volume_size
+#   #   iops         = var.iops
+#   #   throughput   = var.throughput
 
 
-tags = merge(
-    module.terraform-aws-arc-tags.tags
-  )
+# tags = merge(
+#     module.terraform-aws-arc-tags.tags
+#   )
 
-}
+# }
 
 module "opensearch_without_vpc" {
   source = "../"
